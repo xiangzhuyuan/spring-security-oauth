@@ -14,19 +14,19 @@ import java.util.Map;
  *
  * @author Ryan Heaton
  */
-public class ProtectedResourceDetailsServiceFactoryBean extends AbstractFactoryBean<ProtectedResourceDetailsService>  {
+public class ProtectedResourceDetailsServiceFactoryBean extends AbstractFactoryBean<ProtectedResourceDetailsService> {
 
-  @Override
-  public Class<? extends ProtectedResourceDetailsService> getObjectType() {
-    return InMemoryProtectedResourceDetailsService.class;
-  }
+    @Override
+    public Class<? extends ProtectedResourceDetailsService> getObjectType() {
+        return InMemoryProtectedResourceDetailsService.class;
+    }
 
-  @Override
-  protected ProtectedResourceDetailsService createInstance() throws Exception {
-    Map<String, ProtectedResourceDetails> detailsMap = BeanFactoryUtils.beansOfTypeIncludingAncestors((ListableBeanFactory) getBeanFactory(),
-                                                                                                           ProtectedResourceDetails.class);
-    InMemoryProtectedResourceDetailsService service = new InMemoryProtectedResourceDetailsService();
-    service.setResourceDetailsStore(detailsMap);
-    return service;
-  }
+    @Override
+    protected ProtectedResourceDetailsService createInstance() throws Exception {
+        Map<String, ProtectedResourceDetails> detailsMap = BeanFactoryUtils.beansOfTypeIncludingAncestors((ListableBeanFactory) getBeanFactory(),
+                ProtectedResourceDetails.class);
+        InMemoryProtectedResourceDetailsService service = new InMemoryProtectedResourceDetailsService();
+        service.setResourceDetailsStore(detailsMap);
+        return service;
+    }
 }

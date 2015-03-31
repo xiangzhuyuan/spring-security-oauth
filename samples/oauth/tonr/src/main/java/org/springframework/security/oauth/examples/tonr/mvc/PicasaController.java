@@ -12,15 +12,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class PicasaController {
 
-	private GoogleService googleService;
+    private GoogleService googleService;
 
-	@RequestMapping("/google/picasa")
-	public String photos(Model model) throws Exception {
-		model.addAttribute("photoUrls", googleService.getLastTenPicasaPictureURLs());
-		return "picasa";
-	}
+    @RequestMapping("/google/picasa")
+    public String photos(Model model) throws Exception {
+        model.addAttribute("photoUrls", googleService.getLastTenPicasaPictureURLs());
+        return "picasa";
+    }
 
-	public void setGoogleService(GoogleService googleService) {
-		this.googleService = googleService;
-	}
+    public void setGoogleService(GoogleService googleService) {
+        this.googleService = googleService;
+    }
 }

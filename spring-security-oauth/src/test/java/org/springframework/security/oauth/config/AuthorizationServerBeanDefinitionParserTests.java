@@ -16,11 +16,6 @@
 
 package org.springframework.security.oauth.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.lang.reflect.Field;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,29 +27,34 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 @ContextConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 public class AuthorizationServerBeanDefinitionParserTests {
 
-  @Autowired
-  private UserAuthorizationProcessingFilter filter;
+    @Autowired
+    private UserAuthorizationProcessingFilter filter;
 
-  @Test
-  public void filterUsesConfiguredTokenParameterName() {
-    assertEquals("Token parameter name should equal the configured parameter name",
-        "myOverriddenTokenIdParam", filter.getTokenParameterName());
-  }
+    @Test
+    public void filterUsesConfiguredTokenParameterName() {
+        assertEquals("Token parameter name should equal the configured parameter name",
+                "myOverriddenTokenIdParam", filter.getTokenParameterName());
+    }
 
-  @Test
-  public void filterUsesConfiguredFailureHandler() throws Exception {
-    final Field failureHandlerField = AbstractAuthenticationProcessingFilter.class.getDeclaredField("failureHandler");
-    ReflectionUtils.makeAccessible(failureHandlerField);
-    AuthenticationFailureHandler failureHandler = (AuthenticationFailureHandler) ReflectionUtils.getField(failureHandlerField, filter);
-    assertTrue("failure handler should be a simpleUrlFailureHandler", failureHandler instanceof SimpleUrlAuthenticationFailureHandler);
+    @Test
+    public void filterUsesConfiguredFailureHandler() throws Exception {
+        final Field failureHandlerField = AbstractAuthenticationProcessingFilter.class.getDeclaredField("failureHandler");
+        ReflectionUtils.makeAccessible(failureHandlerField);
+        AuthenticationFailureHandler failureHandler = (AuthenticationFailureHandler) ReflectionUtils.getField(failureHandlerField, filter);
+        assertTrue("failure handler should be a simpleUrlFailureHandler", failureHandler instanceof SimpleUrlAuthenticationFailureHandler);
 
-    final Field failureUrlField = SimpleUrlAuthenticationFailureHandler.class.getDeclaredField("defaultFailureUrl");
-    ReflectionUtils.makeAccessible(failureUrlField);
-    String failureUrl = (String) ReflectionUtils.getField(failureUrlField, failureHandler);
-    assertEquals("failure URL should be the configured url", "/oauth/confirm_access", failureUrl);
-  }
+        final Field failureUrlField = SimpleUrlAuthenticationFailureHandler.class.getDeclaredField("defaultFailureUrl");
+        ReflectionUtils.makeAccessible(failureUrlField);
+        String failureUrl = (String) ReflectionUtils.getField(failureUrlField, failureHandler);
+        assertEquals("failure URL should be the configured url", "/oauth/confirm_access", failureUrl);
+    }
 }

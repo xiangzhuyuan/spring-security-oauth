@@ -23,17 +23,17 @@ package org.springframework.security.oauth.provider;
  */
 public interface ResourceSpecificConsumerDetails extends ConsumerDetails {
 
-  /**
-   * The name of the resource.
-   *
-   * @return The name of the resource.
-   */
-  String getResourceName();
+    /**
+     * The name of the resource.
+     *
+     * @return The name of the resource.
+     */
+    String getResourceName();
 
-  /**
-   * A description of the resource.
-   *
-   * @return A description of the resource.
-   */
-  String getResourceDescription();
+    /**
+     * A description of the resource.
+     *
+     * @return A description of the resource.
+     */
+    String getResourceDescription();
 }

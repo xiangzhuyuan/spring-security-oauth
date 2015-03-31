@@ -13,18 +13,14 @@
 
 package org.springframework.security.oauth2.config.annotation.web.configuration;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.web.servlet.DispatcherServlet;
+
+import java.lang.annotation.*;
 
 /**
  * Convenience annotation for enabling an Authorization Server (i.e. an {@link AuthorizationEndpoint} and a
@@ -35,9 +31,8 @@ import org.springframework.web.servlet.DispatcherServlet;
  * &#064;EnableWebSecurity} etc.), but the Token Endpoint (/oauth/token) will be automatically secured using HTTP Basic
  * authentication on the client's credentials. Clients <em>must</em> be registered by providing a
  * {@link ClientDetailsService} through one or more AuthorizationServerConfigurers.
- * 
+ *
  * @author Dave Syer
- * 
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

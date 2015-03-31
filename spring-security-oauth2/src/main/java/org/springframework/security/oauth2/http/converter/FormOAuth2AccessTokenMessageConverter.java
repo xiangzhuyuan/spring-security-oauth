@@ -12,8 +12,6 @@
  */
 package org.springframework.security.oauth2.http.converter;
 
-import java.io.IOException;
-
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -25,39 +23,40 @@ import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.util.MultiValueMap;
 
+import java.io.IOException;
+
 /**
  * Converter that can handle inbound form data and convert it to an access token. Needed to support external servers,
  * like Facebook that might not send JSON token data.
- * 
+ *
  * @author Rob Winch
  * @author Dave Syer
- * 
  */
 public class FormOAuth2AccessTokenMessageConverter extends AbstractHttpMessageConverter<OAuth2AccessToken> {
 
-	private final FormHttpMessageConverter delegateMessageConverter;
+    private final FormHttpMessageConverter delegateMessageConverter;
 
-	public FormOAuth2AccessTokenMessageConverter() {
-		super(MediaType.APPLICATION_FORM_URLENCODED, MediaType.TEXT_PLAIN);
-		this.delegateMessageConverter = new FormHttpMessageConverter();
-	}
+    public FormOAuth2AccessTokenMessageConverter() {
+        super(MediaType.APPLICATION_FORM_URLENCODED, MediaType.TEXT_PLAIN);
+        this.delegateMessageConverter = new FormHttpMessageConverter();
+    }
 
-	@Override
-	protected boolean supports(Class<?> clazz) {
-		return OAuth2AccessToken.class.equals(clazz);
-	}
+    @Override
+    protected boolean supports(Class<?> clazz) {
+        return OAuth2AccessToken.class.equals(clazz);
+    }
 
-	@Override
-	protected OAuth2AccessToken readInternal(Class<? extends OAuth2AccessToken> clazz, HttpInputMessage inputMessage)
-			throws IOException, HttpMessageNotReadableException {
-		MultiValueMap<String, String> data = delegateMessageConverter.read(null, inputMessage);
-		return DefaultOAuth2AccessToken.valueOf(data.toSingleValueMap());
-	}
+    @Override
+    protected OAuth2AccessToken readInternal(Class<? extends OAuth2AccessToken> clazz, HttpInputMessage inputMessage)
+            throws IOException, HttpMessageNotReadableException {
+        MultiValueMap<String, String> data = delegateMessageConverter.read(null, inputMessage);
+        return DefaultOAuth2AccessToken.valueOf(data.toSingleValueMap());
+    }
 
-	@Override
-	protected void writeInternal(OAuth2AccessToken accessToken, HttpOutputMessage outputMessage) throws IOException,
-			HttpMessageNotWritableException {
-		throw new UnsupportedOperationException(
-				"This converter is only used for converting from externally aqcuired form data");
-	}
+    @Override
+    protected void writeInternal(OAuth2AccessToken accessToken, HttpOutputMessage outputMessage) throws IOException,
+            HttpMessageNotWritableException {
+        throw new UnsupportedOperationException(
+                "This converter is only used for converting from externally aqcuired form data");
+    }
 }

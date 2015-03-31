@@ -13,42 +13,41 @@
 
 package sparklr.common;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 /**
  * @author Dave Syer
- *
  */
 public abstract class AbstractProtectedResourceTests extends AbstractIntegrationTests {
 
-	@Test
-	public void testHomePageIsProtected() throws Exception {
-		ResponseEntity<String> response = http.getForString("/");
-		assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-		assertTrue("Wrong header: " + response.getHeaders(), response.getHeaders().getFirst("WWW-Authenticate")
-				.startsWith("Bearer realm="));
-	}
+    @Test
+    public void testHomePageIsProtected() throws Exception {
+        ResponseEntity<String> response = http.getForString("/");
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertTrue("Wrong header: " + response.getHeaders(), response.getHeaders().getFirst("WWW-Authenticate")
+                .startsWith("Bearer realm="));
+    }
 
-	@Test
-	public void testBeansResourceIsProtected() throws Exception {
-		ResponseEntity<String> response = http.getForString("/admin/beans");
-		assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-		assertTrue("Wrong header: " + response.getHeaders(), response.getHeaders().getFirst("WWW-Authenticate")
-				.startsWith("Bearer realm="));
-	}
+    @Test
+    public void testBeansResourceIsProtected() throws Exception {
+        ResponseEntity<String> response = http.getForString("/admin/beans");
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertTrue("Wrong header: " + response.getHeaders(), response.getHeaders().getFirst("WWW-Authenticate")
+                .startsWith("Bearer realm="));
+    }
 
-	@Test
-	public void testHealthResourceIsSecure() throws Exception {
-		// In Spring Boot 1.2 the /health endpoint is not open by default, but does allow
-		// anonymous access. When we add the OAuth2 layer we don't know about Boot
-		// endpoints, so the default has to be a 401.
-		assertEquals(HttpStatus.UNAUTHORIZED, http.getStatusCode("/admin/health"));
-	}
+    @Test
+    public void testHealthResourceIsSecure() throws Exception {
+        // In Spring Boot 1.2 the /health endpoint is not open by default, but does allow
+        // anonymous access. When we add the OAuth2 layer we don't know about Boot
+        // endpoints, so the default has to be a 401.
+        assertEquals(HttpStatus.UNAUTHORIZED, http.getStatusCode("/admin/health"));
+    }
 
 
 }

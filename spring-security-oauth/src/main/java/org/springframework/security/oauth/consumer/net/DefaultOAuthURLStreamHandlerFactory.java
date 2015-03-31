@@ -16,9 +16,9 @@
 
 package org.springframework.security.oauth.consumer.net;
 
+import org.springframework.security.oauth.consumer.OAuthConsumerSupport;
 import org.springframework.security.oauth.consumer.OAuthConsumerToken;
 import org.springframework.security.oauth.consumer.ProtectedResourceDetails;
-import org.springframework.security.oauth.consumer.OAuthConsumerSupport;
 
 import java.net.URLStreamHandler;
 import java.util.Map;
@@ -30,11 +30,11 @@ import java.util.Map;
  */
 public class DefaultOAuthURLStreamHandlerFactory implements OAuthURLStreamHandlerFactory {
 
-  public URLStreamHandler getHttpStreamHandler(ProtectedResourceDetails resourceDetails, OAuthConsumerToken accessToken, OAuthConsumerSupport support, String httpMethod, Map<String, String> additionalParameters) {
-    return new OAuthOverHttpURLStreamHandler(resourceDetails, accessToken, support, httpMethod, additionalParameters);
-  }
+    public URLStreamHandler getHttpStreamHandler(ProtectedResourceDetails resourceDetails, OAuthConsumerToken accessToken, OAuthConsumerSupport support, String httpMethod, Map<String, String> additionalParameters) {
+        return new OAuthOverHttpURLStreamHandler(resourceDetails, accessToken, support, httpMethod, additionalParameters);
+    }
 
-  public URLStreamHandler getHttpsStreamHandler(ProtectedResourceDetails resourceDetails, OAuthConsumerToken accessToken, OAuthConsumerSupport support, String httpMethod, Map<String, String> additionalParameters) {
-    return new OAuthOverHttpsURLStreamHandler(resourceDetails, accessToken, support, httpMethod, additionalParameters);
-  }
+    public URLStreamHandler getHttpsStreamHandler(ProtectedResourceDetails resourceDetails, OAuthConsumerToken accessToken, OAuthConsumerSupport support, String httpMethod, Map<String, String> additionalParameters) {
+        return new OAuthOverHttpsURLStreamHandler(resourceDetails, accessToken, support, httpMethod, additionalParameters);
+    }
 }

@@ -21,33 +21,33 @@ import org.springframework.security.oauth.consumer.OAuthConsumerToken;
 
 /**
  * Token services for an OAuth consumer.
- * 
+ *
  * @author Ryan Heaton
  */
 public interface OAuthConsumerTokenServices {
 
-  /**
-   * Get the token for the specified protected resource.
-   *
-   * @param resourceId The id of the protected resource.
-   * @return The token, or null if none was found.
-   */
-  OAuthConsumerToken getToken(String resourceId) throws AuthenticationException;
+    /**
+     * Get the token for the specified protected resource.
+     *
+     * @param resourceId The id of the protected resource.
+     * @return The token, or null if none was found.
+     */
+    OAuthConsumerToken getToken(String resourceId) throws AuthenticationException;
 
-  /**
-   * Store a token for a specified resource. If the token {@link OAuthConsumerToken#isAccessToken() is not an access token},
-   * the token services may not have to store it and instead rely on the implementation of the
-   * {@link org.springframework.security.oauth.consumer.rememberme.OAuthRememberMeServices remember-me services}. 
-   *
-   * @param resourceId The id of the protected resource.
-   * @param token The token to store.
-   */
-  void storeToken(String resourceId, OAuthConsumerToken token);
+    /**
+     * Store a token for a specified resource. If the token {@link OAuthConsumerToken#isAccessToken() is not an access token},
+     * the token services may not have to store it and instead rely on the implementation of the
+     * {@link org.springframework.security.oauth.consumer.rememberme.OAuthRememberMeServices remember-me services}.
+     *
+     * @param resourceId The id of the protected resource.
+     * @param token      The token to store.
+     */
+    void storeToken(String resourceId, OAuthConsumerToken token);
 
-  /**
-   * Removes the token for the specified resource.
-   *
-   * @param resourceId The id of the resource.
-   */
-  void removeToken(String resourceId);
+    /**
+     * Removes the token for the specified resource.
+     *
+     * @param resourceId The id of the resource.
+     */
+    void removeToken(String resourceId);
 }

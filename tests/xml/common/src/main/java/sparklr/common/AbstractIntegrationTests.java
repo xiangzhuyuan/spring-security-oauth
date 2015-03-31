@@ -13,8 +13,6 @@
 
 package sparklr.common;
 
-import javax.sql.DataSource;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
@@ -40,116 +38,118 @@ import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import javax.sql.DataSource;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @IntegrationTest("server.port=0")
 public abstract class AbstractIntegrationTests {
 
-	@Value("${local.server.port}")
-	private int port;
+    @Value("${local.server.port}")
+    private int port;
 
-	private static String globalTokenPath;
+    private static String globalTokenPath;
 
-	private static String globalAuthorizePath;
+    private static String globalAuthorizePath;
 
-	@Rule
-	public HttpTestUtils http = HttpTestUtils.standard();
+    @Rule
+    public HttpTestUtils http = HttpTestUtils.standard();
 
-	@Rule
-	public OAuth2ContextSetup context = OAuth2ContextSetup.standard(http);
+    @Rule
+    public OAuth2ContextSetup context = OAuth2ContextSetup.standard(http);
 
-	@Autowired
-	private ServerProperties server;
-	
-	@Autowired
-	protected SecurityProperties security;
+    @Autowired
+    private ServerProperties server;
 
-	@Autowired(required=false)
-	private TokenStore tokenStore;
-	
-	@Autowired(required=false)
-	private ApprovalStore approvalStore;
-	
-	@Autowired(required=false)
-	private DataSource dataSource;
-	
-	@Before
-	public void init() throws Exception {
-		http.setPort(port);
-		clear(tokenStore);
-		clear(approvalStore);
-	}
+    @Autowired
+    protected SecurityProperties security;
 
-	@BeforeOAuth2Context
-	public void fixPaths() {
-		String prefix = server.getServletPrefix();
-		http.setPort(port);
-		http.setPrefix(prefix);
-		BaseOAuth2ProtectedResourceDetails resource = (BaseOAuth2ProtectedResourceDetails) context.getResource();
-		resource.setAccessTokenUri(http.getUrl(tokenPath()));
-		if (resource instanceof AbstractRedirectResourceDetails) {
-			((AbstractRedirectResourceDetails) resource).setUserAuthorizationUri(http.getUrl(authorizePath()));
-		}
-		if (resource instanceof ImplicitResourceDetails) {
-			resource.setAccessTokenUri(http.getUrl(authorizePath()));
-		}
-		if (resource instanceof ResourceOwnerPasswordResourceDetails) {
-			((ResourceOwnerPasswordResourceDetails) resource).setUsername(security.getUser().getName());
-			((ResourceOwnerPasswordResourceDetails) resource).setPassword(security.getUser().getPassword());
-		}
-	}
-	
-	private void clear(ApprovalStore approvalStore) throws Exception {
-		if (approvalStore instanceof Advised) {
-			Advised advised = (Advised) tokenStore;
-			ApprovalStore target = (ApprovalStore) advised.getTargetSource().getTarget();
-			clear(target);
-			return;
-		}
-		if (approvalStore instanceof InMemoryApprovalStore) {
-			((InMemoryApprovalStore) approvalStore).clear();
-		}
-		if (approvalStore instanceof JdbcApprovalStore) {
-			JdbcTemplate template = new JdbcTemplate(dataSource);
-			template.execute("delete from oauth_approvals");
-		}
-	}
+    @Autowired(required = false)
+    private TokenStore tokenStore;
 
-	private void clear(TokenStore tokenStore) throws Exception {
-		if (tokenStore instanceof Advised) {
-			Advised advised = (Advised) tokenStore;
-			TokenStore target = (TokenStore) advised.getTargetSource().getTarget();
-			clear(target);
-			return;
-		}
-		if (tokenStore instanceof InMemoryTokenStore) {
-			((InMemoryTokenStore) tokenStore).clear();
-		}
-		if (tokenStore instanceof JdbcTokenStore) {
-			JdbcTemplate template = new JdbcTemplate(dataSource);
-			template.execute("delete from oauth_access_token");
-			template.execute("delete from oauth_refresh_token");
-			template.execute("delete from oauth_client_token");
-			template.execute("delete from oauth_code");
-		}
-	}
+    @Autowired(required = false)
+    private ApprovalStore approvalStore;
 
-	@Value("${oauth.paths.token:/oauth/token}")
-	public void setTokenPath(String tokenPath) {
-		globalTokenPath = tokenPath;
-	}
+    @Autowired(required = false)
+    private DataSource dataSource;
 
-	@Value("${oauth.paths.authorize:/oauth/authorize}")
-	public void setAuthorizePath(String authorizePath) {
-		globalAuthorizePath = authorizePath;
-	}
+    @Before
+    public void init() throws Exception {
+        http.setPort(port);
+        clear(tokenStore);
+        clear(approvalStore);
+    }
 
-	public static String tokenPath() {
-		return globalTokenPath;
-	}
+    @BeforeOAuth2Context
+    public void fixPaths() {
+        String prefix = server.getServletPrefix();
+        http.setPort(port);
+        http.setPrefix(prefix);
+        BaseOAuth2ProtectedResourceDetails resource = (BaseOAuth2ProtectedResourceDetails) context.getResource();
+        resource.setAccessTokenUri(http.getUrl(tokenPath()));
+        if (resource instanceof AbstractRedirectResourceDetails) {
+            ((AbstractRedirectResourceDetails) resource).setUserAuthorizationUri(http.getUrl(authorizePath()));
+        }
+        if (resource instanceof ImplicitResourceDetails) {
+            resource.setAccessTokenUri(http.getUrl(authorizePath()));
+        }
+        if (resource instanceof ResourceOwnerPasswordResourceDetails) {
+            ((ResourceOwnerPasswordResourceDetails) resource).setUsername(security.getUser().getName());
+            ((ResourceOwnerPasswordResourceDetails) resource).setPassword(security.getUser().getPassword());
+        }
+    }
 
-	public static String authorizePath() {
-		return globalAuthorizePath;
-	}
+    private void clear(ApprovalStore approvalStore) throws Exception {
+        if (approvalStore instanceof Advised) {
+            Advised advised = (Advised) tokenStore;
+            ApprovalStore target = (ApprovalStore) advised.getTargetSource().getTarget();
+            clear(target);
+            return;
+        }
+        if (approvalStore instanceof InMemoryApprovalStore) {
+            ((InMemoryApprovalStore) approvalStore).clear();
+        }
+        if (approvalStore instanceof JdbcApprovalStore) {
+            JdbcTemplate template = new JdbcTemplate(dataSource);
+            template.execute("delete from oauth_approvals");
+        }
+    }
+
+    private void clear(TokenStore tokenStore) throws Exception {
+        if (tokenStore instanceof Advised) {
+            Advised advised = (Advised) tokenStore;
+            TokenStore target = (TokenStore) advised.getTargetSource().getTarget();
+            clear(target);
+            return;
+        }
+        if (tokenStore instanceof InMemoryTokenStore) {
+            ((InMemoryTokenStore) tokenStore).clear();
+        }
+        if (tokenStore instanceof JdbcTokenStore) {
+            JdbcTemplate template = new JdbcTemplate(dataSource);
+            template.execute("delete from oauth_access_token");
+            template.execute("delete from oauth_refresh_token");
+            template.execute("delete from oauth_client_token");
+            template.execute("delete from oauth_code");
+        }
+    }
+
+    @Value("${oauth.paths.token:/oauth/token}")
+    public void setTokenPath(String tokenPath) {
+        globalTokenPath = tokenPath;
+    }
+
+    @Value("${oauth.paths.authorize:/oauth/authorize}")
+    public void setAuthorizePath(String authorizePath) {
+        globalAuthorizePath = authorizePath;
+    }
+
+    public static String tokenPath() {
+        return globalTokenPath;
+    }
+
+    public static String authorizePath() {
+        return globalAuthorizePath;
+    }
 
 }

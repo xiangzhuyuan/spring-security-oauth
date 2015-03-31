@@ -25,24 +25,22 @@ import java.util.Date;
 
 /**
  * JSON deserializer for Jackson to handle regular date instances as timestamps in ISO format.
- * 
- * @author Dave Syer
  *
+ * @author Dave Syer
  */
 public class JsonDateDeserializer extends JsonDeserializer<Date> {
-	 
+
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
- 
-	@Override
-	public Date deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
-		try {
-			synchronized (dateFormat) {				
-				return dateFormat.parse(parser.getText());
-			}
-		}
-		catch (ParseException e) {
-			throw new JsonParseException("Could not parse date", parser.getCurrentLocation(), e);
-		}
-	}
- 
+
+    @Override
+    public Date deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
+        try {
+            synchronized (dateFormat) {
+                return dateFormat.parse(parser.getText());
+            }
+        } catch (ParseException e) {
+            throw new JsonParseException("Could not parse date", parser.getCurrentLocation(), e);
+        }
+    }
+
 }

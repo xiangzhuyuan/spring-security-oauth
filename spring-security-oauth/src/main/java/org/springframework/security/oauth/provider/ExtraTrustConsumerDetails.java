@@ -23,14 +23,14 @@ package org.springframework.security.oauth.provider;
  */
 public interface ExtraTrustConsumerDetails extends ConsumerDetails {
 
-  /**
-   * Whether this consumer is required to obtain an authenticated oauth token. If <code>true</code>, it means that the OAuth consumer won't be granted access
-   * to the protected resource unless the user is directed to the token authorization page. If <code>false</code>, it means that the provider has an additional
-   * level of trust with the consumer.
-   *
-   * Not requiring an authenticated access token is also known as "2-legged" OAuth or "signed fetch".
-   *
-   * @return Whether this consumer is required to obtain an authenticated oauth token.
-   */
-  boolean isRequiredToObtainAuthenticatedToken();
+    /**
+     * Whether this consumer is required to obtain an authenticated oauth token. If <code>true</code>, it means that the OAuth consumer won't be granted access
+     * to the protected resource unless the user is directed to the token authorization page. If <code>false</code>, it means that the provider has an additional
+     * level of trust with the consumer.
+     * <p/>
+     * Not requiring an authenticated access token is also known as "2-legged" OAuth or "signed fetch".
+     *
+     * @return Whether this consumer is required to obtain an authenticated oauth token.
+     */
+    boolean isRequiredToObtainAuthenticatedToken();
 }

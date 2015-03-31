@@ -17,18 +17,17 @@ import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResour
 /**
  * Stategy for generating random keys for state. The state key is important protection for client apps against
  * cross-site request forgery.
- * 
+ *
  * @author Dave Syer
- * 
  */
 public interface StateKeyGenerator {
 
-	/**
-	 * Generate a key.
-	 * 
-	 * @param resource the resource to generate the key for
-	 * @return a unique key for the state.  Never null.
-	 */
-	String generateKey(OAuth2ProtectedResourceDetails resource);
+    /**
+     * Generate a key.
+     *
+     * @param resource the resource to generate the key for
+     * @return a unique key for the state.  Never null.
+     */
+    String generateKey(OAuth2ProtectedResourceDetails resource);
 
 }

@@ -17,16 +17,15 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 
 /**
  * @author Dave Syer
- *
  */
 public class ResourceServerConfigurerAdapter implements ResourceServerConfigurer {
 
-	@Override
-	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-	}
+    @Override
+    public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
+    }
 
-	@Override
-	public void configure(HttpSecurity http) throws Exception {
-	}
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+    }
 
 }

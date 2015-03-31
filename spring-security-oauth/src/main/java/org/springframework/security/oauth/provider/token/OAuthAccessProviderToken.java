@@ -23,11 +23,11 @@ import org.springframework.security.core.Authentication;
  */
 public interface OAuthAccessProviderToken extends OAuthProviderToken {
 
-  /**
-   * Get the authentication of the user who authorized the access token.
-   *
-   * @return the authentication of the user who authorized the access token.
-   */
-  Authentication getUserAuthentication();
+    /**
+     * Get the authentication of the user who authorized the access token.
+     *
+     * @return the authentication of the user who authorized the access token.
+     */
+    Authentication getUserAuthentication();
 
 }

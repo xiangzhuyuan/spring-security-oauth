@@ -16,14 +16,14 @@
 
 package org.springframework.security.oauth.provider.attributes;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth.provider.OAuthAuthenticationDetails;
 
-import java.util.List;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Ryan Heaton
@@ -31,68 +31,65 @@ import java.util.Collection;
  */
 public class ConsumerSecurityVoter implements AccessDecisionVoter<Object> {
 
-  /**
-   * The config attribute is supported if it's an instance of {@link org.springframework.security.oauth.provider.attributes.ConsumerSecurityConfig}.
-   *
-   * @param attribute The attribute.
-   * @return Whether the attribute is an instance of {@link org.springframework.security.oauth.provider.attributes.ConsumerSecurityConfig}.
-   */
-  public boolean supports(ConfigAttribute attribute) {
-    return attribute instanceof ConsumerSecurityConfig;
-  }
-
-  /**
-   * All classes are supported.
-   *
-   * @param clazz The class.
-   * @return true.
-   */
-  public boolean supports(Class<?> clazz) {
-    return true;
-  }
-
-  /**
-   * Votes on giving access to the specified authentication based on the security attributes.
-   *
-   * @param authentication The authentication.
-   * @param object The object.
-   * @param configAttributes the ConfigAttributes.
-   * @return The vote.
-   */
-  public int vote(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes) {
-    int result = ACCESS_ABSTAIN;
-
-    if (authentication.getDetails() instanceof OAuthAuthenticationDetails) {
-      OAuthAuthenticationDetails details = (OAuthAuthenticationDetails) authentication.getDetails();
-      for (Object configAttribute : configAttributes) {
-        ConfigAttribute attribute = (ConfigAttribute) configAttribute;
-
-        if (ConsumerSecurityConfig.PERMIT_ALL_ATTRIBUTE.equals(attribute)) {
-          return ACCESS_GRANTED;
-        }
-        else if (ConsumerSecurityConfig.DENY_ALL_ATTRIBUTE.equals(attribute)) {
-          return ACCESS_DENIED;
-        }
-        else if (supports(attribute)) {
-          ConsumerSecurityConfig config = (ConsumerSecurityConfig) attribute;
-          if ((config.getSecurityType() == ConsumerSecurityConfig.ConsumerSecurityType.CONSUMER_KEY)
-            && (config.getAttribute().equals(details.getConsumerDetails().getConsumerKey()))) {
-            return ACCESS_GRANTED;
-          }
-          else if (config.getSecurityType() == ConsumerSecurityConfig.ConsumerSecurityType.CONSUMER_ROLE) {
-            List<GrantedAuthority> authorities = details.getConsumerDetails().getAuthorities();
-            if (authorities != null) {
-              for (GrantedAuthority authority : authorities) {
-                if (authority.getAuthority().equals(config.getAttribute())) {
-                  return ACCESS_GRANTED;
-                }
-              }
-            }
-          }
-        }
-      }
+    /**
+     * The config attribute is supported if it's an instance of {@link org.springframework.security.oauth.provider.attributes.ConsumerSecurityConfig}.
+     *
+     * @param attribute The attribute.
+     * @return Whether the attribute is an instance of {@link org.springframework.security.oauth.provider.attributes.ConsumerSecurityConfig}.
+     */
+    public boolean supports(ConfigAttribute attribute) {
+        return attribute instanceof ConsumerSecurityConfig;
     }
 
-    return result;
-  }
+    /**
+     * All classes are supported.
+     *
+     * @param clazz The class.
+     * @return true.
+     */
+    public boolean supports(Class<?> clazz) {
+        return true;
+    }
+
+    /**
+     * Votes on giving access to the specified authentication based on the security attributes.
+     *
+     * @param authentication   The authentication.
+     * @param object           The object.
+     * @param configAttributes the ConfigAttributes.
+     * @return The vote.
+     */
+    public int vote(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes) {
+        int result = ACCESS_ABSTAIN;
+
+        if (authentication.getDetails() instanceof OAuthAuthenticationDetails) {
+            OAuthAuthenticationDetails details = (OAuthAuthenticationDetails) authentication.getDetails();
+            for (Object configAttribute : configAttributes) {
+                ConfigAttribute attribute = (ConfigAttribute) configAttribute;
+
+                if (ConsumerSecurityConfig.PERMIT_ALL_ATTRIBUTE.equals(attribute)) {
+                    return ACCESS_GRANTED;
+                } else if (ConsumerSecurityConfig.DENY_ALL_ATTRIBUTE.equals(attribute)) {
+                    return ACCESS_DENIED;
+                } else if (supports(attribute)) {
+                    ConsumerSecurityConfig config = (ConsumerSecurityConfig) attribute;
+                    if ((config.getSecurityType() == ConsumerSecurityConfig.ConsumerSecurityType.CONSUMER_KEY)
+                            && (config.getAttribute().equals(details.getConsumerDetails().getConsumerKey()))) {
+                        return ACCESS_GRANTED;
+                    } else if (config.getSecurityType() == ConsumerSecurityConfig.ConsumerSecurityType.CONSUMER_ROLE) {
+                        List<GrantedAuthority> authorities = details.getConsumerDetails().getAuthorities();
+                        if (authorities != null) {
+                            for (GrantedAuthority authority : authorities) {
+                                if (authority.getAuthority().equals(config.getAttribute())) {
+                                    return ACCESS_GRANTED;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
 }

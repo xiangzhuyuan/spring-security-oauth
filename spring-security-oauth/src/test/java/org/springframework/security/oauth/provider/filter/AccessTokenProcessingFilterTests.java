@@ -16,12 +16,6 @@
 
 package org.springframework.security.oauth.provider.filter;
 
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -31,49 +25,54 @@ import org.springframework.security.oauth.provider.ConsumerAuthentication;
 import org.springframework.security.oauth.provider.ConsumerCredentials;
 import org.springframework.security.oauth.provider.ConsumerDetails;
 import org.springframework.security.oauth.provider.InvalidOAuthParametersException;
-import org.springframework.security.oauth.provider.filter.AccessTokenProcessingFilter;
 import org.springframework.security.oauth.provider.token.OAuthAccessProviderToken;
 import org.springframework.security.oauth.provider.token.OAuthProviderTokenServices;
+
+import java.util.ArrayList;
+
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Ryan Heaton
  */
 @RunWith(MockitoJUnitRunner.class)
 public class AccessTokenProcessingFilterTests {
-	@Mock
-	private ConsumerDetails consumerDetails;
-	@Mock
-	private OAuthProviderTokenServices tokenServices;
-	@Mock
-	private OAuthAccessProviderToken token;
+    @Mock
+    private ConsumerDetails consumerDetails;
+    @Mock
+    private OAuthProviderTokenServices tokenServices;
+    @Mock
+    private OAuthAccessProviderToken token;
 
-	/**
-	 * tests creating the oauth token.
-	 */
-	@Test
-	public void testCreateOAuthToken() throws Exception {
-		ConsumerCredentials creds = new ConsumerCredentials("key", "sig", "meth", "base", "tok");
-		when(consumerDetails.getAuthorities()).thenReturn(new ArrayList<GrantedAuthority>());
+    /**
+     * tests creating the oauth token.
+     */
+    @Test
+    public void testCreateOAuthToken() throws Exception {
+        ConsumerCredentials creds = new ConsumerCredentials("key", "sig", "meth", "base", "tok");
+        when(consumerDetails.getAuthorities()).thenReturn(new ArrayList<GrantedAuthority>());
 
-		AccessTokenProcessingFilter filter = new AccessTokenProcessingFilter();
-		filter.setTokenServices(tokenServices);
+        AccessTokenProcessingFilter filter = new AccessTokenProcessingFilter();
+        filter.setTokenServices(tokenServices);
 
-		when(tokenServices.createAccessToken("tok")).thenReturn(token);
-		ConsumerAuthentication authentication = new ConsumerAuthentication(consumerDetails, creds);
-		assertSame(token, filter.createOAuthToken(authentication));
-	}
+        when(tokenServices.createAccessToken("tok")).thenReturn(token);
+        ConsumerAuthentication authentication = new ConsumerAuthentication(consumerDetails, creds);
+        assertSame(token, filter.createOAuthToken(authentication));
+    }
 
-	/**
-	 * tests the logic on a new timestamp.
-	 */
-	@Test
-	public void testOnNewTimestamp() throws Exception {
-		try {
-			new AccessTokenProcessingFilter().onNewTimestamp();
-			fail();
-		} catch (InvalidOAuthParametersException e) {
-			// fall through
-		}
-	}
+    /**
+     * tests the logic on a new timestamp.
+     */
+    @Test
+    public void testOnNewTimestamp() throws Exception {
+        try {
+            new AccessTokenProcessingFilter().onNewTimestamp();
+            fail();
+        } catch (InvalidOAuthParametersException e) {
+            // fall through
+        }
+    }
 
 }

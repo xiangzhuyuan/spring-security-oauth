@@ -4,15 +4,15 @@ import org.junit.Before;
 
 public class InMemoryAuthorizationCodeServicesTests extends AuthorizationCodeServicesBaseTests {
 
-	private InMemoryAuthorizationCodeServices authorizationCodeServices;
+    private InMemoryAuthorizationCodeServices authorizationCodeServices;
 
-	@Before
-	public void setUp() throws Exception {
-		authorizationCodeServices = new InMemoryAuthorizationCodeServices();
-	}
+    @Before
+    public void setUp() throws Exception {
+        authorizationCodeServices = new InMemoryAuthorizationCodeServices();
+    }
 
-	@Override
-	AuthorizationCodeServices getAuthorizationCodeServices() {
-		return authorizationCodeServices;
-	}
+    @Override
+    AuthorizationCodeServices getAuthorizationCodeServices() {
+        return authorizationCodeServices;
+    }
 }

@@ -12,11 +12,6 @@
  */
 package org.springframework.security.oauth.config;
 
-import java.io.IOException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.ResourceLoaderAware;
@@ -28,86 +23,86 @@ import org.springframework.security.oauth.common.signature.SignatureSecret;
 import org.springframework.security.oauth.provider.BaseConsumerDetails;
 import org.springframework.security.oauth.provider.ConsumerDetails;
 
+import java.io.IOException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+
 /**
  * @author Dave Syer
- * 
  */
 public class ConsumerDetailsFactoryBean implements FactoryBean<ConsumerDetails>, ResourceLoaderAware {
 
-	private Object typeOfSecret;
-	private BaseConsumerDetails consumer = new BaseConsumerDetails();
-	private String secret;
-	private ResourceLoader resourceLoader;
-	
-	public void setResourceLoader(ResourceLoader resourceLoader) {
-		this.resourceLoader = resourceLoader;
-	}
-	
-	public void setSecret(String secret) {
-		this.secret = secret;
-	}
+    private Object typeOfSecret;
+    private BaseConsumerDetails consumer = new BaseConsumerDetails();
+    private String secret;
+    private ResourceLoader resourceLoader;
 
-	public void setConsumerKey(String consumerKey) {
-		consumer.setConsumerKey(consumerKey);
-	}
+    public void setResourceLoader(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
 
-	public void setConsumerName(String consumerName) {
-		consumer.setConsumerName(consumerName);
-	}
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
 
-	public void setSignatureSecret(SignatureSecret signatureSecret) {
-		consumer.setSignatureSecret(signatureSecret);
-	}
+    public void setConsumerKey(String consumerKey) {
+        consumer.setConsumerKey(consumerKey);
+    }
 
-	public void setAuthorities(String authorities) {
-		consumer.setAuthorities(AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
-	}
+    public void setConsumerName(String consumerName) {
+        consumer.setConsumerName(consumerName);
+    }
 
-	public void setResourceName(String resourceName) {
-		consumer.setResourceName(resourceName);
-	}
+    public void setSignatureSecret(SignatureSecret signatureSecret) {
+        consumer.setSignatureSecret(signatureSecret);
+    }
 
-	public void setResourceDescription(String resourceDescription) {
-		consumer.setResourceDescription(resourceDescription);
-	}
+    public void setAuthorities(String authorities) {
+        consumer.setAuthorities(AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
+    }
 
-	public void setRequiredToObtainAuthenticatedToken(boolean requiredToObtainAuthenticatedToken) {
-		consumer.setRequiredToObtainAuthenticatedToken(requiredToObtainAuthenticatedToken);
-	}
+    public void setResourceName(String resourceName) {
+        consumer.setResourceName(resourceName);
+    }
 
-	public void setTypeOfSecret(Object typeOfSecret) {
-		this.typeOfSecret = typeOfSecret;
-	}
+    public void setResourceDescription(String resourceDescription) {
+        consumer.setResourceDescription(resourceDescription);
+    }
 
-	public ConsumerDetails getObject() throws Exception {
-		if ("rsa-cert".equals(typeOfSecret)) {
-			try {
-				Certificate cert = CertificateFactory.getInstance("X.509").generateCertificate(resourceLoader.getResource(secret).getInputStream());
-				consumer.setSignatureSecret(new RSAKeySecret(cert.getPublicKey()));
-			}
-			catch (IOException e) {
-				throw new BeanCreationException("RSA certificate not found at " + secret + ".",
-						e);
-			}
-			catch (CertificateException e) {
-				throw new BeanCreationException("Invalid RSA certificate at " + secret + ".", e);
-			}
-			catch (NullPointerException e) {
-				throw new BeanCreationException("Could not load RSA certificate at " + secret + ".", e);
-			}
-		}
-		else {
-			consumer.setSignatureSecret(new SharedConsumerSecretImpl(secret));
-		}
-		return consumer;
-	}
+    public void setRequiredToObtainAuthenticatedToken(boolean requiredToObtainAuthenticatedToken) {
+        consumer.setRequiredToObtainAuthenticatedToken(requiredToObtainAuthenticatedToken);
+    }
 
-	public Class<?> getObjectType() {
-		return BaseConsumerDetails.class;
-	}
+    public void setTypeOfSecret(Object typeOfSecret) {
+        this.typeOfSecret = typeOfSecret;
+    }
 
-	public boolean isSingleton() {
-		return true;
-	}
+    public ConsumerDetails getObject() throws Exception {
+        if ("rsa-cert".equals(typeOfSecret)) {
+            try {
+                Certificate cert = CertificateFactory.getInstance("X.509").generateCertificate(resourceLoader.getResource(secret).getInputStream());
+                consumer.setSignatureSecret(new RSAKeySecret(cert.getPublicKey()));
+            } catch (IOException e) {
+                throw new BeanCreationException("RSA certificate not found at " + secret + ".",
+                        e);
+            } catch (CertificateException e) {
+                throw new BeanCreationException("Invalid RSA certificate at " + secret + ".", e);
+            } catch (NullPointerException e) {
+                throw new BeanCreationException("Could not load RSA certificate at " + secret + ".", e);
+            }
+        } else {
+            consumer.setSignatureSecret(new SharedConsumerSecretImpl(secret));
+        }
+        return consumer;
+    }
+
+    public Class<?> getObjectType() {
+        return BaseConsumerDetails.class;
+    }
+
+    public boolean isSingleton() {
+        return true;
+    }
 
 }

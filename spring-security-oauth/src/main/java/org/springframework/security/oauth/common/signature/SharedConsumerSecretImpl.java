@@ -24,14 +24,14 @@ package org.springframework.security.oauth.common.signature;
 @SuppressWarnings("serial")
 public class SharedConsumerSecretImpl implements SharedConsumerSecret {
 
-  private final String consumerSecret;
+    private final String consumerSecret;
 
-  public SharedConsumerSecretImpl(String consumerSecret) {
-    this.consumerSecret = consumerSecret;
-  }
+    public SharedConsumerSecretImpl(String consumerSecret) {
+        this.consumerSecret = consumerSecret;
+    }
 
-  public String getConsumerSecret() {
-    return consumerSecret;
-  }
+    public String getConsumerSecret() {
+        return consumerSecret;
+    }
 
 }

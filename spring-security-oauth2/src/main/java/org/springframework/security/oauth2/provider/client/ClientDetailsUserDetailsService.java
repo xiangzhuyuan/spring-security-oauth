@@ -23,36 +23,35 @@ import org.springframework.security.oauth2.provider.NoSuchClientException;
 
 /**
  * @author Dave Syer
- * 
  */
 public class ClientDetailsUserDetailsService implements UserDetailsService {
 
-	private final ClientDetailsService clientDetailsService;
-	private String emptyPassword = "";
-	
-	public ClientDetailsUserDetailsService(ClientDetailsService clientDetailsService) {
-		this.clientDetailsService = clientDetailsService;
-	}
-	
-	/**
-	 * @param passwordEncoder the password encoder to set
-	 */
-	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-		this.emptyPassword = passwordEncoder.encode("");
-	}
+    private final ClientDetailsService clientDetailsService;
+    private String emptyPassword = "";
 
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		ClientDetails clientDetails;
-		try {
-			clientDetails = clientDetailsService.loadClientByClientId(username);
-		} catch (NoSuchClientException e) {
-			throw new UsernameNotFoundException(e.getMessage(), e);
-		}
-		String clientSecret = clientDetails.getClientSecret();
-		if (clientSecret== null || clientSecret.trim().length()==0) {
-			clientSecret = emptyPassword;
-		}
-		return new User(username, clientSecret, clientDetails.getAuthorities());
-	}
+    public ClientDetailsUserDetailsService(ClientDetailsService clientDetailsService) {
+        this.clientDetailsService = clientDetailsService;
+    }
+
+    /**
+     * @param passwordEncoder the password encoder to set
+     */
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.emptyPassword = passwordEncoder.encode("");
+    }
+
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        ClientDetails clientDetails;
+        try {
+            clientDetails = clientDetailsService.loadClientByClientId(username);
+        } catch (NoSuchClientException e) {
+            throw new UsernameNotFoundException(e.getMessage(), e);
+        }
+        String clientSecret = clientDetails.getClientSecret();
+        if (clientSecret == null || clientSecret.trim().length() == 0) {
+            clientSecret = emptyPassword;
+        }
+        return new User(username, clientSecret, clientDetails.getAuthorities());
+    }
 
 }

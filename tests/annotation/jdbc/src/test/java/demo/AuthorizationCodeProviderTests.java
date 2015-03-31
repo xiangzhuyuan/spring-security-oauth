@@ -12,12 +12,11 @@
  */
 package demo;
 
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import sparklr.common.AbstractAuthorizationCodeProviderTests;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import org.springframework.boot.test.SpringApplicationConfiguration;
-
-import sparklr.common.AbstractAuthorizationCodeProviderTests;
 
 /**
  * @author Dave Syer
@@ -25,17 +24,17 @@ import sparklr.common.AbstractAuthorizationCodeProviderTests;
 @SpringApplicationConfiguration(classes = Application.class)
 public class AuthorizationCodeProviderTests extends AbstractAuthorizationCodeProviderTests {
 
-	protected String getPassword() {
-		return "secret";
-	}
+    protected String getPassword() {
+        return "secret";
+    }
 
-	protected String getUsername() {
-		return "dave";
-	}
+    protected String getUsername() {
+        return "dave";
+    }
 
-	protected void verifyAuthorizationPage(String page) {
-		assertTrue(page.contains("action='/oauth/authorize'"));
-		assertTrue(page.contains("<input name='user_oauth_approval'"));
-		assertFalse(page.contains("type='radio")); // no approval store
-	}
+    protected void verifyAuthorizationPage(String page) {
+        assertTrue(page.contains("action='/oauth/authorize'"));
+        assertTrue(page.contains("<input name='user_oauth_approval'"));
+        assertFalse(page.contains("type='radio")); // no approval store
+    }
 }

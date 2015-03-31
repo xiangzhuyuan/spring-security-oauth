@@ -24,16 +24,16 @@ import org.springframework.security.oauth.provider.ConsumerDetails;
  */
 public interface OAuthNonceServices {
 
-  /**
-   * Validate a nonce for a specific consumer timestamp. This is an opportunity to prevent replay attacks.  Every nonce
-   * should be unique for each consumer timestamp. In other words, this method should throw a BadCredentialsException
-   * if the specified nonce was used by the consumer more than once with the specified timestamp.
-   *
-   * @param consumerDetails The consumer details.
-   * @param timestamp The timestamp.
-   * @param nonce The nonce.
-   * @throws org.springframework.security.core.AuthenticationException If the nonce failed to validate.
-   */
-  void validateNonce(ConsumerDetails consumerDetails, long timestamp, String nonce) throws AuthenticationException;
-  
+    /**
+     * Validate a nonce for a specific consumer timestamp. This is an opportunity to prevent replay attacks.  Every nonce
+     * should be unique for each consumer timestamp. In other words, this method should throw a BadCredentialsException
+     * if the specified nonce was used by the consumer more than once with the specified timestamp.
+     *
+     * @param consumerDetails The consumer details.
+     * @param timestamp       The timestamp.
+     * @param nonce           The nonce.
+     * @throws org.springframework.security.core.AuthenticationException If the nonce failed to validate.
+     */
+    void validateNonce(ConsumerDetails consumerDetails, long timestamp, String nonce) throws AuthenticationException;
+
 }

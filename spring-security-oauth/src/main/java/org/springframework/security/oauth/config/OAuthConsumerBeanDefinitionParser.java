@@ -40,73 +40,72 @@ import java.util.List;
  */
 public class OAuthConsumerBeanDefinitionParser implements BeanDefinitionParser {
 
-  public BeanDefinition parse(Element element, ParserContext parserContext) {
-    BeanDefinitionBuilder consumerContextFilterBean = BeanDefinitionBuilder.rootBeanDefinition(OAuthConsumerContextFilter.class);
+    public BeanDefinition parse(Element element, ParserContext parserContext) {
+        BeanDefinitionBuilder consumerContextFilterBean = BeanDefinitionBuilder.rootBeanDefinition(OAuthConsumerContextFilter.class);
 
-    String failureHandlerRef = element.getAttribute("failure-handler-ref");
-    if (StringUtils.hasText(failureHandlerRef)) {
-      consumerContextFilterBean.addPropertyReference("OAuthFailureHandler", failureHandlerRef);
+        String failureHandlerRef = element.getAttribute("failure-handler-ref");
+        if (StringUtils.hasText(failureHandlerRef)) {
+            consumerContextFilterBean.addPropertyReference("OAuthFailureHandler", failureHandlerRef);
+        } else {
+            String failurePage = element.getAttribute("oauth-failure-page");
+            if (StringUtils.hasText(failurePage)) {
+                AccessDeniedHandlerImpl failureHandler = new AccessDeniedHandlerImpl();
+                failureHandler.setErrorPage(failurePage);
+                consumerContextFilterBean.addPropertyValue("OAuthFailureHandler", failureHandler);
+            }
+        }
+
+        String resourceDetailsRef = element.getAttribute("resource-details-service-ref");
+        String supportRef = element.getAttribute("support-ref");
+        if (!StringUtils.hasText(supportRef)) {
+            BeanDefinitionBuilder consumerSupportBean = BeanDefinitionBuilder.rootBeanDefinition(CoreOAuthConsumerSupport.class);
+
+            if (StringUtils.hasText(resourceDetailsRef)) {
+                consumerSupportBean.addPropertyReference("protectedResourceDetailsService", resourceDetailsRef);
+            }
+            parserContext.getRegistry().registerBeanDefinition("oauthConsumerSupport", consumerSupportBean.getBeanDefinition());
+            supportRef = "oauthConsumerSupport";
+        }
+        consumerContextFilterBean.addPropertyReference("consumerSupport", supportRef);
+
+        String tokenServicesFactoryRef = element.getAttribute("token-services-ref");
+        if (StringUtils.hasText(tokenServicesFactoryRef)) {
+            consumerContextFilterBean.addPropertyReference("tokenServices", tokenServicesFactoryRef);
+        }
+
+        String rememberMeServicesRef = element.getAttribute("remember-me-services-ref");
+        if (StringUtils.hasText(rememberMeServicesRef)) {
+            consumerContextFilterBean.addPropertyReference("rememberMeServices", rememberMeServicesRef);
+        }
+
+        String redirectStrategyRef = element.getAttribute("redirect-strategy-ref");
+        if (StringUtils.hasText(redirectStrategyRef)) {
+            consumerContextFilterBean.addPropertyReference("redirectStrategy", redirectStrategyRef);
+        }
+
+        parserContext.getRegistry().registerBeanDefinition("oauthConsumerContextFilter", consumerContextFilterBean.getBeanDefinition());
+        List<BeanMetadataElement> filterChain = ConfigUtils.findFilterChain(parserContext, element.getAttribute("filter-chain-ref"));
+        filterChain.add(filterChain.size(), new RuntimeBeanReference("oauthConsumerContextFilter"));
+
+        BeanDefinition fids = ConfigUtils.createSecurityMetadataSource(element, parserContext);
+        if (fids != null) {
+            BeanDefinitionBuilder consumerAccessFilterBean = BeanDefinitionBuilder.rootBeanDefinition(OAuthConsumerProcessingFilter.class);
+
+            if (StringUtils.hasText(resourceDetailsRef)) {
+                consumerAccessFilterBean.addPropertyReference("protectedResourceDetailsService", resourceDetailsRef);
+            }
+
+            String requireAuthenticated = element.getAttribute("requireAuthenticated");
+            if (StringUtils.hasText(requireAuthenticated)) {
+                consumerAccessFilterBean.addPropertyValue("requireAuthenticated", requireAuthenticated);
+            }
+
+            consumerAccessFilterBean.addPropertyValue("objectDefinitionSource", fids);
+            parserContext.getRegistry().registerBeanDefinition("oauthConsumerFilter", consumerAccessFilterBean.getBeanDefinition());
+            filterChain.add(filterChain.size(), new RuntimeBeanReference("oauthConsumerFilter"));
+        }
+
+        return null;
     }
-    else {
-      String failurePage = element.getAttribute("oauth-failure-page");
-      if (StringUtils.hasText(failurePage)) {
-        AccessDeniedHandlerImpl failureHandler = new AccessDeniedHandlerImpl();
-        failureHandler.setErrorPage(failurePage);
-        consumerContextFilterBean.addPropertyValue("OAuthFailureHandler", failureHandler);
-      }
-    }
-
-    String resourceDetailsRef = element.getAttribute("resource-details-service-ref");
-    String supportRef = element.getAttribute("support-ref");
-    if (!StringUtils.hasText(supportRef)) {
-      BeanDefinitionBuilder consumerSupportBean = BeanDefinitionBuilder.rootBeanDefinition(CoreOAuthConsumerSupport.class);
-
-      if (StringUtils.hasText(resourceDetailsRef)) {
-        consumerSupportBean.addPropertyReference("protectedResourceDetailsService", resourceDetailsRef);
-      }
-      parserContext.getRegistry().registerBeanDefinition("oauthConsumerSupport", consumerSupportBean.getBeanDefinition());
-      supportRef = "oauthConsumerSupport";
-    }
-    consumerContextFilterBean.addPropertyReference("consumerSupport", supportRef);
-
-    String tokenServicesFactoryRef = element.getAttribute("token-services-ref");
-    if (StringUtils.hasText(tokenServicesFactoryRef)) {
-      consumerContextFilterBean.addPropertyReference("tokenServices", tokenServicesFactoryRef);
-    }
-
-    String rememberMeServicesRef = element.getAttribute("remember-me-services-ref");
-    if (StringUtils.hasText(rememberMeServicesRef)) {
-      consumerContextFilterBean.addPropertyReference("rememberMeServices", rememberMeServicesRef);
-    }
-
-    String redirectStrategyRef = element.getAttribute("redirect-strategy-ref");
-    if (StringUtils.hasText(redirectStrategyRef)) {
-      consumerContextFilterBean.addPropertyReference("redirectStrategy", redirectStrategyRef);
-    }
-
-    parserContext.getRegistry().registerBeanDefinition("oauthConsumerContextFilter", consumerContextFilterBean.getBeanDefinition());
-    List<BeanMetadataElement> filterChain = ConfigUtils.findFilterChain(parserContext, element.getAttribute("filter-chain-ref"));
-    filterChain.add(filterChain.size(), new RuntimeBeanReference("oauthConsumerContextFilter"));
-
-    BeanDefinition fids = ConfigUtils.createSecurityMetadataSource(element, parserContext);
-    if (fids != null) {
-      BeanDefinitionBuilder consumerAccessFilterBean = BeanDefinitionBuilder.rootBeanDefinition(OAuthConsumerProcessingFilter.class);
-
-      if (StringUtils.hasText(resourceDetailsRef)) {
-        consumerAccessFilterBean.addPropertyReference("protectedResourceDetailsService", resourceDetailsRef);
-      }
-
-      String requireAuthenticated = element.getAttribute("requireAuthenticated");
-      if (StringUtils.hasText(requireAuthenticated)) {
-        consumerAccessFilterBean.addPropertyValue("requireAuthenticated", requireAuthenticated);
-      }
-
-      consumerAccessFilterBean.addPropertyValue("objectDefinitionSource", fids);
-      parserContext.getRegistry().registerBeanDefinition("oauthConsumerFilter", consumerAccessFilterBean.getBeanDefinition());
-      filterChain.add(filterChain.size(), new RuntimeBeanReference("oauthConsumerFilter"));
-    }
-
-    return null;
-  }
 
 }

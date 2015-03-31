@@ -13,8 +13,6 @@
 
 package org.springframework.security.oauth2.provider.client;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -25,43 +23,44 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author Dave Syer
- * 
  */
 public class ClientCredentialsTokenEndpointFilterTests {
 
-	private ClientCredentialsTokenEndpointFilter filter = new ClientCredentialsTokenEndpointFilter();
-	private AuthenticationManager authenticationManager = Mockito
-			.mock(AuthenticationManager.class);
+    private ClientCredentialsTokenEndpointFilter filter = new ClientCredentialsTokenEndpointFilter();
+    private AuthenticationManager authenticationManager = Mockito
+            .mock(AuthenticationManager.class);
 
-	@Test(expected=IllegalArgumentException.class)
-	public void testAuthenticationManagerNeeded() {
-		new ClientCredentialsTokenEndpointFilter().afterPropertiesSet();
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void testAuthenticationManagerNeeded() {
+        new ClientCredentialsTokenEndpointFilter().afterPropertiesSet();
+    }
 
-	@Test(expected = BadCredentialsException.class)
-	public void testFailedAuthentication() throws Exception {
-		filter.setAuthenticationManager(authenticationManager);
-		filter.afterPropertiesSet();
-		filter.attemptAuthentication(new MockHttpServletRequest(),
-				new MockHttpServletResponse());
-	}
+    @Test(expected = BadCredentialsException.class)
+    public void testFailedAuthentication() throws Exception {
+        filter.setAuthenticationManager(authenticationManager);
+        filter.afterPropertiesSet();
+        filter.attemptAuthentication(new MockHttpServletRequest(),
+                new MockHttpServletResponse());
+    }
 
-	@Test
-	public void testAuthentication() throws Exception {
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addParameter("client_id", "foo");
-		filter.setAuthenticationManager(authenticationManager);
-		filter.afterPropertiesSet();
-		Authentication authentication = new UsernamePasswordAuthenticationToken(
-				"foo", "",
-				AuthorityUtils.commaSeparatedStringToAuthorityList("CLIENT"));
-		Mockito.when(
-				authenticationManager.authenticate(Mockito
-						.any(Authentication.class))).thenReturn(authentication);
-		assertEquals(authentication, filter.attemptAuthentication(request,
-				new MockHttpServletResponse()));
-	}
+    @Test
+    public void testAuthentication() throws Exception {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addParameter("client_id", "foo");
+        filter.setAuthenticationManager(authenticationManager);
+        filter.afterPropertiesSet();
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                "foo", "",
+                AuthorityUtils.commaSeparatedStringToAuthorityList("CLIENT"));
+        Mockito.when(
+                authenticationManager.authenticate(Mockito
+                        .any(Authentication.class))).thenReturn(authentication);
+        assertEquals(authentication, filter.attemptAuthentication(request,
+                new MockHttpServletResponse()));
+    }
 
 }

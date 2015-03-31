@@ -12,17 +12,10 @@
  */
 package org.springframework.security.oauth2.config.annotation;
 
-import javax.annotation.Resource;
-
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.context.annotation.*;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestOperations;
@@ -41,54 +34,55 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import javax.annotation.Resource;
+
 /**
  * @author Dave Syer
- * 
  */
 public class ClientConfigurationTests {
 
-	@Test
-	public void testAuthCodeRedirect() throws Exception {
-		AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-		context.setServletContext(new MockServletContext());
-		context.register(ClientContext.class);
-		context.refresh();
-		MockMvc mvc = MockMvcBuilders.webAppContextSetup(context).addFilters(new OAuth2ClientContextFilter()).build();
-		mvc.perform(MockMvcRequestBuilders.get("/photos"))
-				.andExpect(MockMvcResultMatchers.status().isFound())
-				.andExpect(
-						MockMvcResultMatchers.header().string("Location",
-								CoreMatchers.startsWith("http://example.com/authorize")));
-		context.close();
-	}
+    @Test
+    public void testAuthCodeRedirect() throws Exception {
+        AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+        context.setServletContext(new MockServletContext());
+        context.register(ClientContext.class);
+        context.refresh();
+        MockMvc mvc = MockMvcBuilders.webAppContextSetup(context).addFilters(new OAuth2ClientContextFilter()).build();
+        mvc.perform(MockMvcRequestBuilders.get("/photos"))
+                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andExpect(
+                        MockMvcResultMatchers.header().string("Location",
+                                CoreMatchers.startsWith("http://example.com/authorize")));
+        context.close();
+    }
 
-	@Controller
-	@Configuration
-	@EnableWebMvc
-	@Import(OAuth2ClientConfiguration.class)
-	protected static class ClientContext {
+    @Controller
+    @Configuration
+    @EnableWebMvc
+    @Import(OAuth2ClientConfiguration.class)
+    protected static class ClientContext {
 
-		@Resource
-		@Qualifier("accessTokenRequest")
-		private AccessTokenRequest accessTokenRequest;
+        @Resource
+        @Qualifier("accessTokenRequest")
+        private AccessTokenRequest accessTokenRequest;
 
-		@RequestMapping("/photos")
-		@ResponseBody
-		public String photos() {
-			return restTemplate().getForObject("http://example.com/photos", String.class);
-		}
+        @RequestMapping("/photos")
+        @ResponseBody
+        public String photos() {
+            return restTemplate().getForObject("http://example.com/photos", String.class);
+        }
 
-		@Bean
-		@Lazy
-		@Scope(value = "session", proxyMode = ScopedProxyMode.INTERFACES)
-		public OAuth2RestOperations restTemplate() {
-			AuthorizationCodeResourceDetails resource = new AuthorizationCodeResourceDetails();
-			resource.setClientId("client");
-			resource.setAccessTokenUri("http://example.com/token");
-			resource.setUserAuthorizationUri("http://example.com/authorize");
-			return new OAuth2RestTemplate(resource, new DefaultOAuth2ClientContext(accessTokenRequest));
-		}
+        @Bean
+        @Lazy
+        @Scope(value = "session", proxyMode = ScopedProxyMode.INTERFACES)
+        public OAuth2RestOperations restTemplate() {
+            AuthorizationCodeResourceDetails resource = new AuthorizationCodeResourceDetails();
+            resource.setClientId("client");
+            resource.setAccessTokenUri("http://example.com/token");
+            resource.setUserAuthorizationUri("http://example.com/authorize");
+            return new OAuth2RestTemplate(resource, new DefaultOAuth2ClientContext(accessTokenRequest));
+        }
 
-	}
+    }
 
 }

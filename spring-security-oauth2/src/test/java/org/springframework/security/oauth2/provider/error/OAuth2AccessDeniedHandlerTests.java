@@ -12,35 +12,34 @@
  */
 package org.springframework.security.oauth2.provider.error;
 
-import static org.junit.Assert.assertEquals;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.access.AccessDeniedException;
 
+import javax.servlet.http.HttpServletResponse;
+
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author Dave Syer
- * 
  */
 public class OAuth2AccessDeniedHandlerTests {
 
-	private OAuth2AccessDeniedHandler handler = new OAuth2AccessDeniedHandler();
+    private OAuth2AccessDeniedHandler handler = new OAuth2AccessDeniedHandler();
 
-	private MockHttpServletRequest request = new MockHttpServletRequest();
+    private MockHttpServletRequest request = new MockHttpServletRequest();
 
-	private MockHttpServletResponse response = new MockHttpServletResponse();
+    private MockHttpServletResponse response = new MockHttpServletResponse();
 
-	@Test
-	public void testHandleWithJson() throws Exception {
-		request.addHeader("Accept", MediaType.APPLICATION_JSON_VALUE);
-		handler.handle(request, response, new AccessDeniedException("Bad"));
-		assertEquals(HttpServletResponse.SC_FORBIDDEN, response.getStatus());
-		assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
-		assertEquals(null, response.getErrorMessage());
-	}
+    @Test
+    public void testHandleWithJson() throws Exception {
+        request.addHeader("Accept", MediaType.APPLICATION_JSON_VALUE);
+        handler.handle(request, response, new AccessDeniedException("Bad"));
+        assertEquals(HttpServletResponse.SC_FORBIDDEN, response.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+        assertEquals(null, response.getErrorMessage());
+    }
 
 }

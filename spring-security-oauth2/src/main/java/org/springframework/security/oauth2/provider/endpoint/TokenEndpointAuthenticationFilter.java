@@ -16,20 +16,6 @@
 
 package org.springframework.security.oauth2.provider.endpoint;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
@@ -50,6 +36,14 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * <p>
  * An optional authentication filter for the {@link TokenEndpoint}. It sits downstream of another filter (usually
@@ -59,168 +53,166 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
  * the authenticated user. In a vanilla password grant this <b>isn't</b> normally necessary because the token granter
  * will also authenticate the user.
  * </p>
- * 
+ * <p/>
  * <p>
  * If this filter is used the Spring Security context will contain an OAuth2Authentication encapsulating (as the
  * authorization request) the form parameters coming into the filter and the client id from the already authenticated
  * client authentication, and the authenticated user token extracted from the request and validated using the
  * authentication manager.
  * </p>
- * 
+ *
  * @author Dave Syer
- * 
  */
 public class TokenEndpointAuthenticationFilter implements Filter {
 
-	private static final Log logger = LogFactory.getLog(TokenEndpointAuthenticationFilter.class);
+    private static final Log logger = LogFactory.getLog(TokenEndpointAuthenticationFilter.class);
 
-	private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
+    private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
 
-	private AuthenticationEntryPoint authenticationEntryPoint = new OAuth2AuthenticationEntryPoint();
+    private AuthenticationEntryPoint authenticationEntryPoint = new OAuth2AuthenticationEntryPoint();
 
-	private final AuthenticationManager authenticationManager;
-	
-	private final OAuth2RequestFactory oAuth2RequestFactory;
+    private final AuthenticationManager authenticationManager;
 
-	/**
-	 * @param authenticationManager an AuthenticationManager for the incoming request
-	 */
-	public TokenEndpointAuthenticationFilter(AuthenticationManager authenticationManager, OAuth2RequestFactory oAuth2RequestFactory) {
-		super();
-		this.authenticationManager = authenticationManager;
-		this.oAuth2RequestFactory = oAuth2RequestFactory;
-	}
+    private final OAuth2RequestFactory oAuth2RequestFactory;
 
-	/**
-	 * An authentication entry point that can handle unsuccessful authentication. Defaults to an
-	 * {@link OAuth2AuthenticationEntryPoint}.
-	 * 
-	 * @param authenticationEntryPoint the authenticationEntryPoint to set
-	 */
-	public void setAuthenticationEntryPoint(AuthenticationEntryPoint authenticationEntryPoint) {
-		this.authenticationEntryPoint = authenticationEntryPoint;
-	}
+    /**
+     * @param authenticationManager an AuthenticationManager for the incoming request
+     */
+    public TokenEndpointAuthenticationFilter(AuthenticationManager authenticationManager, OAuth2RequestFactory oAuth2RequestFactory) {
+        super();
+        this.authenticationManager = authenticationManager;
+        this.oAuth2RequestFactory = oAuth2RequestFactory;
+    }
 
-	/**
-	 * A source of authentication details for requests that result in authentication.
-	 * 
-	 * @param authenticationDetailsSource the authenticationDetailsSource to set
-	 */
-	public void setAuthenticationDetailsSource(
-			AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource) {
-		this.authenticationDetailsSource = authenticationDetailsSource;
-	}
+    /**
+     * An authentication entry point that can handle unsuccessful authentication. Defaults to an
+     * {@link OAuth2AuthenticationEntryPoint}.
+     *
+     * @param authenticationEntryPoint the authenticationEntryPoint to set
+     */
+    public void setAuthenticationEntryPoint(AuthenticationEntryPoint authenticationEntryPoint) {
+        this.authenticationEntryPoint = authenticationEntryPoint;
+    }
 
-	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException,
-			ServletException {
+    /**
+     * A source of authentication details for requests that result in authentication.
+     *
+     * @param authenticationDetailsSource the authenticationDetailsSource to set
+     */
+    public void setAuthenticationDetailsSource(
+            AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource) {
+        this.authenticationDetailsSource = authenticationDetailsSource;
+    }
 
-		final boolean debug = logger.isDebugEnabled();
-		final HttpServletRequest request = (HttpServletRequest) req;
-		final HttpServletResponse response = (HttpServletResponse) res;
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException,
+            ServletException {
 
-		try {
-			Authentication credentials = extractCredentials(request);
+        final boolean debug = logger.isDebugEnabled();
+        final HttpServletRequest request = (HttpServletRequest) req;
+        final HttpServletResponse response = (HttpServletResponse) res;
 
-			if (credentials != null) {
+        try {
+            Authentication credentials = extractCredentials(request);
 
-				if (debug) {
-					logger.debug("Authentication credentials found for '" + credentials.getName() + "'");
-				}
+            if (credentials != null) {
 
-				Authentication authResult = authenticationManager.authenticate(credentials);
+                if (debug) {
+                    logger.debug("Authentication credentials found for '" + credentials.getName() + "'");
+                }
 
-				if (debug) {
-					logger.debug("Authentication success: " + authResult.getName());
-				}
+                Authentication authResult = authenticationManager.authenticate(credentials);
 
-				Authentication clientAuth = SecurityContextHolder.getContext().getAuthentication();
-				if (clientAuth == null) {
-					throw new BadCredentialsException(
-							"No client authentication found. Remember to put a filter upstream of the TokenEndpointAuthenticationFilter.");
-				}
-				
-				Map<String, String> map = getSingleValueMap(request);
-				map.put(OAuth2Utils.CLIENT_ID, clientAuth.getName());
-				AuthorizationRequest authorizationRequest = oAuth2RequestFactory.createAuthorizationRequest(map);
+                if (debug) {
+                    logger.debug("Authentication success: " + authResult.getName());
+                }
 
-				authorizationRequest.setScope(getScope(request));
-				if (clientAuth.isAuthenticated()) {
-					// Ensure the OAuth2Authentication is authenticated
-					authorizationRequest.setApproved(true);
-				}
+                Authentication clientAuth = SecurityContextHolder.getContext().getAuthentication();
+                if (clientAuth == null) {
+                    throw new BadCredentialsException(
+                            "No client authentication found. Remember to put a filter upstream of the TokenEndpointAuthenticationFilter.");
+                }
 
-				OAuth2Request storedOAuth2Request = oAuth2RequestFactory.createOAuth2Request(authorizationRequest);
-				
-				SecurityContextHolder.getContext().setAuthentication(
-						new OAuth2Authentication(storedOAuth2Request, authResult));
+                Map<String, String> map = getSingleValueMap(request);
+                map.put(OAuth2Utils.CLIENT_ID, clientAuth.getName());
+                AuthorizationRequest authorizationRequest = oAuth2RequestFactory.createAuthorizationRequest(map);
 
-				onSuccessfulAuthentication(request, response, authResult);
+                authorizationRequest.setScope(getScope(request));
+                if (clientAuth.isAuthenticated()) {
+                    // Ensure the OAuth2Authentication is authenticated
+                    authorizationRequest.setApproved(true);
+                }
 
-			}
+                OAuth2Request storedOAuth2Request = oAuth2RequestFactory.createOAuth2Request(authorizationRequest);
 
-		}
-		catch (AuthenticationException failed) {
-			SecurityContextHolder.clearContext();
+                SecurityContextHolder.getContext().setAuthentication(
+                        new OAuth2Authentication(storedOAuth2Request, authResult));
 
-			if (debug) {
-				logger.debug("Authentication request for failed: " + failed);
-			}
+                onSuccessfulAuthentication(request, response, authResult);
 
-			onUnsuccessfulAuthentication(request, response, failed);
+            }
 
-			authenticationEntryPoint.commence(request, response, failed);
+        } catch (AuthenticationException failed) {
+            SecurityContextHolder.clearContext();
 
-			return;
-		}
+            if (debug) {
+                logger.debug("Authentication request for failed: " + failed);
+            }
 
-		chain.doFilter(request, response);
-	}
+            onUnsuccessfulAuthentication(request, response, failed);
 
-	private Map<String, String> getSingleValueMap(HttpServletRequest request) {
-		Map<String, String> map = new HashMap<String, String>();
-		Map<String, String[]> parameters = request.getParameterMap();
-		for (String key : parameters.keySet()) {
-			String[] values = parameters.get(key);
-			map.put(key, values != null && values.length > 0 ? values[0] : null);
-		}
-		return map;
-	}
+            authenticationEntryPoint.commence(request, response, failed);
 
-	protected void onSuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-			Authentication authResult) throws IOException {
-	}
+            return;
+        }
 
-	protected void onUnsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-			AuthenticationException failed) throws IOException {
-	}
+        chain.doFilter(request, response);
+    }
 
-	/**
-	 * If the incoming request contains user credentials in headers or parameters then extract them here into an
-	 * Authentication token that can be validated later. This implementation only recognises password grant requests and
-	 * extracts the username and password.
-	 * 
-	 * @param request the incoming request, possibly with user credentials
-	 * @return an authentication for validation (or null if there is no further authentication)
-	 */
-	protected Authentication extractCredentials(HttpServletRequest request) {
-		String grantType = request.getParameter("grant_type");
-		if (grantType != null && grantType.equals("password")) {
-			UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(
-					request.getParameter("username"), request.getParameter("password"));
-			result.setDetails(authenticationDetailsSource.buildDetails(request));
-			return result;
-		}
-		return null;
-	}
+    private Map<String, String> getSingleValueMap(HttpServletRequest request) {
+        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String[]> parameters = request.getParameterMap();
+        for (String key : parameters.keySet()) {
+            String[] values = parameters.get(key);
+            map.put(key, values != null && values.length > 0 ? values[0] : null);
+        }
+        return map;
+    }
 
-	private Set<String> getScope(HttpServletRequest request) {
-		return OAuth2Utils.parseParameterList(request.getParameter("scope"));
-	}
-	
-	public void init(FilterConfig filterConfig) throws ServletException {
-	}
+    protected void onSuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                              Authentication authResult) throws IOException {
+    }
 
-	public void destroy() {
-	}
+    protected void onUnsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                                AuthenticationException failed) throws IOException {
+    }
+
+    /**
+     * If the incoming request contains user credentials in headers or parameters then extract them here into an
+     * Authentication token that can be validated later. This implementation only recognises password grant requests and
+     * extracts the username and password.
+     *
+     * @param request the incoming request, possibly with user credentials
+     * @return an authentication for validation (or null if there is no further authentication)
+     */
+    protected Authentication extractCredentials(HttpServletRequest request) {
+        String grantType = request.getParameter("grant_type");
+        if (grantType != null && grantType.equals("password")) {
+            UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(
+                    request.getParameter("username"), request.getParameter("password"));
+            result.setDetails(authenticationDetailsSource.buildDetails(request));
+            return result;
+        }
+        return null;
+    }
+
+    private Set<String> getScope(HttpServletRequest request) {
+        return OAuth2Utils.parseParameterList(request.getParameter("scope"));
+    }
+
+    public void init(FilterConfig filterConfig) throws ServletException {
+    }
+
+    public void destroy() {
+    }
 
 }

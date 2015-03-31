@@ -31,58 +31,58 @@ import java.util.concurrent.TimeUnit;
  */
 public class InMemorySelfCleaningProviderTokenServices extends InMemoryProviderTokenServices implements DisposableBean {
 
-  private ScheduledExecutorService scheduler;
-  private Integer cleanupIntervalSeconds;
+    private ScheduledExecutorService scheduler;
+    private Integer cleanupIntervalSeconds;
 
-  @Override
-  public void afterPropertiesSet() throws Exception {
-    super.afterPropertiesSet();
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
 
-    if (cleanupIntervalSeconds == null) {
-      cleanupIntervalSeconds = 60 * 60;
-    }
-
-    if (cleanupIntervalSeconds > 0) {
-      scheduler = Executors.newSingleThreadScheduledExecutor();
-      Runnable cleanupLogic = new Runnable() {
-        public void run() {
-          Iterator<Map.Entry<String, OAuthProviderTokenImpl>> entriesIt = tokenStore.entrySet().iterator();
-          while (entriesIt.hasNext()) {
-            Map.Entry<String, OAuthProviderTokenImpl> entry = entriesIt.next();
-            OAuthProviderTokenImpl tokenImpl = entry.getValue();
-            if (isExpired(tokenImpl)) {
-              //there's a race condition here, but we'll live with it for now.
-              entriesIt.remove();
-              onTokenRemoved(tokenImpl);
-            }
-          }
+        if (cleanupIntervalSeconds == null) {
+            cleanupIntervalSeconds = 60 * 60;
         }
-      };
-      scheduler.scheduleAtFixedRate(cleanupLogic, getAccessTokenValiditySeconds(), cleanupIntervalSeconds, TimeUnit.SECONDS);
+
+        if (cleanupIntervalSeconds > 0) {
+            scheduler = Executors.newSingleThreadScheduledExecutor();
+            Runnable cleanupLogic = new Runnable() {
+                public void run() {
+                    Iterator<Map.Entry<String, OAuthProviderTokenImpl>> entriesIt = tokenStore.entrySet().iterator();
+                    while (entriesIt.hasNext()) {
+                        Map.Entry<String, OAuthProviderTokenImpl> entry = entriesIt.next();
+                        OAuthProviderTokenImpl tokenImpl = entry.getValue();
+                        if (isExpired(tokenImpl)) {
+                            //there's a race condition here, but we'll live with it for now.
+                            entriesIt.remove();
+                            onTokenRemoved(tokenImpl);
+                        }
+                    }
+                }
+            };
+            scheduler.scheduleAtFixedRate(cleanupLogic, getAccessTokenValiditySeconds(), cleanupIntervalSeconds, TimeUnit.SECONDS);
+        }
     }
-  }
 
-  public void destroy() throws Exception {
-    if (scheduler != null) {
-      scheduler.shutdownNow();
+    public void destroy() throws Exception {
+        if (scheduler != null) {
+            scheduler.shutdownNow();
+        }
     }
-  }
 
-  /**
-   * The interval at which to schedule cleanup. (&lt;= 0 for never).
-   *
-   * @return The interval at which to schedule cleanup.
-   */
-  public Integer getCleanupIntervalSeconds() {
-    return cleanupIntervalSeconds;
-  }
+    /**
+     * The interval at which to schedule cleanup. (&lt;= 0 for never).
+     *
+     * @return The interval at which to schedule cleanup.
+     */
+    public Integer getCleanupIntervalSeconds() {
+        return cleanupIntervalSeconds;
+    }
 
-  /**
-   * The interval at which to schedule cleanup.
-   *
-   * @param cleanupIntervalSeconds The interval at which to schedule cleanup.
-   */
-  public void setCleanupIntervalSeconds(Integer cleanupIntervalSeconds) {
-    this.cleanupIntervalSeconds = cleanupIntervalSeconds;
-  }
+    /**
+     * The interval at which to schedule cleanup.
+     *
+     * @param cleanupIntervalSeconds The interval at which to schedule cleanup.
+     */
+    public void setCleanupIntervalSeconds(Integer cleanupIntervalSeconds) {
+        this.cleanupIntervalSeconds = cleanupIntervalSeconds;
+    }
 }

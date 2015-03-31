@@ -23,13 +23,13 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  */
 public class OAuthSecurityNamespaceHandler extends NamespaceHandlerSupport {
 
-  public void init() {
-    registerBeanDefinitionParser("provider", new OAuthProviderBeanDefinitionParser());
-    registerBeanDefinitionParser("consumer-details-service", new ConsumerServiceBeanDefinitionParser());
-    registerBeanDefinitionParser("token-services", new TokenServiceBeanDefinitionParser());
-    registerBeanDefinitionParser("verifier-services", new VerifierServiceBeanDefinitionParser());
-    registerBeanDefinitionParser("consumer", new OAuthConsumerBeanDefinitionParser());
-    registerBeanDefinitionParser("resource-details-service", new ProtectedResourceDetailsBeanDefinitionParser());
-    registerBeanDefinitionParser("expression-handler", new ExpressionHandlerBeanDefinitionParser());
-  }
+    public void init() {
+        registerBeanDefinitionParser("provider", new OAuthProviderBeanDefinitionParser());
+        registerBeanDefinitionParser("consumer-details-service", new ConsumerServiceBeanDefinitionParser());
+        registerBeanDefinitionParser("token-services", new TokenServiceBeanDefinitionParser());
+        registerBeanDefinitionParser("verifier-services", new VerifierServiceBeanDefinitionParser());
+        registerBeanDefinitionParser("consumer", new OAuthConsumerBeanDefinitionParser());
+        registerBeanDefinitionParser("resource-details-service", new ProtectedResourceDetailsBeanDefinitionParser());
+        registerBeanDefinitionParser("expression-handler", new ExpressionHandlerBeanDefinitionParser());
+    }
 }

@@ -16,14 +16,13 @@ import org.springframework.web.client.RestOperations;
 
 /**
  * Marker interface for an object that has a getter and setter for a {@link RestTemplate}.
- * 
+ *
  * @author Dave Syer
- * 
  */
 public interface RestTemplateHolder {
 
-	void setRestTemplate(RestOperations restTemplate);
+    void setRestTemplate(RestOperations restTemplate);
 
-	RestOperations getRestTemplate();
+    RestOperations getRestTemplate();
 
 }

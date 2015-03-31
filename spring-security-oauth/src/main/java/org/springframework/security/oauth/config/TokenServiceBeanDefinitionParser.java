@@ -28,21 +28,20 @@ import org.w3c.dom.Element;
  */
 public class TokenServiceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
-  @Override
-  protected Class getBeanClass(Element element) {
-    return InMemoryProviderTokenServices.class;
-  }
-
-  @Override
-  protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
-    String cleanup = element.getAttribute("cleanupInterval");
-    if (StringUtils.hasText(cleanup)) {
-      try {
-        builder.addPropertyValue("cleanupIntervalSeconds", Integer.parseInt(cleanup));
-      }
-      catch (NumberFormatException e) {
-        parserContext.getReaderContext().error("Invalid value " + cleanup + " for attribute cleanupIntervalSeconds.", element);
-      }
+    @Override
+    protected Class getBeanClass(Element element) {
+        return InMemoryProviderTokenServices.class;
     }
-  }
+
+    @Override
+    protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
+        String cleanup = element.getAttribute("cleanupInterval");
+        if (StringUtils.hasText(cleanup)) {
+            try {
+                builder.addPropertyValue("cleanupIntervalSeconds", Integer.parseInt(cleanup));
+            } catch (NumberFormatException e) {
+                parserContext.getReaderContext().error("Invalid value " + cleanup + " for attribute cleanupIntervalSeconds.", element);
+            }
+        }
+    }
 }

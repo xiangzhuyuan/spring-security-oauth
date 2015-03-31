@@ -23,23 +23,23 @@ package org.springframework.security.oauth.common;
  */
 public enum OAuthProviderParameter {
 
-  /**
-   * The oauth token.
-   */
-  oauth_token,
+    /**
+     * The oauth token.
+     */
+    oauth_token,
 
-  /**
-   * The oauth token secret.
-   */
-  oauth_token_secret,
+    /**
+     * The oauth token secret.
+     */
+    oauth_token_secret,
 
-  /**
-   * Confirmation of the OAuth callback.
-   */
-  oauth_callback_confirmed,
+    /**
+     * Confirmation of the OAuth callback.
+     */
+    oauth_callback_confirmed,
 
-  /**
-   * Verifier
-   */
-  oauth_verifier
+    /**
+     * Verifier
+     */
+    oauth_verifier
 }

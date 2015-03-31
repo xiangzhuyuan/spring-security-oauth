@@ -19,15 +19,14 @@ import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResour
 
 /**
  * @author Dave Syer
- *
  */
 public interface ClientKeyGenerator {
 
-	/**
-	 * @param resource a protected resource declaration
-	 * @param authentication a user Authentication (possibly null)
-	 * @return a unique key identifying an access token for this pair
-	 */
-	String extractKey(OAuth2ProtectedResourceDetails resource, Authentication authentication);
+    /**
+     * @param resource       a protected resource declaration
+     * @param authentication a user Authentication (possibly null)
+     * @return a unique key identifying an access token for this pair
+     */
+    String extractKey(OAuth2ProtectedResourceDetails resource, Authentication authentication);
 
 }

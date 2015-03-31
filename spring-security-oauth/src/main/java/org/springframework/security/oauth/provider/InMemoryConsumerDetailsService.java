@@ -28,21 +28,21 @@ import java.util.Map;
  */
 public class InMemoryConsumerDetailsService implements ConsumerDetailsService {
 
-  private Map<String, ? extends ConsumerDetails> consumerDetailsStore = new HashMap<String, ConsumerDetails>();
+    private Map<String, ? extends ConsumerDetails> consumerDetailsStore = new HashMap<String, ConsumerDetails>();
 
-  public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
-    ConsumerDetails details = consumerDetailsStore.get(consumerKey);
-    if (details == null) {
-      throw new InvalidOAuthParametersException("Consumer not found: " + consumerKey);
+    public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
+        ConsumerDetails details = consumerDetailsStore.get(consumerKey);
+        if (details == null) {
+            throw new InvalidOAuthParametersException("Consumer not found: " + consumerKey);
+        }
+        return details;
     }
-    return details;
-  }
 
-  public Map<String, ? extends ConsumerDetails> getConsumerDetailsStore() {
-    return consumerDetailsStore;
-  }
+    public Map<String, ? extends ConsumerDetails> getConsumerDetailsStore() {
+        return consumerDetailsStore;
+    }
 
-  public void setConsumerDetailsStore(Map<String, ? extends ConsumerDetails> consumerDetailsStore) {
-    this.consumerDetailsStore = consumerDetailsStore;
-  }
+    public void setConsumerDetailsStore(Map<String, ? extends ConsumerDetails> consumerDetailsStore) {
+        this.consumerDetailsStore = consumerDetailsStore;
+    }
 }

@@ -14,33 +14,32 @@
 
 package org.springframework.security.oauth2.provider.endpoint;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.oauth2.common.exceptions.InvalidClientException;
 import org.springframework.web.servlet.ModelAndView;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * @author Dave Syer
- *
  */
 public class WhitelabelErrorEndpointTests {
-	
-	private WhitelabelErrorEndpoint endpoint = new WhitelabelErrorEndpoint();
-	private MockHttpServletRequest request = new MockHttpServletRequest();
-	private MockHttpServletResponse response = new MockHttpServletResponse();
 
-	@Test
-	public void testErrorPage() throws Exception {
-		request.setContextPath("/foo");
-		request.setAttribute("error", new InvalidClientException("FOO"));
-		ModelAndView result = endpoint.handleError(request);
-		result.getView().render(result.getModel(), request , response);
-		String content = response.getContentAsString();
-		assertTrue("Wrong content: " + content, content.contains("OAuth Error"));
-		assertTrue("Wrong content: " + content, content.contains("invalid_client"));
-	}
+    private WhitelabelErrorEndpoint endpoint = new WhitelabelErrorEndpoint();
+    private MockHttpServletRequest request = new MockHttpServletRequest();
+    private MockHttpServletResponse response = new MockHttpServletResponse();
+
+    @Test
+    public void testErrorPage() throws Exception {
+        request.setContextPath("/foo");
+        request.setAttribute("error", new InvalidClientException("FOO"));
+        ModelAndView result = endpoint.handleError(request);
+        result.getView().render(result.getModel(), request, response);
+        String content = response.getContentAsString();
+        assertTrue("Wrong content: " + content, content.contains("OAuth Error"));
+        assertTrue("Wrong content: " + content, content.contains("invalid_client"));
+    }
 
 }

@@ -41,106 +41,106 @@ import java.util.Map;
  */
 public class UnauthenticatedRequestTokenProcessingFilter extends OAuthProviderProcessingFilter {
 
-  // The OAuth spec doesn't specify a content-type of the response.  However, it's NOT
-  // "application/x-www-form-urlencoded" because the response isn't URL-encoded. Until
-  // something is specified, we'll assume that it's just "text/plain".
-  private String responseContentType = "text/plain;charset=utf-8";
+    // The OAuth spec doesn't specify a content-type of the response.  However, it's NOT
+    // "application/x-www-form-urlencoded" because the response isn't URL-encoded. Until
+    // something is specified, we'll assume that it's just "text/plain".
+    private String responseContentType = "text/plain;charset=utf-8";
 
-  private boolean require10a = true;
+    private boolean require10a = true;
 
-  public UnauthenticatedRequestTokenProcessingFilter() {
-    setFilterProcessesUrl("/oauth_request_token");
-  }
-
-  @Override
-  protected void validateAdditionalParameters(ConsumerDetails consumerDetails, Map<String, String> oauthParams) {
-    super.validateAdditionalParameters(consumerDetails, oauthParams);
-
-    if (isRequire10a()) {
-      String token = oauthParams.get(OAuthConsumerParameter.oauth_callback.toString());
-      if (token == null) {
-        throw new InvalidOAuthParametersException(messages.getMessage("AccessTokenProcessingFilter.missingCallback", "Missing callback."));
-      }
-    }
-  }
-
-  protected void onValidSignature(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException {
-    //signature is verified; create the token, send the response.
-    ConsumerAuthentication authentication = (ConsumerAuthentication) SecurityContextHolder.getContext().getAuthentication();
-    OAuthProviderToken authToken = createOAuthToken(authentication);
-    if (!authToken.getConsumerKey().equals(authentication.getConsumerDetails().getConsumerKey())) {
-      throw new IllegalStateException("The consumer key associated with the created auth token is not valid for the authenticated consumer.");
+    public UnauthenticatedRequestTokenProcessingFilter() {
+        setFilterProcessesUrl("/oauth_request_token");
     }
 
-    String tokenValue = authToken.getValue();
-    String callback = authentication.getOAuthParameters().get(OAuthConsumerParameter.oauth_callback.toString());
+    @Override
+    protected void validateAdditionalParameters(ConsumerDetails consumerDetails, Map<String, String> oauthParams) {
+        super.validateAdditionalParameters(consumerDetails, oauthParams);
 
-    StringBuilder responseValue = new StringBuilder(OAuthProviderParameter.oauth_token.toString())
-      .append('=')
-      .append(OAuthCodec.oauthEncode(tokenValue))
-      .append('&')
-      .append(OAuthProviderParameter.oauth_token_secret.toString())
-      .append('=')
-      .append(OAuthCodec.oauthEncode(authToken.getSecret()));
-    if (callback != null) {
-      responseValue.append('&')
-        .append(OAuthProviderParameter.oauth_callback_confirmed.toString())
-        .append("=true");
+        if (isRequire10a()) {
+            String token = oauthParams.get(OAuthConsumerParameter.oauth_callback.toString());
+            if (token == null) {
+                throw new InvalidOAuthParametersException(messages.getMessage("AccessTokenProcessingFilter.missingCallback", "Missing callback."));
+            }
+        }
     }
-    response.setContentType(getResponseContentType());
-    response.getWriter().print(responseValue.toString());
-    response.flushBuffer();
-  }
 
-  @Override
-  protected void onNewTimestamp() throws AuthenticationException {
-    //no-op. A new timestamp should be supplied for a request for a new unauthenticated request token.
-  }
+    protected void onValidSignature(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException {
+        //signature is verified; create the token, send the response.
+        ConsumerAuthentication authentication = (ConsumerAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        OAuthProviderToken authToken = createOAuthToken(authentication);
+        if (!authToken.getConsumerKey().equals(authentication.getConsumerDetails().getConsumerKey())) {
+            throw new IllegalStateException("The consumer key associated with the created auth token is not valid for the authenticated consumer.");
+        }
 
-  /**
-   * Create the OAuth token for the specified consumer key.
-   *
-   * @param authentication The authentication request.
-   * @return The OAuth token.
-   */
-  protected OAuthProviderToken createOAuthToken(ConsumerAuthentication authentication) {
-    return getTokenServices().createUnauthorizedRequestToken(authentication.getConsumerDetails().getConsumerKey(),
-                                                             authentication.getOAuthParameters().get(OAuthConsumerParameter.oauth_callback.toString()));
-  }
+        String tokenValue = authToken.getValue();
+        String callback = authentication.getOAuthParameters().get(OAuthConsumerParameter.oauth_callback.toString());
 
-  /**
-   * The content type of the response.
-   *
-   * @return The content type of the response.
-   */
-  public String getResponseContentType() {
-    return responseContentType;
-  }
+        StringBuilder responseValue = new StringBuilder(OAuthProviderParameter.oauth_token.toString())
+                .append('=')
+                .append(OAuthCodec.oauthEncode(tokenValue))
+                .append('&')
+                .append(OAuthProviderParameter.oauth_token_secret.toString())
+                .append('=')
+                .append(OAuthCodec.oauthEncode(authToken.getSecret()));
+        if (callback != null) {
+            responseValue.append('&')
+                    .append(OAuthProviderParameter.oauth_callback_confirmed.toString())
+                    .append("=true");
+        }
+        response.setContentType(getResponseContentType());
+        response.getWriter().print(responseValue.toString());
+        response.flushBuffer();
+    }
 
-  /**
-   * The content type of the response.
-   *
-   * @param responseContentType The content type of the response.
-   */
-  public void setResponseContentType(String responseContentType) {
-    this.responseContentType = responseContentType;
-  }
+    @Override
+    protected void onNewTimestamp() throws AuthenticationException {
+        //no-op. A new timestamp should be supplied for a request for a new unauthenticated request token.
+    }
 
-  /**
-   * Whether to require 1.0a support.
-   *
-   * @return Whether to require 1.0a support.
-   */
-  public boolean isRequire10a() {
-    return require10a;
-  }
+    /**
+     * Create the OAuth token for the specified consumer key.
+     *
+     * @param authentication The authentication request.
+     * @return The OAuth token.
+     */
+    protected OAuthProviderToken createOAuthToken(ConsumerAuthentication authentication) {
+        return getTokenServices().createUnauthorizedRequestToken(authentication.getConsumerDetails().getConsumerKey(),
+                authentication.getOAuthParameters().get(OAuthConsumerParameter.oauth_callback.toString()));
+    }
 
-  /**
-   * Whether to require 1.0a support.
-   *
-   * @param require10a Whether to require 1.0a support.
-   */
-  public void setRequire10a(boolean require10a) {
-    this.require10a = require10a;
-  }
+    /**
+     * The content type of the response.
+     *
+     * @return The content type of the response.
+     */
+    public String getResponseContentType() {
+        return responseContentType;
+    }
+
+    /**
+     * The content type of the response.
+     *
+     * @param responseContentType The content type of the response.
+     */
+    public void setResponseContentType(String responseContentType) {
+        this.responseContentType = responseContentType;
+    }
+
+    /**
+     * Whether to require 1.0a support.
+     *
+     * @return Whether to require 1.0a support.
+     */
+    public boolean isRequire10a() {
+        return require10a;
+    }
+
+    /**
+     * Whether to require 1.0a support.
+     *
+     * @param require10a Whether to require 1.0a support.
+     */
+    public void setRequire10a(boolean require10a) {
+        this.require10a = require10a;
+    }
 }

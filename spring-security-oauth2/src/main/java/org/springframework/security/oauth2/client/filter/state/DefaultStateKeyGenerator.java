@@ -17,14 +17,13 @@ import org.springframework.security.oauth2.common.util.RandomValueStringGenerato
 
 /**
  * @author Dave Syer
- *
  */
 public class DefaultStateKeyGenerator implements StateKeyGenerator {
 
-	private RandomValueStringGenerator generator = new RandomValueStringGenerator();
+    private RandomValueStringGenerator generator = new RandomValueStringGenerator();
 
-	public String generateKey(OAuth2ProtectedResourceDetails resource) {
-		return generator.generate();
-	}
+    public String generateKey(OAuth2ProtectedResourceDetails resource) {
+        return generator.generate();
+    }
 
 }

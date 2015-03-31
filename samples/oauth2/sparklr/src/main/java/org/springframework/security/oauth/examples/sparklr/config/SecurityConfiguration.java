@@ -35,24 +35,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
-                 http
-            .authorizeRequests()
+        http
+                .authorizeRequests()
                 .antMatchers("/login.jsp").permitAll()
                 .anyRequest().hasRole("USER")
                 .and()
-            .exceptionHandling()
+                .exceptionHandling()
                 .accessDeniedPage("/login.jsp?authorization_error=true")
                 .and()
-            // TODO: put CSRF protection back into this endpoint
-            .csrf()
+                        // TODO: put CSRF protection back into this endpoint
+                .csrf()
                 .requireCsrfProtectionMatcher(new AntPathRequestMatcher("/oauth/authorize"))
                 .disable()
-            .logout()
-            	.logoutUrl("/logout")
+                .logout()
+                .logoutUrl("/logout")
                 .logoutSuccessUrl("/login.jsp")
                 .and()
-            .formLogin()
-            	.loginProcessingUrl("/login")
+                .formLogin()
+                .loginProcessingUrl("/login")
                 .failureUrl("/login.jsp?authentication_error=true")
                 .loginPage("/login.jsp");
         // @formatter:on

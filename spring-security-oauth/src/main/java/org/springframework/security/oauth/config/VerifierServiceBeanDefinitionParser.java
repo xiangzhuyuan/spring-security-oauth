@@ -28,21 +28,20 @@ import org.w3c.dom.Element;
  */
 public class VerifierServiceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
-  @Override
-  protected Class getBeanClass(Element element) {
-    return RandomValueVerifierServices.class;
-  }
-
-  @Override
-  protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
-    String cleanup = element.getAttribute("verifierLengthBytes");
-    if (StringUtils.hasText(cleanup)) {
-      try {
-        builder.addPropertyValue("verifierLengthBytes", Integer.parseInt(cleanup));
-      }
-      catch (NumberFormatException e) {
-        parserContext.getReaderContext().error("Invalid value " + cleanup + " for attribute verifierLengthBytes.", element);
-      }
+    @Override
+    protected Class getBeanClass(Element element) {
+        return RandomValueVerifierServices.class;
     }
-  }
+
+    @Override
+    protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
+        String cleanup = element.getAttribute("verifierLengthBytes");
+        if (StringUtils.hasText(cleanup)) {
+            try {
+                builder.addPropertyValue("verifierLengthBytes", Integer.parseInt(cleanup));
+            } catch (NumberFormatException e) {
+                parserContext.getReaderContext().error("Invalid value " + cleanup + " for attribute verifierLengthBytes.", element);
+            }
+        }
+    }
 }

@@ -7,13 +7,13 @@ package org.springframework.security.oauth.consumer;
  */
 public class OAuthSecurityContextHolder {
 
-  private static final ThreadLocal<OAuthSecurityContext> CURRENT_CONTEXT = new ThreadLocal<OAuthSecurityContext>();
+    private static final ThreadLocal<OAuthSecurityContext> CURRENT_CONTEXT = new ThreadLocal<OAuthSecurityContext>();
 
-  public static OAuthSecurityContext getContext() {
-    return CURRENT_CONTEXT.get();
-  }
+    public static OAuthSecurityContext getContext() {
+        return CURRENT_CONTEXT.get();
+    }
 
-  public static void setContext(OAuthSecurityContext context) {
-    CURRENT_CONTEXT.set(context);
-  }
+    public static void setContext(OAuthSecurityContext context) {
+        CURRENT_CONTEXT.set(context);
+    }
 }

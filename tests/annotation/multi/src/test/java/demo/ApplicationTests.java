@@ -13,8 +13,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @IntegrationTest("server.port=0")
 public class ApplicationTests {
 
-	@Test
-	public void contextLoads() {
-	}
+    @Test
+    public void contextLoads() {
+    }
 
 }

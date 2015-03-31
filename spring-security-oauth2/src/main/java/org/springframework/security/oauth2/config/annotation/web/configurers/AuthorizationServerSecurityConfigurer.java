@@ -15,8 +15,6 @@
  */
 package org.springframework.security.oauth2.config.annotation.web.configurers;
 
-import java.util.Collections;
-
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
@@ -40,151 +38,151 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.accept.ContentNegotiationStrategy;
 import org.springframework.web.accept.HeaderContentNegotiationStrategy;
 
+import java.util.Collections;
+
 /**
- * 
  * @author Rob Winch
  * @author Dave Syer
  * @since 2.0
  */
 public final class AuthorizationServerSecurityConfigurer extends
-		SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+        SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
-	private AuthenticationEntryPoint authenticationEntryPoint = new OAuth2AuthenticationEntryPoint();
+    private AuthenticationEntryPoint authenticationEntryPoint = new OAuth2AuthenticationEntryPoint();
 
-	private AccessDeniedHandler accessDeniedHandler = new OAuth2AccessDeniedHandler();
+    private AccessDeniedHandler accessDeniedHandler = new OAuth2AccessDeniedHandler();
 
-	private PasswordEncoder passwordEncoder; // for client secrets
+    private PasswordEncoder passwordEncoder; // for client secrets
 
-	private String realm = "oauth2/client";
+    private String realm = "oauth2/client";
 
-	private boolean allowFormAuthenticationForClients = false;
+    private boolean allowFormAuthenticationForClients = false;
 
-	private String tokenKeyAccess = "denyAll()";
+    private String tokenKeyAccess = "denyAll()";
 
-	private String checkTokenAccess = "denyAll()";
+    private String checkTokenAccess = "denyAll()";
 
-	public AuthorizationServerSecurityConfigurer allowFormAuthenticationForClients() {
-		this.allowFormAuthenticationForClients = true;
-		return this;
-	}
+    public AuthorizationServerSecurityConfigurer allowFormAuthenticationForClients() {
+        this.allowFormAuthenticationForClients = true;
+        return this;
+    }
 
-	public AuthorizationServerSecurityConfigurer realm(String realm) {
-		this.realm = realm;
-		return this;
-	}
+    public AuthorizationServerSecurityConfigurer realm(String realm) {
+        this.realm = realm;
+        return this;
+    }
 
-	public AuthorizationServerSecurityConfigurer passwordEncoder(PasswordEncoder passwordEncoder) {
-		this.passwordEncoder = passwordEncoder;
-		return this;
-	}
+    public AuthorizationServerSecurityConfigurer passwordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+        return this;
+    }
 
-	public AuthorizationServerSecurityConfigurer authenticationEntryPoint(
-			AuthenticationEntryPoint authenticationEntryPoint) {
-		this.authenticationEntryPoint = authenticationEntryPoint;
-		return this;
-	}
+    public AuthorizationServerSecurityConfigurer authenticationEntryPoint(
+            AuthenticationEntryPoint authenticationEntryPoint) {
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        return this;
+    }
 
-	public AuthorizationServerSecurityConfigurer accessDeniedHandler(AccessDeniedHandler accessDeniedHandler) {
-		this.accessDeniedHandler = accessDeniedHandler;
-		return this;
-	}
+    public AuthorizationServerSecurityConfigurer accessDeniedHandler(AccessDeniedHandler accessDeniedHandler) {
+        this.accessDeniedHandler = accessDeniedHandler;
+        return this;
+    }
 
-	public AuthorizationServerSecurityConfigurer tokenKeyAccess(String tokenKeyAccess) {
-		this.tokenKeyAccess = tokenKeyAccess;
-		return this;
-	}
+    public AuthorizationServerSecurityConfigurer tokenKeyAccess(String tokenKeyAccess) {
+        this.tokenKeyAccess = tokenKeyAccess;
+        return this;
+    }
 
-	public AuthorizationServerSecurityConfigurer checkTokenAccess(String checkTokenAccess) {
-		this.checkTokenAccess = checkTokenAccess;
-		return this;
-	}
+    public AuthorizationServerSecurityConfigurer checkTokenAccess(String checkTokenAccess) {
+        this.checkTokenAccess = checkTokenAccess;
+        return this;
+    }
 
-	public String getTokenKeyAccess() {
-		return tokenKeyAccess;
-	}
+    public String getTokenKeyAccess() {
+        return tokenKeyAccess;
+    }
 
-	public String getCheckTokenAccess() {
-		return checkTokenAccess;
-	}
+    public String getCheckTokenAccess() {
+        return checkTokenAccess;
+    }
 
-	@Override
-	public void init(HttpSecurity http) throws Exception {
-		registerDefaultAuthenticationEntryPoint(http);
-		if (passwordEncoder != null) {
-			http.getSharedObject(AuthenticationManagerBuilder.class)
-					.userDetailsService(new ClientDetailsUserDetailsService(clientDetailsService()))
-					.passwordEncoder(passwordEncoder());
-		}
-		else {
-			http.userDetailsService(new ClientDetailsUserDetailsService(clientDetailsService()));
-		}
-		http.securityContext().securityContextRepository(new NullSecurityContextRepository()).and().csrf().disable()
-				.httpBasic().realmName(realm);
-	}
+    @Override
+    public void init(HttpSecurity http) throws Exception {
+        registerDefaultAuthenticationEntryPoint(http);
+        if (passwordEncoder != null) {
+            http.getSharedObject(AuthenticationManagerBuilder.class)
+                    .userDetailsService(new ClientDetailsUserDetailsService(clientDetailsService()))
+                    .passwordEncoder(passwordEncoder());
+        } else {
+            http.userDetailsService(new ClientDetailsUserDetailsService(clientDetailsService()));
+        }
+        http.securityContext().securityContextRepository(new NullSecurityContextRepository()).and().csrf().disable()
+                .httpBasic().realmName(realm);
+    }
 
-	private PasswordEncoder passwordEncoder() {
-		return new PasswordEncoder() {
+    private PasswordEncoder passwordEncoder() {
+        return new PasswordEncoder() {
 
-			@Override
-			public boolean matches(CharSequence rawPassword, String encodedPassword) {
-				return StringUtils.hasText(encodedPassword) ? passwordEncoder.matches(rawPassword, encodedPassword)
-						: true;
-			}
+            @Override
+            public boolean matches(CharSequence rawPassword, String encodedPassword) {
+                return StringUtils.hasText(encodedPassword) ? passwordEncoder.matches(rawPassword, encodedPassword)
+                        : true;
+            }
 
-			@Override
-			public String encode(CharSequence rawPassword) {
-				return passwordEncoder.encode(rawPassword);
-			}
-		};
-	}
+            @Override
+            public String encode(CharSequence rawPassword) {
+                return passwordEncoder.encode(rawPassword);
+            }
+        };
+    }
 
-	@SuppressWarnings("unchecked")
-	private void registerDefaultAuthenticationEntryPoint(HttpSecurity http) {
-		ExceptionHandlingConfigurer<HttpSecurity> exceptionHandling = http
-				.getConfigurer(ExceptionHandlingConfigurer.class);
-		if (exceptionHandling == null) {
-			return;
-		}
-		ContentNegotiationStrategy contentNegotiationStrategy = http.getSharedObject(ContentNegotiationStrategy.class);
-		if (contentNegotiationStrategy == null) {
-			contentNegotiationStrategy = new HeaderContentNegotiationStrategy();
-		}
-		MediaTypeRequestMatcher preferredMatcher = new MediaTypeRequestMatcher(contentNegotiationStrategy,
-				MediaType.APPLICATION_ATOM_XML, MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON,
-				MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_XML, MediaType.MULTIPART_FORM_DATA,
-				MediaType.TEXT_XML);
-		preferredMatcher.setIgnoredMediaTypes(Collections.singleton(MediaType.ALL));
-		exceptionHandling.defaultAuthenticationEntryPointFor(postProcess(authenticationEntryPoint), preferredMatcher);
-	}
+    @SuppressWarnings("unchecked")
+    private void registerDefaultAuthenticationEntryPoint(HttpSecurity http) {
+        ExceptionHandlingConfigurer<HttpSecurity> exceptionHandling = http
+                .getConfigurer(ExceptionHandlingConfigurer.class);
+        if (exceptionHandling == null) {
+            return;
+        }
+        ContentNegotiationStrategy contentNegotiationStrategy = http.getSharedObject(ContentNegotiationStrategy.class);
+        if (contentNegotiationStrategy == null) {
+            contentNegotiationStrategy = new HeaderContentNegotiationStrategy();
+        }
+        MediaTypeRequestMatcher preferredMatcher = new MediaTypeRequestMatcher(contentNegotiationStrategy,
+                MediaType.APPLICATION_ATOM_XML, MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON,
+                MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_XML, MediaType.MULTIPART_FORM_DATA,
+                MediaType.TEXT_XML);
+        preferredMatcher.setIgnoredMediaTypes(Collections.singleton(MediaType.ALL));
+        exceptionHandling.defaultAuthenticationEntryPointFor(postProcess(authenticationEntryPoint), preferredMatcher);
+    }
 
-	@Override
-	public void configure(HttpSecurity http) throws Exception {
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
 
-		// ensure this is initialized
-		frameworkEndpointHandlerMapping();
-		if (allowFormAuthenticationForClients) {
-			clientCredentialsTokenEndpointFilter(http);
-		}
-		http.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
+        // ensure this is initialized
+        frameworkEndpointHandlerMapping();
+        if (allowFormAuthenticationForClients) {
+            clientCredentialsTokenEndpointFilter(http);
+        }
+        http.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
 
-	}
+    }
 
-	private ClientCredentialsTokenEndpointFilter clientCredentialsTokenEndpointFilter(HttpSecurity http) {
-		ClientCredentialsTokenEndpointFilter clientCredentialsTokenEndpointFilter = new ClientCredentialsTokenEndpointFilter(
-				frameworkEndpointHandlerMapping().getServletPath("/oauth/token"));
-		clientCredentialsTokenEndpointFilter
-				.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
-		clientCredentialsTokenEndpointFilter = postProcess(clientCredentialsTokenEndpointFilter);
-		http.addFilterBefore(clientCredentialsTokenEndpointFilter, BasicAuthenticationFilter.class);
-		return clientCredentialsTokenEndpointFilter;
-	}
+    private ClientCredentialsTokenEndpointFilter clientCredentialsTokenEndpointFilter(HttpSecurity http) {
+        ClientCredentialsTokenEndpointFilter clientCredentialsTokenEndpointFilter = new ClientCredentialsTokenEndpointFilter(
+                frameworkEndpointHandlerMapping().getServletPath("/oauth/token"));
+        clientCredentialsTokenEndpointFilter
+                .setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
+        clientCredentialsTokenEndpointFilter = postProcess(clientCredentialsTokenEndpointFilter);
+        http.addFilterBefore(clientCredentialsTokenEndpointFilter, BasicAuthenticationFilter.class);
+        return clientCredentialsTokenEndpointFilter;
+    }
 
-	private ClientDetailsService clientDetailsService() {
-		return getBuilder().getSharedObject(ClientDetailsService.class);
-	}
+    private ClientDetailsService clientDetailsService() {
+        return getBuilder().getSharedObject(ClientDetailsService.class);
+    }
 
-	private FrameworkEndpointHandlerMapping frameworkEndpointHandlerMapping() {
-		return getBuilder().getSharedObject(FrameworkEndpointHandlerMapping.class);
-	}
+    private FrameworkEndpointHandlerMapping frameworkEndpointHandlerMapping() {
+        return getBuilder().getSharedObject(FrameworkEndpointHandlerMapping.class);
+    }
 
 }

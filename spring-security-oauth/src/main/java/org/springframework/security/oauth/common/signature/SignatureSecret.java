@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 /**
  * Marker interface for OAuth signature secrets.
- * 
+ *
  * @author Ryan Heaton
  * @author Dave Syer
  */

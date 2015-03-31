@@ -25,7 +25,7 @@ import java.util.UUID;
  */
 public class UUIDNonceFactory implements NonceFactory {
 
-  public String generateNonce() {
-    return UUID.randomUUID().toString();
-  }
+    public String generateNonce() {
+        return UUID.randomUUID().toString();
+    }
 }

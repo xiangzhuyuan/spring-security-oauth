@@ -12,40 +12,40 @@
  */
 package org.springframework.security.oauth2.http.converter.jaxb;
 
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
+import org.springframework.security.oauth2.common.DefaultOAuth2RefreshToken;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.common.OAuth2RefreshToken;
+
 import java.util.Date;
 
-import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
-import org.springframework.security.oauth2.common.OAuth2RefreshToken;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.common.DefaultOAuth2RefreshToken;
+public final class JaxbOAuth2AccessTokenMessageConverter extends AbstractJaxbMessageConverter<JaxbOAuth2AccessToken, OAuth2AccessToken> {
 
-public final class JaxbOAuth2AccessTokenMessageConverter extends AbstractJaxbMessageConverter<JaxbOAuth2AccessToken,OAuth2AccessToken> {
+    public JaxbOAuth2AccessTokenMessageConverter() {
+        super(JaxbOAuth2AccessToken.class, OAuth2AccessToken.class);
+    }
 
-	public JaxbOAuth2AccessTokenMessageConverter() {
-		super(JaxbOAuth2AccessToken.class,OAuth2AccessToken.class);
-	}
+    protected JaxbOAuth2AccessToken convertToInternal(OAuth2AccessToken accessToken) {
+        JaxbOAuth2AccessToken jaxbAccessToken = new JaxbOAuth2AccessToken();
+        jaxbAccessToken.setAccessToken(accessToken.getValue());
+        jaxbAccessToken.setExpriation(accessToken.getExpiration());
+        OAuth2RefreshToken refreshToken = accessToken.getRefreshToken();
+        if (refreshToken != null) {
+            jaxbAccessToken.setRefreshToken(refreshToken.getValue());
+        }
+        return jaxbAccessToken;
+    }
 
-	protected JaxbOAuth2AccessToken convertToInternal(OAuth2AccessToken accessToken) {
-		JaxbOAuth2AccessToken jaxbAccessToken = new JaxbOAuth2AccessToken();
-		jaxbAccessToken.setAccessToken(accessToken.getValue());
-		jaxbAccessToken.setExpriation(accessToken.getExpiration());
-		OAuth2RefreshToken refreshToken = accessToken.getRefreshToken();
-		if(refreshToken != null) {
-			jaxbAccessToken.setRefreshToken(refreshToken.getValue());
-		}
-		return jaxbAccessToken;
-	}
-
-	protected OAuth2AccessToken convertToExternal(JaxbOAuth2AccessToken jaxbAccessToken) {
-		DefaultOAuth2AccessToken accessToken = new DefaultOAuth2AccessToken(jaxbAccessToken.getAccessToken());
-		String refreshToken = jaxbAccessToken.getRefreshToken();
-		if(refreshToken != null) {
-			accessToken.setRefreshToken(new DefaultOAuth2RefreshToken(refreshToken));
-		}
-		Date expiration = jaxbAccessToken.getExpiration();
-		if(expiration != null) {
-			accessToken.setExpiration(expiration);
-		}
-		return accessToken;
-	}
+    protected OAuth2AccessToken convertToExternal(JaxbOAuth2AccessToken jaxbAccessToken) {
+        DefaultOAuth2AccessToken accessToken = new DefaultOAuth2AccessToken(jaxbAccessToken.getAccessToken());
+        String refreshToken = jaxbAccessToken.getRefreshToken();
+        if (refreshToken != null) {
+            accessToken.setRefreshToken(new DefaultOAuth2RefreshToken(refreshToken));
+        }
+        Date expiration = jaxbAccessToken.getExpiration();
+        if (expiration != null) {
+            accessToken.setExpiration(expiration);
+        }
+        return accessToken;
+    }
 }

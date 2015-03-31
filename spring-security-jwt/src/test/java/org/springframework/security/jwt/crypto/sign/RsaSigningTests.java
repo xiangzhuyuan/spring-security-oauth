@@ -12,49 +12,49 @@
  */
 package org.springframework.security.jwt.crypto.sign;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Test;
 import org.springframework.security.jwt.codec.Codecs;
 import org.springframework.security.jwt.crypto.cipher.RsaTestKeyData;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Luke Taylor
  */
 public class RsaSigningTests {
 
-	@Test(expected = IllegalArgumentException.class)
-	public void rsaSignerRejectsInvalidKey() throws Exception {
-		RsaSigner signer = new RsaSigner(RsaTestKeyData.SSH_PUBLIC_KEY_STRING);
-		assertNotNull(signer);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void rsaSignerRejectsInvalidKey() throws Exception {
+        RsaSigner signer = new RsaSigner(RsaTestKeyData.SSH_PUBLIC_KEY_STRING);
+        assertNotNull(signer);
+    }
 
-	@Test
-	public void rsaSignerValidKeyWithWhitespace() throws Exception {
-		RsaSigner signer = new RsaSigner(RsaTestKeyData.SSH_PRIVATE_KEY_STRING_WITH_WHITESPACE);
-		assertNotNull(signer);
-	}
+    @Test
+    public void rsaSignerValidKeyWithWhitespace() throws Exception {
+        RsaSigner signer = new RsaSigner(RsaTestKeyData.SSH_PRIVATE_KEY_STRING_WITH_WHITESPACE);
+        assertNotNull(signer);
+    }
 
-	@Test
-	public void keysFromPrivateAndPublicKeyStringDataAreCorrect() throws Exception {
-		// Do a test sign and verify
-		byte[] content = Codecs.utf8Encode("Hi I'm the data");
+    @Test
+    public void keysFromPrivateAndPublicKeyStringDataAreCorrect() throws Exception {
+        // Do a test sign and verify
+        byte[] content = Codecs.utf8Encode("Hi I'm the data");
 
-		RsaSigner signer = new RsaSigner(RsaTestKeyData.SSH_PRIVATE_KEY_STRING);
-		final byte[] signed = signer.sign(content);
-		// First extract the public key from the private key data
-		RsaVerifier verifier = new RsaVerifier(RsaTestKeyData.SSH_PRIVATE_KEY_STRING);
-		verifier.verify(content, signed);
+        RsaSigner signer = new RsaSigner(RsaTestKeyData.SSH_PRIVATE_KEY_STRING);
+        final byte[] signed = signer.sign(content);
+        // First extract the public key from the private key data
+        RsaVerifier verifier = new RsaVerifier(RsaTestKeyData.SSH_PRIVATE_KEY_STRING);
+        verifier.verify(content, signed);
 
-		// Then try with the ssh-rsa public key format
-		verifier = new RsaVerifier(RsaTestKeyData.SSH_PUBLIC_KEY_STRING);
-		verifier.verify(content, signed);
+        // Then try with the ssh-rsa public key format
+        verifier = new RsaVerifier(RsaTestKeyData.SSH_PUBLIC_KEY_STRING);
+        verifier.verify(content, signed);
 
-		// Try with the PEM format public keys
-		verifier = new RsaVerifier(RsaTestKeyData.SSH_PUBLIC_KEY_PEM_STRING);
-		verifier.verify(content, signed);
+        // Try with the PEM format public keys
+        verifier = new RsaVerifier(RsaTestKeyData.SSH_PUBLIC_KEY_PEM_STRING);
+        verifier.verify(content, signed);
 
-		verifier = new RsaVerifier(RsaTestKeyData.SSH_PUBLIC_KEY_OPENSSL_PEM_STRING);
-		verifier.verify(content, signed);
-	}
+        verifier = new RsaVerifier(RsaTestKeyData.SSH_PUBLIC_KEY_OPENSSL_PEM_STRING);
+        verifier.verify(content, signed);
+    }
 }

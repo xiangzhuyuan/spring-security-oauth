@@ -1,8 +1,5 @@
 package client;
 
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -14,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestOperations;
 
+import java.util.List;
+import java.util.Map;
+
 @Configuration
 @EnableAutoConfiguration
 @EnableOAuth2Client
@@ -21,21 +21,21 @@ import org.springframework.web.client.RestOperations;
 @ImportResource("classpath:/context.xml")
 public class ClientApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ClientApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ClientApplication.class, args);
+    }
 
-	@Value("${oauth.resource:http://localhost:8080}")
-	private String baseUrl;
-	
-	@Autowired
-	private RestOperations restTemplate;
+    @Value("${oauth.resource:http://localhost:8080}")
+    private String baseUrl;
 
-	@RequestMapping("/")
-	public List<Map<String,?>> home() {
-		@SuppressWarnings("unchecked")
-		List<Map<String,?>> result = restTemplate.getForObject(baseUrl + "/admin/beans", List.class);
-		return result;
-	}
-	
+    @Autowired
+    private RestOperations restTemplate;
+
+    @RequestMapping("/")
+    public List<Map<String, ?>> home() {
+        @SuppressWarnings("unchecked")
+        List<Map<String, ?>> result = restTemplate.getForObject(baseUrl + "/admin/beans", List.class);
+        return result;
+    }
+
 }

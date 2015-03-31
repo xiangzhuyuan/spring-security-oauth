@@ -20,12 +20,12 @@ import java.beans.PropertyEditorSupport;
 
 /**
  * A signature secret that consists of a consumer secret and a tokent secret.
- * 
+ *
  * @author Ryan Heaton
  */
 public class SignatureSecretEditor extends PropertyEditorSupport {
 
-	public void setAsText(String text) throws IllegalArgumentException {
-		super.setValue(new SharedConsumerSecretImpl(text));
-	}
+    public void setAsText(String text) throws IllegalArgumentException {
+        super.setValue(new SharedConsumerSecretImpl(text));
+    }
 }

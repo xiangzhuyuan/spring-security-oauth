@@ -13,7 +13,6 @@
 package demo;
 
 import org.springframework.boot.test.SpringApplicationConfiguration;
-
 import sparklr.common.AbstractAuthorizationCodeProviderTests;
 
 /**

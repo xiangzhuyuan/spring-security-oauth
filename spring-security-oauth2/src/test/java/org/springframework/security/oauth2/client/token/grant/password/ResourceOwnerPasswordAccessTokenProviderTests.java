@@ -12,8 +12,6 @@
  */
 package org.springframework.security.oauth2.client.token.grant.password;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -26,60 +24,61 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author Dave Syer
- * 
  */
 public class ResourceOwnerPasswordAccessTokenProviderTests {
 
-	@Rule
-	public ExpectedException expected = ExpectedException.none();
+    @Rule
+    public ExpectedException expected = ExpectedException.none();
 
-	private MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+    private MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
 
-	private ResourceOwnerPasswordAccessTokenProvider provider = new ResourceOwnerPasswordAccessTokenProvider() {
-		@Override
-		protected OAuth2AccessToken retrieveToken(AccessTokenRequest request, OAuth2ProtectedResourceDetails resource,
-				MultiValueMap<String, String> form, HttpHeaders headers) {
-			params.putAll(form);
-			if (!form.containsKey("username") || form.getFirst("username")==null) {
-				throw new IllegalArgumentException();
-			}
-			// Only the map parts of the AccessTokenRequest are sent as form values
-			if (form.containsKey("current_uri") || form.containsKey("currentUri")) {
-				throw new IllegalArgumentException();
-			}
-			return new DefaultOAuth2AccessToken("FOO");
-		}
-	};
+    private ResourceOwnerPasswordAccessTokenProvider provider = new ResourceOwnerPasswordAccessTokenProvider() {
+        @Override
+        protected OAuth2AccessToken retrieveToken(AccessTokenRequest request, OAuth2ProtectedResourceDetails resource,
+                                                  MultiValueMap<String, String> form, HttpHeaders headers) {
+            params.putAll(form);
+            if (!form.containsKey("username") || form.getFirst("username") == null) {
+                throw new IllegalArgumentException();
+            }
+            // Only the map parts of the AccessTokenRequest are sent as form values
+            if (form.containsKey("current_uri") || form.containsKey("currentUri")) {
+                throw new IllegalArgumentException();
+            }
+            return new DefaultOAuth2AccessToken("FOO");
+        }
+    };
 
-	private ResourceOwnerPasswordResourceDetails resource = new ResourceOwnerPasswordResourceDetails();
+    private ResourceOwnerPasswordResourceDetails resource = new ResourceOwnerPasswordResourceDetails();
 
-	@Test
-	public void testGetAccessToken() throws Exception {
-		AccessTokenRequest request = new DefaultAccessTokenRequest();
-		resource.setAccessTokenUri("http://localhost/oauth/token");
-		resource.setUsername("foo");
-		resource.setPassword("bar");
-		assertEquals("FOO", provider.obtainAccessToken(resource, request).getValue());
-	}
+    @Test
+    public void testGetAccessToken() throws Exception {
+        AccessTokenRequest request = new DefaultAccessTokenRequest();
+        resource.setAccessTokenUri("http://localhost/oauth/token");
+        resource.setUsername("foo");
+        resource.setPassword("bar");
+        assertEquals("FOO", provider.obtainAccessToken(resource, request).getValue());
+    }
 
-	@Test
-	public void testGetAccessTokenWithDynamicCredentials() throws Exception {
-		AccessTokenRequest request = new DefaultAccessTokenRequest();
-		request.set("username", "foo");
-		request.set("password", "bar");
-		resource.setAccessTokenUri("http://localhost/oauth/token");
-		assertEquals("FOO", provider.obtainAccessToken(resource, request).getValue());
-	}
+    @Test
+    public void testGetAccessTokenWithDynamicCredentials() throws Exception {
+        AccessTokenRequest request = new DefaultAccessTokenRequest();
+        request.set("username", "foo");
+        request.set("password", "bar");
+        resource.setAccessTokenUri("http://localhost/oauth/token");
+        assertEquals("FOO", provider.obtainAccessToken(resource, request).getValue());
+    }
 
-	@Test
-	public void testCurrentUriNotUsed() throws Exception {
-		AccessTokenRequest request = new DefaultAccessTokenRequest();
-		request.set("username", "foo");
-		request.setCurrentUri("urn:foo:bar");
-		resource.setAccessTokenUri("http://localhost/oauth/token");
-		assertEquals("FOO", provider.obtainAccessToken(resource, request).getValue());
-	}
+    @Test
+    public void testCurrentUriNotUsed() throws Exception {
+        AccessTokenRequest request = new DefaultAccessTokenRequest();
+        request.set("username", "foo");
+        request.setCurrentUri("urn:foo:bar");
+        resource.setAccessTokenUri("http://localhost/oauth/token");
+        assertEquals("FOO", provider.obtainAccessToken(resource, request).getValue());
+    }
 
 }

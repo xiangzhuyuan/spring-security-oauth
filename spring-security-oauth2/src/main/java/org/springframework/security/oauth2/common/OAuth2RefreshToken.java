@@ -16,16 +16,15 @@ import org.codehaus.jackson.annotate.JsonValue;
 
 /**
  * @author Dave Syer
- *
  */
 public interface OAuth2RefreshToken {
 
-	/**
-	 * The value of the token.
-	 * 
-	 * @return The value of the token.
-	 */
-	@JsonValue
-	String getValue();
+    /**
+     * The value of the token.
+     *
+     * @return The value of the token.
+     */
+    @JsonValue
+    String getValue();
 
 }

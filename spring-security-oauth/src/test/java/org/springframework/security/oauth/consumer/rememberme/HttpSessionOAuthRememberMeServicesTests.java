@@ -16,9 +16,6 @@
 
 package org.springframework.security.oauth.consumer.rememberme;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -26,111 +23,114 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.oauth.consumer.OAuthConsumerToken;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Alex Rau
  */
 public class HttpSessionOAuthRememberMeServicesTests {
 
-	@Test
-	public void testEmptySession() {
+    @Test
+    public void testEmptySession() {
 
-		MockHttpSession mockHttpSession = new MockHttpSession();
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		MockHttpServletResponse response = new MockHttpServletResponse();
+        MockHttpSession mockHttpSession = new MockHttpSession();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
-		request.setSession(mockHttpSession);
+        request.setSession(mockHttpSession);
 
-		HttpSessionOAuthRememberMeServices oAuthRememberMeService = new HttpSessionOAuthRememberMeServices();
+        HttpSessionOAuthRememberMeServices oAuthRememberMeService = new HttpSessionOAuthRememberMeServices();
 
-		Map<String, OAuthConsumerToken> tokens = oAuthRememberMeService.loadRememberedTokens(request, response);
+        Map<String, OAuthConsumerToken> tokens = oAuthRememberMeService.loadRememberedTokens(request, response);
 
-		Assert.assertNull(tokens);
+        Assert.assertNull(tokens);
 
-	}
+    }
 
-	@Test
-	public void testNoTokensRemembered() {
+    @Test
+    public void testNoTokensRemembered() {
 
-		MockHttpSession mockHttpSession = new MockHttpSession();
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		MockHttpServletResponse response = new MockHttpServletResponse();
+        MockHttpSession mockHttpSession = new MockHttpSession();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
-		request.setSession(mockHttpSession);
+        request.setSession(mockHttpSession);
 
-		HttpSessionOAuthRememberMeServices oAuthRememberMeService = new HttpSessionOAuthRememberMeServices();
+        HttpSessionOAuthRememberMeServices oAuthRememberMeService = new HttpSessionOAuthRememberMeServices();
 
-		Map<String, OAuthConsumerToken> tokens = new HashMap<String, OAuthConsumerToken>();
+        Map<String, OAuthConsumerToken> tokens = new HashMap<String, OAuthConsumerToken>();
 
-		oAuthRememberMeService.rememberTokens(tokens, request, response);
+        oAuthRememberMeService.rememberTokens(tokens, request, response);
 
-		Assert.assertEquals(0, oAuthRememberMeService.loadRememberedTokens(request, response).size());
+        Assert.assertEquals(0, oAuthRememberMeService.loadRememberedTokens(request, response).size());
 
-	}
+    }
 
-	@Test
-	public void testStoreEverything() {
+    @Test
+    public void testStoreEverything() {
 
-		MockHttpSession mockHttpSession = new MockHttpSession();
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		MockHttpServletResponse response = new MockHttpServletResponse();
+        MockHttpSession mockHttpSession = new MockHttpSession();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
-		request.setSession(mockHttpSession);
+        request.setSession(mockHttpSession);
 
-		HttpSessionOAuthRememberMeServices oAuthRememberMeService = new HttpSessionOAuthRememberMeServices();
+        HttpSessionOAuthRememberMeServices oAuthRememberMeService = new HttpSessionOAuthRememberMeServices();
 
-		Map<String, OAuthConsumerToken> tokens = new HashMap<String, OAuthConsumerToken>();
+        Map<String, OAuthConsumerToken> tokens = new HashMap<String, OAuthConsumerToken>();
 
-		{
-			OAuthConsumerToken token = new OAuthConsumerToken();
-			token.setAccessToken(false);
-			tokens.put("resourceID1", token);
-		}
+        {
+            OAuthConsumerToken token = new OAuthConsumerToken();
+            token.setAccessToken(false);
+            tokens.put("resourceID1", token);
+        }
 
-		{
-			OAuthConsumerToken token = new OAuthConsumerToken();
-			token.setAccessToken(true);
-			tokens.put("resourceID2", token);
-		}
+        {
+            OAuthConsumerToken token = new OAuthConsumerToken();
+            token.setAccessToken(true);
+            tokens.put("resourceID2", token);
+        }
 
-		oAuthRememberMeService.rememberTokens(tokens, request, response);
+        oAuthRememberMeService.rememberTokens(tokens, request, response);
 
-		Assert.assertEquals(1, oAuthRememberMeService.loadRememberedTokens(request, response).size());
+        Assert.assertEquals(1, oAuthRememberMeService.loadRememberedTokens(request, response).size());
 
-	}
+    }
 
-	@Test
-	public void testStoreRequestTokensOnly() {
+    @Test
+    public void testStoreRequestTokensOnly() {
 
-		MockHttpSession mockHttpSession = new MockHttpSession();
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		MockHttpServletResponse response = new MockHttpServletResponse();
+        MockHttpSession mockHttpSession = new MockHttpSession();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
-		request.setSession(mockHttpSession);
+        request.setSession(mockHttpSession);
 
-		HttpSessionOAuthRememberMeServices oAuthRememberMeService = new HttpSessionOAuthRememberMeServices();
+        HttpSessionOAuthRememberMeServices oAuthRememberMeService = new HttpSessionOAuthRememberMeServices();
 
-		Map<String, OAuthConsumerToken> tokens = new HashMap<String, OAuthConsumerToken>();
+        Map<String, OAuthConsumerToken> tokens = new HashMap<String, OAuthConsumerToken>();
 
-		{
-			OAuthConsumerToken token = new OAuthConsumerToken();
-			token.setAccessToken(false);
-			tokens.put("resourceID1", token);
-		}
+        {
+            OAuthConsumerToken token = new OAuthConsumerToken();
+            token.setAccessToken(false);
+            tokens.put("resourceID1", token);
+        }
 
-		{
-			OAuthConsumerToken token = new OAuthConsumerToken();
-			token.setAccessToken(true);
-			tokens.put("resourceID2", token);
-		}
+        {
+            OAuthConsumerToken token = new OAuthConsumerToken();
+            token.setAccessToken(true);
+            tokens.put("resourceID2", token);
+        }
 
-		oAuthRememberMeService.rememberTokens(tokens, request, response);
+        oAuthRememberMeService.rememberTokens(tokens, request, response);
 
-		Map<String, OAuthConsumerToken> storedTokens = oAuthRememberMeService.loadRememberedTokens(request, response);
+        Map<String, OAuthConsumerToken> storedTokens = oAuthRememberMeService.loadRememberedTokens(request, response);
 
-		Assert.assertEquals(1, storedTokens.size());
+        Assert.assertEquals(1, storedTokens.size());
 
-		Assert.assertNotNull(storedTokens.get("resourceID1"));
+        Assert.assertNotNull(storedTokens.get("resourceID1"));
 
-	}
+    }
 
 }

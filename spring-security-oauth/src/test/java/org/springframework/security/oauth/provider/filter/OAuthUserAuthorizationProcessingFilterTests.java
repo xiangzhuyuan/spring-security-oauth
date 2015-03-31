@@ -16,15 +16,6 @@
 
 package org.springframework.security.oauth.provider.filter;
 
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.Test;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
@@ -33,51 +24,57 @@ import org.springframework.security.oauth.provider.token.OAuthProviderTokenImpl;
 import org.springframework.security.oauth.provider.token.OAuthProviderTokenServices;
 import org.springframework.security.oauth.provider.verifier.OAuthVerifierServices;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.*;
+
 /**
  * @author Ryan Heaton
  */
 public class OAuthUserAuthorizationProcessingFilterTests {
 
-	/**
-	 * tests the attempt to authenticate.
-	 */
-	@Test
-	public void testAttemptAuthentication() throws Exception {
-		UserAuthorizationProcessingFilter filter = new UserAuthorizationProcessingFilter("/");
-		OAuthVerifierServices vs = mock(OAuthVerifierServices.class);
-		filter.setVerifierServices(vs);
-		HttpServletRequest request = mock(HttpServletRequest.class);
-		HttpServletResponse response = mock(HttpServletResponse.class);
-		Authentication authentication = mock(Authentication.class);
-		OAuthProviderTokenServices tokenServices = mock(OAuthProviderTokenServices.class);
-		filter.setTokenServices(tokenServices);
+    /**
+     * tests the attempt to authenticate.
+     */
+    @Test
+    public void testAttemptAuthentication() throws Exception {
+        UserAuthorizationProcessingFilter filter = new UserAuthorizationProcessingFilter("/");
+        OAuthVerifierServices vs = mock(OAuthVerifierServices.class);
+        filter.setVerifierServices(vs);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        Authentication authentication = mock(Authentication.class);
+        OAuthProviderTokenServices tokenServices = mock(OAuthProviderTokenServices.class);
+        filter.setTokenServices(tokenServices);
 
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		when(request.getParameter("requestToken")).thenReturn("tok");
-		OAuthProviderTokenImpl token = new OAuthProviderTokenImpl();
-		token.setCallbackUrl("callback");
-		when(tokenServices.getToken("tok")).thenReturn(token);
-		when(authentication.isAuthenticated()).thenReturn(false);
-		try {
-			filter.attemptAuthentication(request, response);
-			fail();
-		} catch (InsufficientAuthenticationException e) {
-		}
-		verify(request).setAttribute(UserAuthorizationProcessingFilter.CALLBACK_ATTRIBUTE, "callback");
-		reset(request);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        when(request.getParameter("requestToken")).thenReturn("tok");
+        OAuthProviderTokenImpl token = new OAuthProviderTokenImpl();
+        token.setCallbackUrl("callback");
+        when(tokenServices.getToken("tok")).thenReturn(token);
+        when(authentication.isAuthenticated()).thenReturn(false);
+        try {
+            filter.attemptAuthentication(request, response);
+            fail();
+        } catch (InsufficientAuthenticationException e) {
+        }
+        verify(request).setAttribute(UserAuthorizationProcessingFilter.CALLBACK_ATTRIBUTE, "callback");
+        reset(request);
 
-		when(authentication.isAuthenticated()).thenReturn(true);
-		when(request.getParameter("requestToken")).thenReturn("tok");
-		when(tokenServices.getToken("tok")).thenReturn(token);
-		when(vs.createVerifier()).thenReturn("verifier");
-		tokenServices.authorizeRequestToken("tok", "verifier", authentication);
-		filter.setTokenServices(tokenServices);
+        when(authentication.isAuthenticated()).thenReturn(true);
+        when(request.getParameter("requestToken")).thenReturn("tok");
+        when(tokenServices.getToken("tok")).thenReturn(token);
+        when(vs.createVerifier()).thenReturn("verifier");
+        tokenServices.authorizeRequestToken("tok", "verifier", authentication);
+        filter.setTokenServices(tokenServices);
 
-		filter.attemptAuthentication(request, response);
+        filter.attemptAuthentication(request, response);
 
-		verify(request).setAttribute(UserAuthorizationProcessingFilter.CALLBACK_ATTRIBUTE, "callback");
-		verify(request).setAttribute(UserAuthorizationProcessingFilter.VERIFIER_ATTRIBUTE, "verifier");
-		SecurityContextHolder.getContext().setAuthentication(null);
-	}
+        verify(request).setAttribute(UserAuthorizationProcessingFilter.CALLBACK_ATTRIBUTE, "callback");
+        verify(request).setAttribute(UserAuthorizationProcessingFilter.VERIFIER_ATTRIBUTE, "verifier");
+        SecurityContextHolder.getContext().setAuthentication(null);
+    }
 
 }

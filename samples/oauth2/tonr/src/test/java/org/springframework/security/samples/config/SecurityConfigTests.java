@@ -28,7 +28,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 /**
  * @author Rob Winch
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
@@ -37,11 +36,13 @@ import org.springframework.test.context.web.WebAppConfiguration;
 public class SecurityConfigTests {
     @Configuration
     @ComponentScan(basePackages = "org.springframework.security.oauth.examples.config")
-    public static class Config {}
+    public static class Config {
+    }
 
     @Autowired
     private FilterChainProxy springSecurityFilterChain;
 
     @Test
-    public void securityConfigurationLoads() {}
+    public void securityConfigurationLoads() {
+    }
 }

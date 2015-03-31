@@ -31,28 +31,27 @@ import org.springframework.util.Assert;
  * Note: The implication is that all expressions that are parsed must return a boolean result. This expectation is
  * already true since Spring Security expects the result to be a boolean.
  * </p>
- * 
+ *
  * @author Rob Winch
- * 
  */
 public class OAuth2ExpressionParser implements ExpressionParser {
 
-	private final ExpressionParser delegate;
+    private final ExpressionParser delegate;
 
-	public OAuth2ExpressionParser(ExpressionParser delegate) {
-		Assert.notNull(delegate, "delegate cannot be null");
-		this.delegate = delegate;
-	}
+    public OAuth2ExpressionParser(ExpressionParser delegate) {
+        Assert.notNull(delegate, "delegate cannot be null");
+        this.delegate = delegate;
+    }
 
-	public Expression parseExpression(String expressionString) throws ParseException {
-		return delegate.parseExpression(wrapExpression(expressionString));
-	}
+    public Expression parseExpression(String expressionString) throws ParseException {
+        return delegate.parseExpression(wrapExpression(expressionString));
+    }
 
-	public Expression parseExpression(String expressionString, ParserContext context) throws ParseException {
-		return delegate.parseExpression(wrapExpression(expressionString), context);
-	}
+    public Expression parseExpression(String expressionString, ParserContext context) throws ParseException {
+        return delegate.parseExpression(wrapExpression(expressionString), context);
+    }
 
-	private String wrapExpression(String expressionString) {
-		return "#oauth2.throwOnError(" + expressionString + ")";
-	}
+    private String wrapExpression(String expressionString) {
+        return "#oauth2.throwOnError(" + expressionString + ")";
+    }
 }

@@ -22,8 +22,8 @@ import org.springframework.security.oauth.provider.ConsumerDetails;
 
 /**
  * Nonce services that only validates the timestamp of a consumer request.  The nonce
- * is not checked for replay attacks. 
- *
+ * is not checked for replay attacks.
+ * <p/>
  * The timestamp is interpreted as the number of seconds from January 1, 1970 00:00:00 GMT.  If the timestamp
  * is older than the configured validity window, the nonce is not valid. The default validity window is
  * 12 hours.
@@ -32,30 +32,30 @@ import org.springframework.security.oauth.provider.ConsumerDetails;
  */
 public class ExpiringTimestampNonceServices implements OAuthNonceServices {
 
-  private long validityWindowSeconds = 60 * 60 * 12; //we'll default to a 12-hour validity window.
+    private long validityWindowSeconds = 60 * 60 * 12; //we'll default to a 12-hour validity window.
 
-  public void validateNonce(ConsumerDetails consumerDetails, long timestamp, String nonce) throws AuthenticationException {
-    long nowSeconds = (System.currentTimeMillis() / 1000);
-    if ((nowSeconds - timestamp) > getValidityWindowSeconds()) {
-      throw new CredentialsExpiredException("Expired timestamp.");
+    public void validateNonce(ConsumerDetails consumerDetails, long timestamp, String nonce) throws AuthenticationException {
+        long nowSeconds = (System.currentTimeMillis() / 1000);
+        if ((nowSeconds - timestamp) > getValidityWindowSeconds()) {
+            throw new CredentialsExpiredException("Expired timestamp.");
+        }
     }
-  }
 
-  /**
-   * Set the timestamp validity window (in seconds).
-   *
-   * @return the timestamp validity window (in seconds).
-   */
-  public long getValidityWindowSeconds() {
-    return validityWindowSeconds;
-  }
+    /**
+     * Set the timestamp validity window (in seconds).
+     *
+     * @return the timestamp validity window (in seconds).
+     */
+    public long getValidityWindowSeconds() {
+        return validityWindowSeconds;
+    }
 
-  /**
-   * The timestamp validity window (in seconds).
-   *
-   * @param validityWindowSeconds the timestamp validity window (in seconds).
-   */
-  public void setValidityWindowSeconds(long validityWindowSeconds) {
-    this.validityWindowSeconds = validityWindowSeconds;
-  }
+    /**
+     * The timestamp validity window (in seconds).
+     *
+     * @param validityWindowSeconds the timestamp validity window (in seconds).
+     */
+    public void setValidityWindowSeconds(long validityWindowSeconds) {
+        this.validityWindowSeconds = validityWindowSeconds;
+    }
 }

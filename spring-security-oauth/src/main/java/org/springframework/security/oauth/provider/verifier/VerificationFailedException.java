@@ -23,7 +23,7 @@ import org.springframework.security.oauth.common.OAuthException;
  */
 @SuppressWarnings("serial")
 public class VerificationFailedException extends OAuthException {
-  public VerificationFailedException(String msg) {
-    super(msg);
-  }
+    public VerificationFailedException(String msg) {
+        super(msg);
+    }
 }

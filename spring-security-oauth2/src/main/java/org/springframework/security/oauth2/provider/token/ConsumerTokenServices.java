@@ -15,10 +15,9 @@ package org.springframework.security.oauth2.provider.token;
 
 /**
  * @author Dave Syer
- *
  */
 public interface ConsumerTokenServices {
-	
-	boolean revokeToken(String tokenValue);
+
+    boolean revokeToken(String tokenValue);
 
 }

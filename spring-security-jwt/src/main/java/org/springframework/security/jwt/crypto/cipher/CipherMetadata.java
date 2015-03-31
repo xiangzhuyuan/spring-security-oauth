@@ -18,8 +18,8 @@ import org.springframework.security.jwt.AlgorithmMetadata;
  * @author Luke Taylor
  */
 public interface CipherMetadata extends AlgorithmMetadata {
-	/**
-	 * @return Size of the key in bits.
-	 */
-	int keySize();
+    /**
+     * @return Size of the key in bits.
+     */
+    int keySize();
 }

@@ -22,67 +22,64 @@ import java.util.List;
  */
 public class SparklrServiceImpl implements SparklrService {
 
-  private String sparklrPhotoListURL;
-  private String sparklrPhotoURLPattern;
-  private OAuthRestTemplate sparklrRestTemplate;
+    private String sparklrPhotoListURL;
+    private String sparklrPhotoURLPattern;
+    private OAuthRestTemplate sparklrRestTemplate;
 
-  public List<String> getSparklrPhotoIds() throws SparklrException {
-    try {
-      InputStream photosXML = new ByteArrayInputStream(getSparklrRestTemplate().getForObject(URI.create(getSparklrPhotoListURL()), byte[].class));
+    public List<String> getSparklrPhotoIds() throws SparklrException {
+        try {
+            InputStream photosXML = new ByteArrayInputStream(getSparklrRestTemplate().getForObject(URI.create(getSparklrPhotoListURL()), byte[].class));
 
-      final List<String> photoIds = new ArrayList<String>();
-      SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-      parserFactory.setValidating(false);
-      parserFactory.setXIncludeAware(false);
-      parserFactory.setNamespaceAware(false);
-      SAXParser parser = parserFactory.newSAXParser();
-      parser.parse(photosXML, new DefaultHandler() {
-        @Override
-        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-          if ("photo".equals(qName)) {
-            photoIds.add(attributes.getValue("id"));
-          }
+            final List<String> photoIds = new ArrayList<String>();
+            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+            parserFactory.setValidating(false);
+            parserFactory.setXIncludeAware(false);
+            parserFactory.setNamespaceAware(false);
+            SAXParser parser = parserFactory.newSAXParser();
+            parser.parse(photosXML, new DefaultHandler() {
+                @Override
+                public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+                    if ("photo".equals(qName)) {
+                        photoIds.add(attributes.getValue("id"));
+                    }
+                }
+            });
+            return photoIds;
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        } catch (SAXException e) {
+            throw new IllegalStateException(e);
+        } catch (ParserConfigurationException e) {
+            throw new IllegalStateException(e);
         }
-      });
-      return photoIds;
     }
-    catch (IOException e) {
-      throw new IllegalStateException(e);
+
+    public InputStream loadSparklrPhoto(String id) throws SparklrException {
+        return new ByteArrayInputStream(getSparklrRestTemplate().getForObject(URI.create(String.format(getSparklrPhotoURLPattern(), id)), byte[].class));
     }
-    catch (SAXException e) {
-      throw new IllegalStateException(e);
+
+    public String getSparklrPhotoURLPattern() {
+
+        return sparklrPhotoURLPattern;
     }
-    catch (ParserConfigurationException e) {
-      throw new IllegalStateException(e);
+
+    public void setSparklrPhotoURLPattern(String sparklrPhotoURLPattern) {
+        this.sparklrPhotoURLPattern = sparklrPhotoURLPattern;
     }
-  }
 
-  public InputStream loadSparklrPhoto(String id) throws SparklrException {
-    return new ByteArrayInputStream(getSparklrRestTemplate().getForObject(URI.create(String.format(getSparklrPhotoURLPattern(), id)), byte[].class));
-  }
+    public String getSparklrPhotoListURL() {
+        return sparklrPhotoListURL;
+    }
 
-  public String getSparklrPhotoURLPattern() {
+    public void setSparklrPhotoListURL(String sparklrPhotoListURL) {
+        this.sparklrPhotoListURL = sparklrPhotoListURL;
+    }
 
-    return sparklrPhotoURLPattern;
-  }
+    public OAuthRestTemplate getSparklrRestTemplate() {
+        return sparklrRestTemplate;
+    }
 
-  public void setSparklrPhotoURLPattern(String sparklrPhotoURLPattern) {
-    this.sparklrPhotoURLPattern = sparklrPhotoURLPattern;
-  }
-
-  public String getSparklrPhotoListURL() {
-    return sparklrPhotoListURL;
-  }
-
-  public void setSparklrPhotoListURL(String sparklrPhotoListURL) {
-    this.sparklrPhotoListURL = sparklrPhotoListURL;
-  }
-
-  public OAuthRestTemplate getSparklrRestTemplate() {
-    return sparklrRestTemplate;
-  }
-
-  public void setSparklrRestTemplate(OAuthRestTemplate sparklrRestTemplate) {
-    this.sparklrRestTemplate = sparklrRestTemplate;
-  }
+    public void setSparklrRestTemplate(OAuthRestTemplate sparklrRestTemplate) {
+        this.sparklrRestTemplate = sparklrRestTemplate;
+    }
 }

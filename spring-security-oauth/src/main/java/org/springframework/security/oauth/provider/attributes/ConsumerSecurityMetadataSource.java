@@ -16,15 +16,15 @@
 
 package org.springframework.security.oauth.provider.attributes;
 
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.method.AbstractFallbackMethodSecurityMetadataSource;
-import org.springframework.core.annotation.AnnotationUtils;
 
-import java.util.Collection;
-import java.util.ArrayList;
-import java.util.List;
-import java.lang.reflect.Method;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Ryan Heaton
@@ -32,53 +32,53 @@ import java.lang.annotation.Annotation;
  */
 public class ConsumerSecurityMetadataSource extends AbstractFallbackMethodSecurityMetadataSource {
 
-  protected List<ConfigAttribute> findAttributes(Class<?> clazz) {
-    return processAnnotations(clazz.getAnnotations());
-  }
-
-  protected List<ConfigAttribute> findAttributes(Method method, Class<?> targetClass) {
-    return processAnnotations(AnnotationUtils.getAnnotations(method));
-  }
-
-  public Collection<ConfigAttribute> getAllConfigAttributes() {
-    return null;
-  }
-
-  private List<ConfigAttribute> processAnnotations(Annotation[] annotations) {
-    if (annotations == null || annotations.length == 0) {
-      return null;
+    protected List<ConfigAttribute> findAttributes(Class<?> clazz) {
+        return processAnnotations(clazz.getAnnotations());
     }
-    List<ConfigAttribute> attributes = new ArrayList<ConfigAttribute>();
 
-    // Process DenyAll, Permit all, then Roles, then Keys
-
-    for (Annotation a : annotations) {
-      if (a instanceof DenyAllConsumers) {
-        attributes.add(ConsumerSecurityConfig.DENY_ALL_ATTRIBUTE);
-        return attributes;
-      }
-      if (a instanceof PermitAllConsumers) {
-        attributes.add(ConsumerSecurityConfig.PERMIT_ALL_ATTRIBUTE);
-        return attributes;
-      }
-      if (a instanceof ConsumerRolesAllowed) {
-        ConsumerRolesAllowed ra = (ConsumerRolesAllowed) a;
-        for (String role : ra.value()) {
-          attributes.add(new ConsumerSecurityConfig(role, ConsumerSecurityConfig.ConsumerSecurityType.CONSUMER_ROLE));
-        }
-        return attributes;
-      }
-      if (a instanceof ConsumerKeysAllowed) {
-        ConsumerKeysAllowed ka = (ConsumerKeysAllowed) a;
-        for (String key : ka.value()) {
-          attributes.add(new ConsumerSecurityConfig(key, ConsumerSecurityConfig.ConsumerSecurityType.CONSUMER_KEY));
-        }
-        return attributes;
-      }
+    protected List<ConfigAttribute> findAttributes(Method method, Class<?> targetClass) {
+        return processAnnotations(AnnotationUtils.getAnnotations(method));
     }
-    return null;
+
+    public Collection<ConfigAttribute> getAllConfigAttributes() {
+        return null;
+    }
+
+    private List<ConfigAttribute> processAnnotations(Annotation[] annotations) {
+        if (annotations == null || annotations.length == 0) {
+            return null;
+        }
+        List<ConfigAttribute> attributes = new ArrayList<ConfigAttribute>();
+
+        // Process DenyAll, Permit all, then Roles, then Keys
+
+        for (Annotation a : annotations) {
+            if (a instanceof DenyAllConsumers) {
+                attributes.add(ConsumerSecurityConfig.DENY_ALL_ATTRIBUTE);
+                return attributes;
+            }
+            if (a instanceof PermitAllConsumers) {
+                attributes.add(ConsumerSecurityConfig.PERMIT_ALL_ATTRIBUTE);
+                return attributes;
+            }
+            if (a instanceof ConsumerRolesAllowed) {
+                ConsumerRolesAllowed ra = (ConsumerRolesAllowed) a;
+                for (String role : ra.value()) {
+                    attributes.add(new ConsumerSecurityConfig(role, ConsumerSecurityConfig.ConsumerSecurityType.CONSUMER_ROLE));
+                }
+                return attributes;
+            }
+            if (a instanceof ConsumerKeysAllowed) {
+                ConsumerKeysAllowed ka = (ConsumerKeysAllowed) a;
+                for (String key : ka.value()) {
+                    attributes.add(new ConsumerSecurityConfig(key, ConsumerSecurityConfig.ConsumerSecurityType.CONSUMER_KEY));
+                }
+                return attributes;
+            }
+        }
+        return null;
 
 
-  }
+    }
 
 }

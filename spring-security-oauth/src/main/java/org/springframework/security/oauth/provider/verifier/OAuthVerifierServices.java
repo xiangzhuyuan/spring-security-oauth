@@ -7,10 +7,10 @@ package org.springframework.security.oauth.provider.verifier;
  */
 public interface OAuthVerifierServices {
 
-  /**
-   * Create a verifier.
-   *
-   * @return The verifier.
-   */
-  String createVerifier();
+    /**
+     * Create a verifier.
+     *
+     * @return The verifier.
+     */
+    String createVerifier();
 }

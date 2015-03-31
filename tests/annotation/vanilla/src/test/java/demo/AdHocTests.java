@@ -20,14 +20,13 @@ import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * @author Dave Syer
- * 
  */
 @RunWith(Suite.class)
 // @formatter:off	
-@SuiteClasses({ 
-	RefreshTokenSupportTests.class,
-	AuthorizationCodeProviderCookieTests.class
-	})
+@SuiteClasses({
+        RefreshTokenSupportTests.class,
+        AuthorizationCodeProviderCookieTests.class
+})
 // @formatter:on
 @Ignore("Test suite for tracking order dependencies")
 public class AdHocTests {

@@ -29,57 +29,56 @@ import java.util.BitSet;
  */
 public class OAuthCodec extends URLCodec {
 
-  protected static final BitSet SAFE_CHARACTERS = (BitSet) URLCodec.WWW_FORM_URL.clone();
-  static {
-    //The OAuth codec defines different safe characters than the standard URL codec.
-    SAFE_CHARACTERS.clear('*');
-    SAFE_CHARACTERS.clear(' ');
-    SAFE_CHARACTERS.set('~');
-  }
+    protected static final BitSet SAFE_CHARACTERS = (BitSet) URLCodec.WWW_FORM_URL.clone();
 
-  /**
-   * Private constructor (instance methods not accessible).
-   */
-  private OAuthCodec() {
-  }
-
-  /**
-   * Encode the specified value.
-   *
-   * @param value The value to encode.
-   * @return The encoded value.
-   */
-  public static String oauthEncode(String value) {
-    if (value == null) {
-      return "";
+    static {
+        //The OAuth codec defines different safe characters than the standard URL codec.
+        SAFE_CHARACTERS.clear('*');
+        SAFE_CHARACTERS.clear(' ');
+        SAFE_CHARACTERS.set('~');
     }
 
-    try {
-      return new String(URLCodec.encodeUrl(SAFE_CHARACTERS, value.getBytes("UTF-8")), "US-ASCII");
-    }
-    catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
-   * Decode the specified value.
-   *
-   * @param value The value to decode.
-   * @return The decoded value.
-   * @throws DecoderException when URLCodec fails
-   */
-  public static String oauthDecode(String value) throws DecoderException {
-    if (value == null) {
-      return "";
+    /**
+     * Private constructor (instance methods not accessible).
+     */
+    private OAuthCodec() {
     }
 
-    try {
-      return new String(URLCodec.decodeUrl(value.getBytes("US-ASCII")), "UTF-8");
+    /**
+     * Encode the specified value.
+     *
+     * @param value The value to encode.
+     * @return The encoded value.
+     */
+    public static String oauthEncode(String value) {
+        if (value == null) {
+            return "";
+        }
+
+        try {
+            return new String(URLCodec.encodeUrl(SAFE_CHARACTERS, value.getBytes("UTF-8")), "US-ASCII");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
-    catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
+
+    /**
+     * Decode the specified value.
+     *
+     * @param value The value to decode.
+     * @return The decoded value.
+     * @throws DecoderException when URLCodec fails
+     */
+    public static String oauthDecode(String value) throws DecoderException {
+        if (value == null) {
+            return "";
+        }
+
+        try {
+            return new String(URLCodec.decodeUrl(value.getBytes("US-ASCII")), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
-  }
 
 }

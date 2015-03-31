@@ -26,11 +26,11 @@ import org.springframework.security.access.AccessDeniedException;
 @SuppressWarnings("serial")
 public class OAuthRequestFailedException extends AccessDeniedException {
 
-  public OAuthRequestFailedException(String msg) {
-    super(msg);
-  }
+    public OAuthRequestFailedException(String msg) {
+        super(msg);
+    }
 
-  public OAuthRequestFailedException(String msg, Throwable t) {
-    super(msg, t);
-  }
+    public OAuthRequestFailedException(String msg, Throwable t) {
+        super(msg, t);
+    }
 }

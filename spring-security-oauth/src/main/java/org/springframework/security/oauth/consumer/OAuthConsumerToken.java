@@ -21,111 +21,111 @@ import java.util.Map;
 
 /**
  * Interface for a consumer-side OAuth token.
- * 
+ *
  * @author Ryan Heaton
  */
 public class OAuthConsumerToken implements Serializable {
 
-  private static final long serialVersionUID = -4057986970456346647L;
+    private static final long serialVersionUID = -4057986970456346647L;
 
-  private String resourceId;
-  private String value;
-  private String secret;
-  private boolean accessToken;
-  private Map<String, String> additionalParameters;
+    private String resourceId;
+    private String value;
+    private String secret;
+    private boolean accessToken;
+    private Map<String, String> additionalParameters;
 
-  /**
-   * The id of the resource to which this token applies.
-   *
-   * @return The id of the resource to which this token applies.
-   */
-  public String getResourceId() {
-    return resourceId;
-  }
+    /**
+     * The id of the resource to which this token applies.
+     *
+     * @return The id of the resource to which this token applies.
+     */
+    public String getResourceId() {
+        return resourceId;
+    }
 
-  /**
-   * The id of the resource to which this token applies.
-   *
-   * @param resourceId The id of the resource to which this token applies.
-   */
-  public void setResourceId(String resourceId) {
-    this.resourceId = resourceId;
-  }
+    /**
+     * The id of the resource to which this token applies.
+     *
+     * @param resourceId The id of the resource to which this token applies.
+     */
+    public void setResourceId(String resourceId) {
+        this.resourceId = resourceId;
+    }
 
-  /**
-   * The value of the token.
-   *
-   * @return The value of the token.
-   */
-  public String getValue() {
-    return value;
-  }
+    /**
+     * The value of the token.
+     *
+     * @return The value of the token.
+     */
+    public String getValue() {
+        return value;
+    }
 
-  /**
-   * The value of the token.
-   *
-   * @param value The value of the token.
-   */
-  public void setValue(String value) {
-    this.value = value;
-  }
+    /**
+     * The value of the token.
+     *
+     * @param value The value of the token.
+     */
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-  /**
-   * The token secret.
-   *
-   * @return The token secret.
-   */
-  public String getSecret() {
-    return secret;
-  }
+    /**
+     * The token secret.
+     *
+     * @return The token secret.
+     */
+    public String getSecret() {
+        return secret;
+    }
 
-  /**
-   * The token secret.
-   *
-   * @param secret The token secret.
-   */
-  public void setSecret(String secret) {
-    this.secret = secret;
-  }
+    /**
+     * The token secret.
+     *
+     * @param secret The token secret.
+     */
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
 
-  /**
-   * Whether this is an OAuth access token.
-   *
-   * @return Whether this is an OAuth access token.
-   */
-  public boolean isAccessToken() {
-    return accessToken;
-  }
+    /**
+     * Whether this is an OAuth access token.
+     *
+     * @return Whether this is an OAuth access token.
+     */
+    public boolean isAccessToken() {
+        return accessToken;
+    }
 
-  /**
-   * Whether this is an OAuth access token.
-   *
-   * @param accessToken Whether this is an OAuth access token.
-   */
-  public void setAccessToken(boolean accessToken) {
-    this.accessToken = accessToken;
-  }
+    /**
+     * Whether this is an OAuth access token.
+     *
+     * @param accessToken Whether this is an OAuth access token.
+     */
+    public void setAccessToken(boolean accessToken) {
+        this.accessToken = accessToken;
+    }
 
-  /**
-   * Any additional parameters for the consumer token.
-   *
-   * @return Any additional parameters for the consumer token.
-   */
-  public Map<String, String> getAdditionalParameters() {
-    return additionalParameters;
-  }
+    /**
+     * Any additional parameters for the consumer token.
+     *
+     * @return Any additional parameters for the consumer token.
+     */
+    public Map<String, String> getAdditionalParameters() {
+        return additionalParameters;
+    }
 
-  /**
-   * Any additional parameters for the consumer token.
-   *
-   * @param additionalParameters Any additional parameters for the consumer token.
-   */
-  public void setAdditionalParameters(Map<String, String> additionalParameters) {
-    this.additionalParameters = additionalParameters;
-  }
-  
-  @Override
-	public String toString() {
-		return value;
-	}
+    /**
+     * Any additional parameters for the consumer token.
+     *
+     * @param additionalParameters Any additional parameters for the consumer token.
+     */
+    public void setAdditionalParameters(Map<String, String> additionalParameters) {
+        this.additionalParameters = additionalParameters;
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }

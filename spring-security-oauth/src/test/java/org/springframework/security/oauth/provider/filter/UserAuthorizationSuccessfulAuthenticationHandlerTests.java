@@ -16,56 +16,52 @@
 package org.springframework.security.oauth.provider.filter;
 
 import org.junit.Test;
-import org.springframework.security.oauth.provider.filter.UserAuthorizationProcessingFilter;
-import org.springframework.security.oauth.provider.filter.UserAuthorizationSuccessfulAuthenticationHandler;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.springframework.security.web.RedirectStrategy;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.security.web.RedirectStrategy;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Andrew McCall
  */
 public class UserAuthorizationSuccessfulAuthenticationHandlerTests {
 
-	/**
-	 * test determineTargetUrl
-	 */
-	@Test
-	public void testAuthenticationSuccess() throws Exception {
+    /**
+     * test determineTargetUrl
+     */
+    @Test
+    public void testAuthenticationSuccess() throws Exception {
 
-		UserAuthorizationSuccessfulAuthenticationHandler handler = new UserAuthorizationSuccessfulAuthenticationHandler();
-		HttpServletRequest request = mock(HttpServletRequest.class);
-		HttpServletResponse response = mock(HttpServletResponse.class);
-		RedirectStrategy redirectStrategy = mock(RedirectStrategy.class);
-		handler.setRedirectStrategy(redirectStrategy);
+        UserAuthorizationSuccessfulAuthenticationHandler handler = new UserAuthorizationSuccessfulAuthenticationHandler();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        RedirectStrategy redirectStrategy = mock(RedirectStrategy.class);
+        handler.setRedirectStrategy(redirectStrategy);
 
-		when(request.getAttribute(UserAuthorizationProcessingFilter.CALLBACK_ATTRIBUTE)).thenReturn(
-				"http://my.host.com/my/context");
-		when(request.getAttribute(UserAuthorizationProcessingFilter.VERIFIER_ATTRIBUTE)).thenReturn("myver");
-		when(request.getParameter("requestToken")).thenReturn("mytok");
+        when(request.getAttribute(UserAuthorizationProcessingFilter.CALLBACK_ATTRIBUTE)).thenReturn(
+                "http://my.host.com/my/context");
+        when(request.getAttribute(UserAuthorizationProcessingFilter.VERIFIER_ATTRIBUTE)).thenReturn("myver");
+        when(request.getParameter("requestToken")).thenReturn("mytok");
 
 
-		handler.onAuthenticationSuccess(request, response, null);
+        handler.onAuthenticationSuccess(request, response, null);
 
-		verify(redirectStrategy).sendRedirect(request, response,
-				"http://my.host.com/my/context?oauth_token=mytok&oauth_verifier=myver");
+        verify(redirectStrategy).sendRedirect(request, response,
+                "http://my.host.com/my/context?oauth_token=mytok&oauth_verifier=myver");
 
-		handler = new UserAuthorizationSuccessfulAuthenticationHandler();
-		handler.setRedirectStrategy(redirectStrategy);
+        handler = new UserAuthorizationSuccessfulAuthenticationHandler();
+        handler.setRedirectStrategy(redirectStrategy);
 
-		when(request.getAttribute(UserAuthorizationProcessingFilter.CALLBACK_ATTRIBUTE)).thenReturn(
-				"http://my.hosting.com/my/context?with=some&query=parameter");
-		when(request.getAttribute(UserAuthorizationProcessingFilter.VERIFIER_ATTRIBUTE)).thenReturn("myvera");
-		when(request.getParameter("requestToken")).thenReturn("mytoka");
+        when(request.getAttribute(UserAuthorizationProcessingFilter.CALLBACK_ATTRIBUTE)).thenReturn(
+                "http://my.hosting.com/my/context?with=some&query=parameter");
+        when(request.getAttribute(UserAuthorizationProcessingFilter.VERIFIER_ATTRIBUTE)).thenReturn("myvera");
+        when(request.getParameter("requestToken")).thenReturn("mytoka");
 
-		handler.onAuthenticationSuccess(request, response, null);
+        handler.onAuthenticationSuccess(request, response, null);
 
-		verify(redirectStrategy).sendRedirect(request, response,
-				"http://my.hosting.com/my/context?with=some&query=parameter&oauth_token=mytoka&oauth_verifier=myvera");
-	}
+        verify(redirectStrategy).sendRedirect(request, response,
+                "http://my.hosting.com/my/context?with=some&query=parameter&oauth_token=mytoka&oauth_verifier=myvera");
+    }
 }

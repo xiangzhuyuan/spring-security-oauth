@@ -16,5 +16,5 @@ package org.springframework.security.jwt;
  * @author Luke Taylor
  */
 public interface BinaryFormat {
-	byte[] bytes();
+    byte[] bytes();
 }

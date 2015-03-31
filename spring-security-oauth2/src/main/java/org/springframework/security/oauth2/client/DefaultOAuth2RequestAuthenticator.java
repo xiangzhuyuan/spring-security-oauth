@@ -21,22 +21,21 @@ import org.springframework.util.StringUtils;
 
 /**
  * @author Dave Syer
- *
  */
 public class DefaultOAuth2RequestAuthenticator implements OAuth2RequestAuthenticator {
 
-	@Override
-	public void authenticate(OAuth2ProtectedResourceDetails resource, OAuth2ClientContext clientContext,
-			ClientHttpRequest request) {
-		OAuth2AccessToken accessToken = clientContext.getAccessToken();
-		if (accessToken == null) {
-			throw new AccessTokenRequiredException(resource);
-		}
-		String tokenType = accessToken.getTokenType();
-		if (!StringUtils.hasText(tokenType)) {
-			tokenType = OAuth2AccessToken.BEARER_TYPE; // we'll assume basic bearer token type if none is specified.
-		}
-		request.getHeaders().set("Authorization", String.format("%s %s", tokenType, accessToken.getValue()));
-	}
+    @Override
+    public void authenticate(OAuth2ProtectedResourceDetails resource, OAuth2ClientContext clientContext,
+                             ClientHttpRequest request) {
+        OAuth2AccessToken accessToken = clientContext.getAccessToken();
+        if (accessToken == null) {
+            throw new AccessTokenRequiredException(resource);
+        }
+        String tokenType = accessToken.getTokenType();
+        if (!StringUtils.hasText(tokenType)) {
+            tokenType = OAuth2AccessToken.BEARER_TYPE; // we'll assume basic bearer token type if none is specified.
+        }
+        request.getHeaders().set("Authorization", String.format("%s %s", tokenType, accessToken.getValue()));
+    }
 
 }

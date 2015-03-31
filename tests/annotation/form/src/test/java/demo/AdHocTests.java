@@ -20,19 +20,18 @@ import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * @author Dave Syer
- * 
  */
 @RunWith(Suite.class)
 // @formatter:off	
-@SuiteClasses({ 
-	ClientCredentialsProviderTests.class,
-	RefreshTokenSupportTests.class,
-	ImplicitProviderTests.class, 
-	ResourceOwnerPasswordProviderTests.class,
-	ApplicationTests.class, 
-	ProtectedResourceTests.class,
-	AuthorizationCodeProviderTests.class, 
-	})
+@SuiteClasses({
+        ClientCredentialsProviderTests.class,
+        RefreshTokenSupportTests.class,
+        ImplicitProviderTests.class,
+        ResourceOwnerPasswordProviderTests.class,
+        ApplicationTests.class,
+        ProtectedResourceTests.class,
+        AuthorizationCodeProviderTests.class,
+})
 // @formatter:on
 @Ignore("Test suite for tracking order dependencies")
 public class AdHocTests {

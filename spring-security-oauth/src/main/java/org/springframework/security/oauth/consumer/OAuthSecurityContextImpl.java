@@ -8,22 +8,22 @@ import java.util.Map;
  */
 public class OAuthSecurityContextImpl implements OAuthSecurityContext {
 
-  private Map<String, OAuthConsumerToken> accessTokens;
-  private Object details;
+    private Map<String, OAuthConsumerToken> accessTokens;
+    private Object details;
 
-  public Map<String, OAuthConsumerToken> getAccessTokens() {
-    return accessTokens;
-  }
+    public Map<String, OAuthConsumerToken> getAccessTokens() {
+        return accessTokens;
+    }
 
-  public void setAccessTokens(Map<String, OAuthConsumerToken> accessTokens) {
-    this.accessTokens = accessTokens;
-  }
+    public void setAccessTokens(Map<String, OAuthConsumerToken> accessTokens) {
+        this.accessTokens = accessTokens;
+    }
 
-  public Object getDetails() {
-    return details;
-  }
+    public Object getDetails() {
+        return details;
+    }
 
-  public void setDetails(Object details) {
-    this.details = details;
-  }
+    public void setDetails(Object details) {
+        this.details = details;
+    }
 }

@@ -13,22 +13,22 @@ import java.util.Map;
  */
 public interface OAuthRememberMeServices {
 
-  /**
-   * Load any remembered tokens for the given request.
-   *
-   * @param request The request.
-   * @param response The response.
-   * @return The tokens (mapped by resource id), or null if none are remembered.
-   */
-  Map<String, OAuthConsumerToken> loadRememberedTokens(HttpServletRequest request, HttpServletResponse response);
+    /**
+     * Load any remembered tokens for the given request.
+     *
+     * @param request  The request.
+     * @param response The response.
+     * @return The tokens (mapped by resource id), or null if none are remembered.
+     */
+    Map<String, OAuthConsumerToken> loadRememberedTokens(HttpServletRequest request, HttpServletResponse response);
 
-  /**
-   * Remember the specified tokens for the given request.
-   *
-   * @param tokens The tokens (null to forget all tokens).
-   * @param request The request.
-   * @param response The response.
-   */
-  void rememberTokens(Map<String, OAuthConsumerToken> tokens, HttpServletRequest request, HttpServletResponse response);
+    /**
+     * Remember the specified tokens for the given request.
+     *
+     * @param tokens   The tokens (null to forget all tokens).
+     * @param request  The request.
+     * @param response The response.
+     */
+    void rememberTokens(Map<String, OAuthConsumerToken> tokens, HttpServletRequest request, HttpServletResponse response);
 
 }

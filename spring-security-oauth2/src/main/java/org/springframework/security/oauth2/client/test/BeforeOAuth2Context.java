@@ -21,9 +21,8 @@ import java.lang.annotation.Target;
  * Marker annotation for methods to be run before the OAuth2Context is setup by the {@link OAuth2ContextSetup} rule, and
  * consequently before the regular JUnit <code>&#64;Before</code> methods, which are executed only <em>after</em> the
  * OAuth2Context is setup.
- * 
+ *
  * @author Dave Syer
- * 
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

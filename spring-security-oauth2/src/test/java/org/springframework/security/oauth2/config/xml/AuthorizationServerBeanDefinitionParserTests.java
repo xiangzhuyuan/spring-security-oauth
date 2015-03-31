@@ -12,11 +12,6 @@
  */
 package org.springframework.security.oauth2.config.xml;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,38 +22,42 @@ import org.junit.runners.Parameterized.Parameters;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
+
 /**
  * @author Dave Syer
- * 
  */
 @RunWith(Parameterized.class)
 public class AuthorizationServerBeanDefinitionParserTests {
 
-	private ConfigurableApplicationContext context;
+    private ConfigurableApplicationContext context;
 
-	@Rule
-	public ExpectedException expected = ExpectedException.none();
+    @Rule
+    public ExpectedException expected = ExpectedException.none();
 
-	@Parameters
-	public static List<Object[]> parameters() {
-		return Arrays.asList(new Object[] { "authorization-server-vanilla" },
-				new Object[] { "authorization-server-extras" }, new Object[] { "authorization-server-types" });
-	}
+    @Parameters
+    public static List<Object[]> parameters() {
+        return Arrays.asList(new Object[]{"authorization-server-vanilla"},
+                new Object[]{"authorization-server-extras"}, new Object[]{"authorization-server-types"});
+    }
 
-	public AuthorizationServerBeanDefinitionParserTests(String resource) {
-		context = new GenericXmlApplicationContext(getClass(), resource + ".xml");
-	}
+    public AuthorizationServerBeanDefinitionParserTests(String resource) {
+        context = new GenericXmlApplicationContext(getClass(), resource + ".xml");
+    }
 
-	@After
-	public void close() {
-		if (context != null) {
-			context.close();
-		}
-	}
+    @After
+    public void close() {
+        if (context != null) {
+            context.close();
+        }
+    }
 
-	@Test
-	public void testDefaults() {
-		assertTrue(context.containsBeanDefinition("oauth2AuthorizationEndpoint"));
-	}
+    @Test
+    public void testDefaults() {
+        assertTrue(context.containsBeanDefinition("oauth2AuthorizationEndpoint"));
+    }
 
 }

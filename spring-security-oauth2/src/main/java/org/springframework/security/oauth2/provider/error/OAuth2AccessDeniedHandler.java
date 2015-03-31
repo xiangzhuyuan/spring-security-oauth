@@ -12,28 +12,26 @@
  */
 package org.springframework.security.oauth2.provider.error;
 
-import java.io.IOException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.web.access.AccessDeniedHandler;
+import java.io.IOException;
 
 /**
  * If authorization fails and the caller has asked for a specific content type response, this entry point can send one,
  * along with a standard 403 status. Add to the Spring Security configuration as an {@link AccessDeniedHandler} in
  * the usual way.
- * 
+ *
  * @author Dave Syer
- * 
  */
 public class OAuth2AccessDeniedHandler extends AbstractOAuth2SecurityExceptionHandler implements AccessDeniedHandler {
 
-	public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException authException)
-			throws IOException, ServletException {
-		doHandle(request, response, authException);
-	}
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException authException)
+            throws IOException, ServletException {
+        doHandle(request, response, authException);
+    }
 
 }

@@ -23,10 +23,10 @@ package org.springframework.security.oauth.consumer.nonce;
  */
 public interface NonceFactory {
 
-  /**
-   * Generate a nonce.
-   *
-   * @return The nonce that was generated.
-   */
-  String generateNonce();
+    /**
+     * Generate a nonce.
+     *
+     * @return The nonce that was generated.
+     */
+    String generateNonce();
 }

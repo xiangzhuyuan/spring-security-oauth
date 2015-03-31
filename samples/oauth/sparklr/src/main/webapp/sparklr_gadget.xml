@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-  <ModulePrefs title="OAuth Contacts" scrolling="true">
-    <Require feature="opensocial-0.8" />
-    <Require feature="locked-domain"/>
-    <OAuth>
-      <Service name="google">
-        <Access url="${gae.application.url}/oauth/access_token" method="GET" />
-        <Request url="${gae.application.url}/oauth/request_token" method="GET" />
-        <Authorization url="${gae.application.url}/oauth/confirm_access?callbackURL=http://oauth.gmodules.com/gadgets/oauthcallback" />
-      </Service>
-    </OAuth>
-  </ModulePrefs>
-  <Content type="html">
-  <![CDATA[
+    <ModulePrefs title="OAuth Contacts" scrolling="true">
+        <Require feature="opensocial-0.8"/>
+        <Require feature="locked-domain"/>
+        <OAuth>
+            <Service name="google">
+                <Access url="${gae.application.url}/oauth/access_token" method="GET"/>
+                <Request url="${gae.application.url}/oauth/request_token" method="GET"/>
+                <Authorization
+                        url="${gae.application.url}/oauth/confirm_access?callbackURL=http://oauth.gmodules.com/gadgets/oauthcallback"/>
+            </Service>
+        </OAuth>
+    </ModulePrefs>
+    <Content type="html">
+        <![CDATA[
 
   <!-- shindig oauth popup handling code -->
   <script src="http://gadget-doc-examples.googlecode.com/svn/trunk/opensocial-gadgets/popup.js"></script>
@@ -143,5 +144,5 @@
     gadgets.util.registerOnLoadHandler(fetchData);
   </script>
   ]]>
-  </Content>
+    </Content>
 </Module>

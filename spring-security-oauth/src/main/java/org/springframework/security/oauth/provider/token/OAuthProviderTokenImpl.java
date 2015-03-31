@@ -25,159 +25,159 @@ import org.springframework.security.core.Authentication;
  */
 public class OAuthProviderTokenImpl implements OAuthAccessProviderToken {
 
-  private static final long serialVersionUID = -1794426591002744140L;
+    private static final long serialVersionUID = -1794426591002744140L;
 
-  private String value;
-  private String callbackUrl;
-  private String verifier;
-  private String secret;
-  private String consumerKey;
-  private boolean accessToken;
-  private Authentication userAuthentication;
-  private long timestamp;
+    private String value;
+    private String callbackUrl;
+    private String verifier;
+    private String secret;
+    private String consumerKey;
+    private boolean accessToken;
+    private Authentication userAuthentication;
+    private long timestamp;
 
-  /**
-   * The value of the token.
-   *
-   * @return The value of the token.
-   */
-  public String getValue() {
-    return value;
-  }
+    /**
+     * The value of the token.
+     *
+     * @return The value of the token.
+     */
+    public String getValue() {
+        return value;
+    }
 
-  /**
-   * The value of the token.
-   *
-   * @param value The value of the token.
-   */
-  public void setValue(String value) {
-    this.value = value;
-  }
+    /**
+     * The value of the token.
+     *
+     * @param value The value of the token.
+     */
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-  /**
-   * The token secret.
-   *
-   * @return The token secret.
-   */
-  public String getSecret() {
-    return secret;
-  }
+    /**
+     * The token secret.
+     *
+     * @return The token secret.
+     */
+    public String getSecret() {
+        return secret;
+    }
 
-  /**
-   * The token secret.
-   *
-   * @param secret The token secret.
-   */
-  public void setSecret(String secret) {
-    this.secret = secret;
-  }
+    /**
+     * The token secret.
+     *
+     * @param secret The token secret.
+     */
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
 
-  /**
-   * The consumer key associated with this oauth token.
-   *
-   * @return The consumer key associated with this oauth token.
-   */
-  public String getConsumerKey() {
-    return consumerKey;
-  }
+    /**
+     * The consumer key associated with this oauth token.
+     *
+     * @return The consumer key associated with this oauth token.
+     */
+    public String getConsumerKey() {
+        return consumerKey;
+    }
 
-  /**
-   * The consumer key associated with this oauth token.
-   *
-   * @param consumerKey The consumer key associated with this oauth token.
-   */
-  public void setConsumerKey(String consumerKey) {
-    this.consumerKey = consumerKey;
-  }
+    /**
+     * The consumer key associated with this oauth token.
+     *
+     * @param consumerKey The consumer key associated with this oauth token.
+     */
+    public void setConsumerKey(String consumerKey) {
+        this.consumerKey = consumerKey;
+    }
 
-  /**
-   * The callback url associated with this token.
-   *
-   * @return The callback url associated with this token.
-   */
-  public String getCallbackUrl() {
-    return callbackUrl;
-  }
+    /**
+     * The callback url associated with this token.
+     *
+     * @return The callback url associated with this token.
+     */
+    public String getCallbackUrl() {
+        return callbackUrl;
+    }
 
-  /**
-   * The callback url associated with this token.
-   *
-   * @param callbackUrl The callback url associated with this token.
-   */
-  public void setCallbackUrl(String callbackUrl) {
-    this.callbackUrl = callbackUrl;
-  }
+    /**
+     * The callback url associated with this token.
+     *
+     * @param callbackUrl The callback url associated with this token.
+     */
+    public void setCallbackUrl(String callbackUrl) {
+        this.callbackUrl = callbackUrl;
+    }
 
-  /**
-   * Whether this is an OAuth access token.
-   *
-   * @return Whether this is an OAuth access token.
-   */
-  public boolean isAccessToken() {
-    return accessToken;
-  }
+    /**
+     * Whether this is an OAuth access token.
+     *
+     * @return Whether this is an OAuth access token.
+     */
+    public boolean isAccessToken() {
+        return accessToken;
+    }
 
-  /**
-   * Whether this is an OAuth access token.
-   *
-   * @param accessToken Whether this is an OAuth access token.
-   */
-  public void setAccessToken(boolean accessToken) {
-    this.accessToken = accessToken;
-  }
+    /**
+     * Whether this is an OAuth access token.
+     *
+     * @param accessToken Whether this is an OAuth access token.
+     */
+    public void setAccessToken(boolean accessToken) {
+        this.accessToken = accessToken;
+    }
 
-  /**
-   * The verifier string for this token.
-   *
-   * @return The verifier string for this token.
-   */
-  public String getVerifier() {
-    return verifier;
-  }
+    /**
+     * The verifier string for this token.
+     *
+     * @return The verifier string for this token.
+     */
+    public String getVerifier() {
+        return verifier;
+    }
 
-  /**
-   * The verifier string for this (access) token.
-   *
-   * @param verifier The verifier string for this (access) token.
-   */
-  public void setVerifier(String verifier) {
-    this.verifier = verifier;
-  }
+    /**
+     * The verifier string for this (access) token.
+     *
+     * @param verifier The verifier string for this (access) token.
+     */
+    public void setVerifier(String verifier) {
+        this.verifier = verifier;
+    }
 
-  /**
-   * The authentication of the user who granted the access token.
-   *
-   * @return The authentication of the user who granted the access token.
-   */
-  public Authentication getUserAuthentication() {
-    return userAuthentication;
-  }
+    /**
+     * The authentication of the user who granted the access token.
+     *
+     * @return The authentication of the user who granted the access token.
+     */
+    public Authentication getUserAuthentication() {
+        return userAuthentication;
+    }
 
-  /**
-   * The authentication of the user who granted the access token.
-   *
-   * @param userAuthentication The authentication of the user who granted the access token.
-   */
-  public void setUserAuthentication(Authentication userAuthentication) {
-    this.userAuthentication = userAuthentication;
-  }
+    /**
+     * The authentication of the user who granted the access token.
+     *
+     * @param userAuthentication The authentication of the user who granted the access token.
+     */
+    public void setUserAuthentication(Authentication userAuthentication) {
+        this.userAuthentication = userAuthentication;
+    }
 
-  /**
-   * Timestamp associated with this token.
-   *
-   * @return Timestamp associated with this token.
-   */
-  public long getTimestamp() {
-    return timestamp;
-  }
+    /**
+     * Timestamp associated with this token.
+     *
+     * @return Timestamp associated with this token.
+     */
+    public long getTimestamp() {
+        return timestamp;
+    }
 
-  /**
-   * Timestamp associated with this token.
-   *
-   * @param timestamp Timestamp associated with this token.
-   */
-  public void setTimestamp(long timestamp) {
-    this.timestamp = timestamp;
-  }
+    /**
+     * Timestamp associated with this token.
+     *
+     * @param timestamp Timestamp associated with this token.
+     */
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 
 }

@@ -13,54 +13,54 @@
 package org.springframework.security.jwt.crypto.sign;
 
 import java.math.BigInteger;
-import java.security.*;
+import java.security.GeneralSecurityException;
+import java.security.Signature;
 import java.security.interfaces.RSAPublicKey;
 
 /**
  * Verifies signatures using an RSA public key.
- *
+ * <p/>
  * The key can be supplied directly, or as an SSH public or private key string (in
  * the standard format produced by <tt>ssh-keygen</tt>).
  *
  * @author Luke Taylor
  */
 public class RsaVerifier implements SignatureVerifier {
-	private final RSAPublicKey key;
-	private final String algorithm;
+    private final RSAPublicKey key;
+    private final String algorithm;
 
-	public RsaVerifier(BigInteger n, BigInteger e) {
-		this(RsaKeyHelper.createPublicKey(n, e));
-	}
+    public RsaVerifier(BigInteger n, BigInteger e) {
+        this(RsaKeyHelper.createPublicKey(n, e));
+    }
 
-	public RsaVerifier(RSAPublicKey key) {
-		this(key, RsaSigner.DEFAULT_ALGORITHM);
-	}
+    public RsaVerifier(RSAPublicKey key) {
+        this(key, RsaSigner.DEFAULT_ALGORITHM);
+    }
 
-	public RsaVerifier(RSAPublicKey key, String algorithm) {
-		this.key = key;
-		this.algorithm = algorithm;
-	}
+    public RsaVerifier(RSAPublicKey key, String algorithm) {
+        this.key = key;
+        this.algorithm = algorithm;
+    }
 
-	public RsaVerifier(String key) {
-		this(RsaKeyHelper.parsePublicKey(key.trim()), RsaSigner.DEFAULT_ALGORITHM);
-	}
+    public RsaVerifier(String key) {
+        this(RsaKeyHelper.parsePublicKey(key.trim()), RsaSigner.DEFAULT_ALGORITHM);
+    }
 
-	public void verify(byte[] content, byte[] sig) {
-		try {
-			Signature signature = Signature.getInstance(algorithm);
-			signature.initVerify(key);
-			signature.update(content);
+    public void verify(byte[] content, byte[] sig) {
+        try {
+            Signature signature = Signature.getInstance(algorithm);
+            signature.initVerify(key);
+            signature.update(content);
 
-			if (!signature.verify(sig)) {
-				throw new InvalidSignatureException("RSA Signature did not match content");
-			}
-		}
-		catch (GeneralSecurityException e) {
-			throw new RuntimeException(e);
-		}
-	}
+            if (!signature.verify(sig)) {
+                throw new InvalidSignatureException("RSA Signature did not match content");
+            }
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	public String algorithm() {
-		return algorithm;
-	}
+    public String algorithm() {
+        return algorithm;
+    }
 }

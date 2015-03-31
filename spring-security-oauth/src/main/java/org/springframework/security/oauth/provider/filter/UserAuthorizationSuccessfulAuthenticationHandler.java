@@ -15,24 +15,23 @@
  */
 package org.springframework.security.oauth.provider.filter;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.security.core.Authentication;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
 import java.io.IOException;
 
 import static org.springframework.security.oauth.provider.filter.UserAuthorizationProcessingFilter.CALLBACK_ATTRIBUTE;
 import static org.springframework.security.oauth.provider.filter.UserAuthorizationProcessingFilter.VERIFIER_ATTRIBUTE;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * Successful AuthenticationHandler that gets called when a user complete authorization of a resource.
- *
+ * <p/>
  * If the callback URL is oob, the request is handled by the SimpleUrlAuthenticationSuccessHandler using the default
  * success URL. Otherwise, the oauth_verifier and oauth_token parmeters are appended to the callback URL and the user
  * is redirected.
@@ -41,109 +40,108 @@ import org.apache.commons.logging.LogFactory;
  */
 public class UserAuthorizationSuccessfulAuthenticationHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-  private static Log LOG = LogFactory.getLog(UserAuthorizationSuccessfulAuthenticationHandler.class);
+    private static Log LOG = LogFactory.getLog(UserAuthorizationSuccessfulAuthenticationHandler.class);
 
-  private String tokenIdParameterName = "requestToken";
-  private String callbackParameterName = "callbackURL";
-  private boolean require10a = true;
+    private String tokenIdParameterName = "requestToken";
+    private String callbackParameterName = "callbackURL";
+    private boolean require10a = true;
 
-  public UserAuthorizationSuccessfulAuthenticationHandler() {
-    super();
-    setRedirectStrategy(new org.springframework.security.web.DefaultRedirectStrategy());
-  }
-
-  public UserAuthorizationSuccessfulAuthenticationHandler(String s) {
-    super(s);
-    setRedirectStrategy(new DefaultRedirectStrategy());
-  }
-
-  @Override
-  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Processing successful authentication successful");
+    public UserAuthorizationSuccessfulAuthenticationHandler() {
+        super();
+        setRedirectStrategy(new org.springframework.security.web.DefaultRedirectStrategy());
     }
 
-    String callbackURL = (String) request.getAttribute(CALLBACK_ATTRIBUTE);
-    if (callbackURL == null) {
-      if (!isRequire10a()) {
-        callbackURL = request.getParameter(getCallbackParameterName());
-        if (callbackURL == null) {
-          //if we're not requiring 1.0a, then not providing a callback url is the same as stating 'oob'
-          callbackURL = "oob";
+    public UserAuthorizationSuccessfulAuthenticationHandler(String s) {
+        super(s);
+        setRedirectStrategy(new DefaultRedirectStrategy());
+    }
+
+    @Override
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Processing successful authentication successful");
         }
-      }
-      else {
-        throw new IllegalStateException("Callback URL was not loaded into the request. attemptAuthentication() never called?");
-      }
+
+        String callbackURL = (String) request.getAttribute(CALLBACK_ATTRIBUTE);
+        if (callbackURL == null) {
+            if (!isRequire10a()) {
+                callbackURL = request.getParameter(getCallbackParameterName());
+                if (callbackURL == null) {
+                    //if we're not requiring 1.0a, then not providing a callback url is the same as stating 'oob'
+                    callbackURL = "oob";
+                }
+            } else {
+                throw new IllegalStateException("Callback URL was not loaded into the request. attemptAuthentication() never called?");
+            }
+        }
+
+        if ("oob".equals(callbackURL)) {
+            callbackURL = super.determineTargetUrl(request, response);
+        }
+
+        String requestToken = request.getParameter(getTokenParameterName());
+        char appendChar = '?';
+        if (callbackURL.indexOf('?') > 0) {
+            appendChar = '&';
+        }
+
+        String verifier = (String) request.getAttribute(VERIFIER_ATTRIBUTE);
+        String targetUrl = new StringBuilder(callbackURL).append(appendChar).append("oauth_token=").append(requestToken).append("&oauth_verifier=").append(verifier).toString();
+        getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
-    if ("oob".equals(callbackURL)) {
-      callbackURL = super.determineTargetUrl(request, response);
+    /**
+     * The name of the request parameter that supplies the token id.
+     *
+     * @return The name of the request parameter that supplies the token id.
+     */
+    public String getTokenParameterName() {
+        return tokenIdParameterName;
     }
 
-    String requestToken = request.getParameter(getTokenParameterName());
-    char appendChar = '?';
-    if (callbackURL.indexOf('?') > 0) {
-      appendChar = '&';
+    /**
+     * The name of the request parameter that supplies the token id.
+     *
+     * @param tokenIdParameterName The name of the request parameter that supplies the token id.
+     */
+    public void setTokenIdParameterName(String tokenIdParameterName) {
+        this.tokenIdParameterName = tokenIdParameterName;
     }
 
-    String verifier = (String) request.getAttribute(VERIFIER_ATTRIBUTE);
-    String targetUrl = new StringBuilder(callbackURL).append(appendChar).append("oauth_token=").append(requestToken).append("&oauth_verifier=").append(verifier).toString();
-    getRedirectStrategy().sendRedirect(request, response, targetUrl);
-  }
+    /**
+     * Whether to require 1.0a support.
+     *
+     * @return Whether to require 1.0a support.
+     */
+    public boolean isRequire10a() {
+        return require10a;
+    }
 
-  /**
-   * The name of the request parameter that supplies the token id.
-   *
-   * @return The name of the request parameter that supplies the token id.
-   */
-  public String getTokenParameterName() {
-    return tokenIdParameterName;
-  }
+    /**
+     * Whether to require 1.0a support.
+     *
+     * @param require10a Whether to require 1.0a support.
+     */
+    public void setRequire10a(boolean require10a) {
+        this.require10a = require10a;
+    }
 
-  /**
-   * The name of the request parameter that supplies the token id.
-   *
-   * @param tokenIdParameterName The name of the request parameter that supplies the token id.
-   */
-  public void setTokenIdParameterName(String tokenIdParameterName) {
-    this.tokenIdParameterName = tokenIdParameterName;
-  }
+    /**
+     * The name of the request parameter that supplies the callback URL.
+     *
+     * @return The name of the request parameter that supplies the callback URL.
+     */
+    public String getCallbackParameterName() {
+        return callbackParameterName;
+    }
 
-  /**
-   * Whether to require 1.0a support.
-   *
-   * @return Whether to require 1.0a support.
-   */
-  public boolean isRequire10a() {
-    return require10a;
-  }
-
-  /**
-   * Whether to require 1.0a support.
-   *
-   * @param require10a Whether to require 1.0a support.
-   */
-  public void setRequire10a(boolean require10a) {
-    this.require10a = require10a;
-  }
-
-  /**
-   * The name of the request parameter that supplies the callback URL.
-   *
-   * @return The name of the request parameter that supplies the callback URL.
-   */
-  public String getCallbackParameterName() {
-    return callbackParameterName;
-  }
-
-  /**
-   * The name of the request parameter that supplies the callback URL.
-   *
-   * @param callbackParameterName The name of the request parameter that supplies the callback URL.
-   */
-  public void setCallbackParameterName(String callbackParameterName) {
-    this.callbackParameterName = callbackParameterName;
-  }
+    /**
+     * The name of the request parameter that supplies the callback URL.
+     *
+     * @param callbackParameterName The name of the request parameter that supplies the callback URL.
+     */
+    public void setCallbackParameterName(String callbackParameterName) {
+        this.callbackParameterName = callbackParameterName;
+    }
 
 }

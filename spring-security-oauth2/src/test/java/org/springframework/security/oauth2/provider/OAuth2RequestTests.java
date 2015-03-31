@@ -13,48 +13,47 @@
 
 package org.springframework.security.oauth2.provider;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author Dave Syer
- *
  */
 public class OAuth2RequestTests {
 
-	private Map<String, String> parameters;
+    private Map<String, String> parameters;
 
-	@Before
-	public void prepare() {
-		parameters = new HashMap<String, String>();
-		parameters.put("client_id", "theClient");
-	}
+    @Before
+    public void prepare() {
+        parameters = new HashMap<String, String>();
+        parameters.put("client_id", "theClient");
+    }
 
-	@Test
-	public void testImplicitGrantType() throws Exception {
-		parameters.put("response_type", "token");
-		OAuth2Request authorizationRequest = createFromParameters(parameters);
-		assertEquals("implicit", authorizationRequest.getGrantType());
-	}
+    @Test
+    public void testImplicitGrantType() throws Exception {
+        parameters.put("response_type", "token");
+        OAuth2Request authorizationRequest = createFromParameters(parameters);
+        assertEquals("implicit", authorizationRequest.getGrantType());
+    }
 
-	@Test
-	public void testOtherGrantType() throws Exception {
-		parameters.put("grant_type", "password");
-		OAuth2Request authorizationRequest = createFromParameters(parameters);
-		assertEquals("password", authorizationRequest.getGrantType());
-	}
+    @Test
+    public void testOtherGrantType() throws Exception {
+        parameters.put("grant_type", "password");
+        OAuth2Request authorizationRequest = createFromParameters(parameters);
+        assertEquals("password", authorizationRequest.getGrantType());
+    }
 
-	private OAuth2Request createFromParameters(Map<String, String> parameters) {
-		OAuth2Request request = RequestTokenFactory.createOAuth2Request(parameters,
-				parameters.get(OAuth2Utils.CLIENT_ID), false,
-				OAuth2Utils.parseParameterList(parameters.get(OAuth2Utils.SCOPE)));
-		return request;
-	}
+    private OAuth2Request createFromParameters(Map<String, String> parameters) {
+        OAuth2Request request = RequestTokenFactory.createOAuth2Request(parameters,
+                parameters.get(OAuth2Utils.CLIENT_ID), false,
+                OAuth2Utils.parseParameterList(parameters.get(OAuth2Utils.SCOPE)));
+        return request;
+    }
 
 }

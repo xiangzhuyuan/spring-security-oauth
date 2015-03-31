@@ -18,15 +18,14 @@ package org.springframework.security.oauth2.provider.approval;
 
 /**
  * @author Dave Syer
- *
  */
 public class InMemoryApprovalStoreTests extends AbstractTestApprovalStore {
-	
-	private ApprovalStore store = new InMemoryApprovalStore();
 
-	@Override
-	protected ApprovalStore getApprovalStore() {
-		return store ;
-	}
+    private ApprovalStore store = new InMemoryApprovalStore();
+
+    @Override
+    protected ApprovalStore getApprovalStore() {
+        return store;
+    }
 
 }

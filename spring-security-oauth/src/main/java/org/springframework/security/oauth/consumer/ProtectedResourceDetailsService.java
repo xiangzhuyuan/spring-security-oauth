@@ -23,12 +23,12 @@ package org.springframework.security.oauth.consumer;
  */
 public interface ProtectedResourceDetailsService {
 
-  /**
-   * Load the details of a protected resource by id.
-   *
-   * @param id The id.
-   * @return The protected resource details.
-   * @throws IllegalArgumentException If there are no details available for the given id.
-   */
-  ProtectedResourceDetails loadProtectedResourceDetailsById(String id) throws IllegalArgumentException;
+    /**
+     * Load the details of a protected resource by id.
+     *
+     * @param id The id.
+     * @return The protected resource details.
+     * @throws IllegalArgumentException If there are no details available for the given id.
+     */
+    ProtectedResourceDetails loadProtectedResourceDetailsById(String id) throws IllegalArgumentException;
 }

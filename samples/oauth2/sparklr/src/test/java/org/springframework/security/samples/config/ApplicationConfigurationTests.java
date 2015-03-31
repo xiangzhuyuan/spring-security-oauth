@@ -15,8 +15,6 @@
  */
 package org.springframework.security.samples.config;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +27,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import static org.junit.Assert.assertNotNull;
+
 /**
  * @author Rob Winch
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
@@ -40,7 +39,8 @@ public class ApplicationConfigurationTests {
 
     @Configuration
     @ComponentScan(basePackageClasses = SecurityConfiguration.class)
-    public static class Config {}
+    public static class Config {
+    }
 
     @Autowired
     private FilterChainProxy springSecurityFilterChain;
@@ -50,6 +50,6 @@ public class ApplicationConfigurationTests {
 
     @Test
     public void securityConfigurationLoads() {
-    	assertNotNull(endpoint);
+        assertNotNull(endpoint);
     }
 }

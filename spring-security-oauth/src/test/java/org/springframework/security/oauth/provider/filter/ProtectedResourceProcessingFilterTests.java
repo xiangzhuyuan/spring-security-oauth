@@ -16,57 +16,54 @@
 
 package org.springframework.security.oauth.provider.filter;
 
-import static org.junit.Assert.assertSame;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.Test;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth.provider.ConsumerAuthentication;
 import org.springframework.security.oauth.provider.ConsumerCredentials;
 import org.springframework.security.oauth.provider.ConsumerDetails;
-import org.springframework.security.oauth.provider.filter.ProtectedResourceProcessingFilter;
 import org.springframework.security.oauth.provider.token.OAuthAccessProviderToken;
 import org.springframework.security.oauth.provider.token.OAuthProviderTokenServices;
+
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Ryan Heaton
  */
 public class ProtectedResourceProcessingFilterTests {
 
-	/**
-	 * test onValidSignature
-	 */
-	@Test
-	public void testOnValidSignature() throws Exception {
-		ProtectedResourceProcessingFilter filter = new ProtectedResourceProcessingFilter();
-		HttpServletRequest request = mock(HttpServletRequest.class);
-		HttpServletResponse response = mock(HttpServletResponse.class);
-		FilterChain chain = mock(FilterChain.class);
-		ConsumerCredentials creds = new ConsumerCredentials("key", "sig", "meth", "base", "tok");
-		ConsumerAuthentication authentication = new ConsumerAuthentication(mock(ConsumerDetails.class), creds);
-		authentication.setAuthenticated(true);
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		OAuthProviderTokenServices tokenServices = mock(OAuthProviderTokenServices.class);
-		OAuthAccessProviderToken token = mock(OAuthAccessProviderToken.class);
-		filter.setTokenServices(tokenServices);
+    /**
+     * test onValidSignature
+     */
+    @Test
+    public void testOnValidSignature() throws Exception {
+        ProtectedResourceProcessingFilter filter = new ProtectedResourceProcessingFilter();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        FilterChain chain = mock(FilterChain.class);
+        ConsumerCredentials creds = new ConsumerCredentials("key", "sig", "meth", "base", "tok");
+        ConsumerAuthentication authentication = new ConsumerAuthentication(mock(ConsumerDetails.class), creds);
+        authentication.setAuthenticated(true);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        OAuthProviderTokenServices tokenServices = mock(OAuthProviderTokenServices.class);
+        OAuthAccessProviderToken token = mock(OAuthAccessProviderToken.class);
+        filter.setTokenServices(tokenServices);
 
-		when(tokenServices.getToken("tok")).thenReturn(token);
-		when(token.isAccessToken()).thenReturn(true);
-		Authentication userAuthentication = mock(Authentication.class);
-		when(token.getUserAuthentication()).thenReturn(userAuthentication);
+        when(tokenServices.getToken("tok")).thenReturn(token);
+        when(token.isAccessToken()).thenReturn(true);
+        Authentication userAuthentication = mock(Authentication.class);
+        when(token.getUserAuthentication()).thenReturn(userAuthentication);
 
-		filter.onValidSignature(request, response, chain);
+        filter.onValidSignature(request, response, chain);
 
-		verify(chain).doFilter(request, response);
-		assertSame(userAuthentication, SecurityContextHolder.getContext().getAuthentication());
-		SecurityContextHolder.getContext().setAuthentication(null);
-	}
+        verify(chain).doFilter(request, response);
+        assertSame(userAuthentication, SecurityContextHolder.getContext().getAuthentication());
+        SecurityContextHolder.getContext().setAuthentication(null);
+    }
 
 }

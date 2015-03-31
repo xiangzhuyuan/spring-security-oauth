@@ -11,34 +11,34 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("marissa").password("wombat").roles("USER").and().withUser("sam")
-				.password("kangaroo").roles("USER");
-	}
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication().withUser("marissa").password("wombat").roles("USER").and().withUser("sam")
+                .password("kangaroo").roles("USER");
+    }
 
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/resources/**");
-	}
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/resources/**");
+    }
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		// @formatter:off
-    	    http.authorizeRequests()
-                .antMatchers("/sparklr/**","/facebook/**").hasRole("USER")
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        // @formatter:off
+        http.authorizeRequests()
+                .antMatchers("/sparklr/**", "/facebook/**").hasRole("USER")
                 .anyRequest().permitAll()
                 .and()
-            .logout()
+                .logout()
                 .logoutSuccessUrl("/login.jsp")
                 .permitAll()
                 .and()
-            .formLogin()
-            	.loginProcessingUrl("/login")
+                .formLogin()
+                .loginProcessingUrl("/login")
                 .loginPage("/login.jsp")
                 .failureUrl("/login.jsp?authentication_error=true")
                 .permitAll();
-    	// @formatter:on
-	}
+        // @formatter:on
+    }
 
 }

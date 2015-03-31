@@ -14,34 +14,33 @@
 
 package org.springframework.security.oauth2.client.token.grant.code;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 import org.springframework.security.oauth2.client.token.DefaultAccessTokenRequest;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author Dave Syer
- *
  */
 public class AuthorizationCodeResourceDetailsTests {
-	
-	private AuthorizationCodeResourceDetails details = new AuthorizationCodeResourceDetails();
 
-	@Test
-	public void testGetDefaultRedirectUri() {
-		details.setPreEstablishedRedirectUri("http://anywhere.com");
-		DefaultAccessTokenRequest request = new DefaultAccessTokenRequest();
-		request.setCurrentUri("http://nowhere.com");
-		assertEquals("http://nowhere.com", details.getRedirectUri(request));
-	}
+    private AuthorizationCodeResourceDetails details = new AuthorizationCodeResourceDetails();
 
-	@Test
-	public void testGetOverrideRedirectUri() {
-		details.setPreEstablishedRedirectUri("http://anywhere.com");
-		details.setUseCurrentUri(false);
-		DefaultAccessTokenRequest request = new DefaultAccessTokenRequest();
-		request.setCurrentUri("http://nowhere.com");
-		assertEquals("http://anywhere.com", details.getRedirectUri(request));
-	}
+    @Test
+    public void testGetDefaultRedirectUri() {
+        details.setPreEstablishedRedirectUri("http://anywhere.com");
+        DefaultAccessTokenRequest request = new DefaultAccessTokenRequest();
+        request.setCurrentUri("http://nowhere.com");
+        assertEquals("http://nowhere.com", details.getRedirectUri(request));
+    }
+
+    @Test
+    public void testGetOverrideRedirectUri() {
+        details.setPreEstablishedRedirectUri("http://anywhere.com");
+        details.setUseCurrentUri(false);
+        DefaultAccessTokenRequest request = new DefaultAccessTokenRequest();
+        request.setCurrentUri("http://nowhere.com");
+        assertEquals("http://anywhere.com", details.getRedirectUri(request));
+    }
 
 }

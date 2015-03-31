@@ -14,12 +14,6 @@
 
 package org.springframework.security.oauth2.provider.endpoint;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -28,74 +22,79 @@ import org.springframework.security.oauth2.provider.AuthorizationRequest;
 import org.springframework.security.web.csrf.DefaultCsrfToken;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertTrue;
+
 /**
  * @author Dave Syer
- *
  */
 public class WhitelabelApprovalEndpointTests {
-	
-	private WhitelabelApprovalEndpoint endpoint = new WhitelabelApprovalEndpoint();
-	private Map<String, String> parameters = new HashMap<String, String>();
-	private MockHttpServletRequest request = new MockHttpServletRequest();
-	private MockHttpServletResponse response = new MockHttpServletResponse();
 
-	private AuthorizationRequest createFromParameters(Map<String, String> authorizationParameters) {
-		AuthorizationRequest request = new AuthorizationRequest(authorizationParameters, Collections.<String, String> emptyMap(), 
-				authorizationParameters.get(OAuth2Utils.CLIENT_ID), 
-				OAuth2Utils.parseParameterList(authorizationParameters.get(OAuth2Utils.SCOPE)), null,
-				null, false, authorizationParameters.get(OAuth2Utils.STATE), 
-				authorizationParameters.get(OAuth2Utils.REDIRECT_URI), 
-				OAuth2Utils.parseParameterList(authorizationParameters.get(OAuth2Utils.RESPONSE_TYPE)));
-		return request;
-	}
-	
-	@Test
-	public void testApprovalPage() throws Exception {
-		request.setContextPath("/foo");
-		parameters.put("client_id", "client");
-		HashMap<String, Object> model = new HashMap<String, Object>();
-		model.put("authorizationRequest", createFromParameters(parameters));
-		ModelAndView result = endpoint.getAccessConfirmation(model, request);
-		result.getView().render(result.getModel(), request , response);
-		String content = response.getContentAsString();
-		assertTrue("Wrong content: " + content, content.contains("<form"));
-		assertTrue("Wrong content: " + content, content.contains("/foo/oauth/authorize"));
-		assertTrue("Wrong content: " + content, !content.contains("${"));
-		assertTrue("Wrong content: " + content, !content.contains("_csrf"));
-		assertTrue("Wrong content: " + content, !content.contains("%"));
-	}
+    private WhitelabelApprovalEndpoint endpoint = new WhitelabelApprovalEndpoint();
+    private Map<String, String> parameters = new HashMap<String, String>();
+    private MockHttpServletRequest request = new MockHttpServletRequest();
+    private MockHttpServletResponse response = new MockHttpServletResponse();
 
-	@Test
-	public void testApprovalPageWithScopes() throws Exception {
-		request.setContextPath("/foo");
-		parameters.put("client_id", "client");
-		HashMap<String, Object> model = new HashMap<String, Object>();
-		model.put("authorizationRequest", createFromParameters(parameters));
-		model.put("scopes", Collections.singletonMap("scope.read", "true"));
-		ModelAndView result = endpoint.getAccessConfirmation(model, request);
-		result.getView().render(result.getModel(), request , response);
-		String content = response.getContentAsString();
-		assertTrue("Wrong content: " + content, content.contains("scope.read"));
-		assertTrue("Wrong content: " + content, content.contains("checked"));
-		assertTrue("Wrong content: " + content, content.contains("/foo/oauth/authorize"));
-		assertTrue("Wrong content: " + content, !content.contains("${"));
-		assertTrue("Wrong content: " + content, !content.contains("_csrf"));
-		assertTrue("Wrong content: " + content, !content.contains("%"));
-	}
+    private AuthorizationRequest createFromParameters(Map<String, String> authorizationParameters) {
+        AuthorizationRequest request = new AuthorizationRequest(authorizationParameters, Collections.<String, String>emptyMap(),
+                authorizationParameters.get(OAuth2Utils.CLIENT_ID),
+                OAuth2Utils.parseParameterList(authorizationParameters.get(OAuth2Utils.SCOPE)), null,
+                null, false, authorizationParameters.get(OAuth2Utils.STATE),
+                authorizationParameters.get(OAuth2Utils.REDIRECT_URI),
+                OAuth2Utils.parseParameterList(authorizationParameters.get(OAuth2Utils.RESPONSE_TYPE)));
+        return request;
+    }
 
-	@Test
-	public void testApprovalPageWithCsrf() throws Exception {
-		request.setContextPath("/foo");
-		request.setAttribute("_csrf", new DefaultCsrfToken("X-CSRF-TOKEN", "_csrf", "FOO"));
-		parameters.put("client_id", "client");
-		HashMap<String, Object> model = new HashMap<String, Object>();
-		model.put("authorizationRequest", createFromParameters(parameters));
-		ModelAndView result = endpoint.getAccessConfirmation(model, request);
-		result.getView().render(result.getModel(), request , response);
-		String content = response.getContentAsString();
-		assertTrue("Wrong content: " + content, content.contains("_csrf"));
-		assertTrue("Wrong content: " + content, content.contains("/foo/oauth/authorize"));
-		assertTrue("Wrong content: " + content, !content.contains("${"));
-	}
+    @Test
+    public void testApprovalPage() throws Exception {
+        request.setContextPath("/foo");
+        parameters.put("client_id", "client");
+        HashMap<String, Object> model = new HashMap<String, Object>();
+        model.put("authorizationRequest", createFromParameters(parameters));
+        ModelAndView result = endpoint.getAccessConfirmation(model, request);
+        result.getView().render(result.getModel(), request, response);
+        String content = response.getContentAsString();
+        assertTrue("Wrong content: " + content, content.contains("<form"));
+        assertTrue("Wrong content: " + content, content.contains("/foo/oauth/authorize"));
+        assertTrue("Wrong content: " + content, !content.contains("${"));
+        assertTrue("Wrong content: " + content, !content.contains("_csrf"));
+        assertTrue("Wrong content: " + content, !content.contains("%"));
+    }
+
+    @Test
+    public void testApprovalPageWithScopes() throws Exception {
+        request.setContextPath("/foo");
+        parameters.put("client_id", "client");
+        HashMap<String, Object> model = new HashMap<String, Object>();
+        model.put("authorizationRequest", createFromParameters(parameters));
+        model.put("scopes", Collections.singletonMap("scope.read", "true"));
+        ModelAndView result = endpoint.getAccessConfirmation(model, request);
+        result.getView().render(result.getModel(), request, response);
+        String content = response.getContentAsString();
+        assertTrue("Wrong content: " + content, content.contains("scope.read"));
+        assertTrue("Wrong content: " + content, content.contains("checked"));
+        assertTrue("Wrong content: " + content, content.contains("/foo/oauth/authorize"));
+        assertTrue("Wrong content: " + content, !content.contains("${"));
+        assertTrue("Wrong content: " + content, !content.contains("_csrf"));
+        assertTrue("Wrong content: " + content, !content.contains("%"));
+    }
+
+    @Test
+    public void testApprovalPageWithCsrf() throws Exception {
+        request.setContextPath("/foo");
+        request.setAttribute("_csrf", new DefaultCsrfToken("X-CSRF-TOKEN", "_csrf", "FOO"));
+        parameters.put("client_id", "client");
+        HashMap<String, Object> model = new HashMap<String, Object>();
+        model.put("authorizationRequest", createFromParameters(parameters));
+        ModelAndView result = endpoint.getAccessConfirmation(model, request);
+        result.getView().render(result.getModel(), request, response);
+        String content = response.getContentAsString();
+        assertTrue("Wrong content: " + content, content.contains("_csrf"));
+        assertTrue("Wrong content: " + content, content.contains("/foo/oauth/authorize"));
+        assertTrue("Wrong content: " + content, !content.contains("${"));
+    }
 
 }

@@ -16,21 +16,21 @@ import org.springframework.security.core.Authentication;
  * By default the {@link OAuth2ExpressionParser} is used. If this is undesirable one can inject their own
  * {@link ExpressionParser} using {@link #setExpressionParser(ExpressionParser)}.
  * </p>
- * 
+ *
  * @author Dave Syer
  * @author Rob Winch
  * @see OAuth2ExpressionParser
  */
 public class OAuth2MethodSecurityExpressionHandler extends DefaultMethodSecurityExpressionHandler {
 
-	public OAuth2MethodSecurityExpressionHandler() {
-		setExpressionParser(new OAuth2ExpressionParser(getExpressionParser()));
-	}
+    public OAuth2MethodSecurityExpressionHandler() {
+        setExpressionParser(new OAuth2ExpressionParser(getExpressionParser()));
+    }
 
-	@Override
-	public StandardEvaluationContext createEvaluationContextInternal(Authentication authentication, MethodInvocation mi) {
-		StandardEvaluationContext ec = super.createEvaluationContextInternal(authentication, mi);
-		ec.setVariable("oauth2", new OAuth2SecurityExpressionMethods(authentication));
-		return ec;
-	}
+    @Override
+    public StandardEvaluationContext createEvaluationContextInternal(Authentication authentication, MethodInvocation mi) {
+        StandardEvaluationContext ec = super.createEvaluationContextInternal(authentication, mi);
+        ec.setVariable("oauth2", new OAuth2SecurityExpressionMethods(authentication));
+        return ec;
+    }
 }

@@ -24,7 +24,7 @@ import org.springframework.security.oauth.common.OAuthException;
 @SuppressWarnings("serial")
 public class InvalidOAuthParametersException extends OAuthException {
 
-  public InvalidOAuthParametersException(String msg) {
-    super(msg);
-  }
+    public InvalidOAuthParametersException(String msg) {
+        super(msg);
+    }
 }

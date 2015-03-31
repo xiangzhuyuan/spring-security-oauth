@@ -15,20 +15,20 @@ package org.springframework.security.oauth2.http.converter.jaxb;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 
 public final class JaxbOAuth2ExceptionMessageConverter extends
-		AbstractJaxbMessageConverter<JaxbOAuth2Exception, OAuth2Exception> {
+        AbstractJaxbMessageConverter<JaxbOAuth2Exception, OAuth2Exception> {
 
-	public JaxbOAuth2ExceptionMessageConverter() {
-		super(JaxbOAuth2Exception.class, OAuth2Exception.class);
-	}
+    public JaxbOAuth2ExceptionMessageConverter() {
+        super(JaxbOAuth2Exception.class, OAuth2Exception.class);
+    }
 
-	protected JaxbOAuth2Exception convertToInternal(OAuth2Exception exception) {
-		JaxbOAuth2Exception result = new JaxbOAuth2Exception();
-		result.setDescription(exception.getMessage());
-		result.setErrorCode(exception.getOAuth2ErrorCode());
-		return result;
-	}
+    protected JaxbOAuth2Exception convertToInternal(OAuth2Exception exception) {
+        JaxbOAuth2Exception result = new JaxbOAuth2Exception();
+        result.setDescription(exception.getMessage());
+        result.setErrorCode(exception.getOAuth2ErrorCode());
+        return result;
+    }
 
-	protected OAuth2Exception convertToExternal(JaxbOAuth2Exception jaxbOAuth2Exception) {
-		return OAuth2Exception.create(jaxbOAuth2Exception.getErrorCode(), jaxbOAuth2Exception.getDescription());
-	}
+    protected OAuth2Exception convertToExternal(JaxbOAuth2Exception jaxbOAuth2Exception) {
+        return OAuth2Exception.create(jaxbOAuth2Exception.getErrorCode(), jaxbOAuth2Exception.getDescription());
+    }
 }

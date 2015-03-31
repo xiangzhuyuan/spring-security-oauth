@@ -12,52 +12,51 @@
  */
 package org.springframework.security.oauth2.provider.endpoint;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
+import org.springframework.security.oauth2.common.exceptions.RedirectMismatchException;
+import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Test;
-import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
-import org.springframework.security.oauth2.common.exceptions.RedirectMismatchException;
-import org.springframework.security.oauth2.provider.client.BaseClientDetails;
-import org.springframework.security.oauth2.provider.endpoint.ExactMatchRedirectResolver;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Dave Syer
  */
 public class ExactMatchRedirectResolverTests {
 
-	private ExactMatchRedirectResolver resolver = new ExactMatchRedirectResolver();
-	private BaseClientDetails client = new BaseClientDetails();
-	
-	{
-		client.setAuthorizedGrantTypes(Collections.singleton("authorization_code"));
-	}
+    private ExactMatchRedirectResolver resolver = new ExactMatchRedirectResolver();
+    private BaseClientDetails client = new BaseClientDetails();
 
-	@Test ( expected = RedirectMismatchException.class )
-	public void testRedirectNotMatching() throws Exception {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("http://anywhere.com"));
-		String requestedRedirect = "http://anywhere.com/myendpoint";
-		client.setRegisteredRedirectUri(redirectUris);
-		assertEquals(redirectUris.iterator().next(), resolver.resolveRedirect(requestedRedirect, client));
-	}
+    {
+        client.setAuthorizedGrantTypes(Collections.singleton("authorization_code"));
+    }
 
-	@Test
-	public void testRedirectWithNoRegisteredValue() throws Exception {
-		String requestedRedirect = "http://anywhere.com/myendpoint";
-		assertEquals(requestedRedirect, resolver.resolveRedirect(requestedRedirect, client));
-	}
+    @Test(expected = RedirectMismatchException.class)
+    public void testRedirectNotMatching() throws Exception {
+        Set<String> redirectUris = new HashSet<String>(Arrays.asList("http://anywhere.com"));
+        String requestedRedirect = "http://anywhere.com/myendpoint";
+        client.setRegisteredRedirectUri(redirectUris);
+        assertEquals(redirectUris.iterator().next(), resolver.resolveRedirect(requestedRedirect, client));
+    }
 
-	// As we have one or more registered redirects, the redirect SHOULD be present.
-	// If not we should expect a Oauth2Exception.
-	@Test ( expected = OAuth2Exception.class )
-	public void testRedirectWithNoRequestedValue() throws Exception {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("http://anywhere.com", "http://nowhere.com"));
-		client.setRegisteredRedirectUri(redirectUris);
-		resolver.resolveRedirect(null, client);
-	}
+    @Test
+    public void testRedirectWithNoRegisteredValue() throws Exception {
+        String requestedRedirect = "http://anywhere.com/myendpoint";
+        assertEquals(requestedRedirect, resolver.resolveRedirect(requestedRedirect, client));
+    }
+
+    // As we have one or more registered redirects, the redirect SHOULD be present.
+    // If not we should expect a Oauth2Exception.
+    @Test(expected = OAuth2Exception.class)
+    public void testRedirectWithNoRequestedValue() throws Exception {
+        Set<String> redirectUris = new HashSet<String>(Arrays.asList("http://anywhere.com", "http://nowhere.com"));
+        client.setRegisteredRedirectUri(redirectUris);
+        resolver.resolveRedirect(null, client);
+    }
 
 }

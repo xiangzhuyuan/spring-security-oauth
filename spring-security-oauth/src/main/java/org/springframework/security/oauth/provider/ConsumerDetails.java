@@ -16,8 +16,8 @@
 
 package org.springframework.security.oauth.provider;
 
-import org.springframework.security.oauth.common.signature.SignatureSecret;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth.common.signature.SignatureSecret;
 
 import java.io.Serializable;
 import java.util.List;
@@ -29,33 +29,33 @@ import java.util.List;
  */
 public interface ConsumerDetails extends Serializable {
 
-  /**
-   * The consumer key.
-   *
-   * @return The consumer key.
-   */
-  String getConsumerKey();
+    /**
+     * The consumer key.
+     *
+     * @return The consumer key.
+     */
+    String getConsumerKey();
 
-  /**
-   * The name of the consumer (for display purposes).
-   *
-   * @return The name of the consumer (for display purposes).
-   */
-  String getConsumerName();
+    /**
+     * The name of the consumer (for display purposes).
+     *
+     * @return The name of the consumer (for display purposes).
+     */
+    String getConsumerName();
 
-  /**
-   * The signature secret.
-   *
-   * @return The signature secret.
-   */
-  SignatureSecret getSignatureSecret();
+    /**
+     * The signature secret.
+     *
+     * @return The signature secret.
+     */
+    SignatureSecret getSignatureSecret();
 
-  /**
-   * Get the authorities that are granted to the OAuth consumer.  Not the these are NOT the authorities
-   * that are granted to the consumer with a user-authorized access token. Instead, these authorities are
-   * inherent to the consumer itself.
-   *
-   * @return The authorities.
-   */
-  List<GrantedAuthority> getAuthorities();
+    /**
+     * Get the authorities that are granted to the OAuth consumer.  Not the these are NOT the authorities
+     * that are granted to the consumer with a user-authorized access token. Instead, these authorities are
+     * inherent to the consumer itself.
+     *
+     * @return The authorities.
+     */
+    List<GrantedAuthority> getAuthorities();
 }

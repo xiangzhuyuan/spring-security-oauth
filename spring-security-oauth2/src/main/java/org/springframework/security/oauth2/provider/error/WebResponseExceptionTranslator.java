@@ -19,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 
 public interface WebResponseExceptionTranslator {
-	
-	ResponseEntity<OAuth2Exception> translate(Exception e) throws Exception;
+
+    ResponseEntity<OAuth2Exception> translate(Exception e) throws Exception;
 
 }

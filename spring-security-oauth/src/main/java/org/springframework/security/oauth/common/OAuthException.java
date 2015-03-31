@@ -20,17 +20,17 @@ import org.springframework.security.core.AuthenticationException;
 
 /**
  * Base exception for OAuth processing.
- * 
+ *
  * @author Ryan Heaton
  */
 @SuppressWarnings("serial")
 public class OAuthException extends AuthenticationException {
 
-  public OAuthException(String message) {
-    super(message);
-  }
+    public OAuthException(String message) {
+        super(message);
+    }
 
-  public OAuthException(String message, Throwable throwable) {
-    super(message, throwable);
-  }
+    public OAuthException(String message, Throwable throwable) {
+        super(message, throwable);
+    }
 }

@@ -13,12 +13,6 @@
 
 package org.springframework.security.oauth2.provider.token;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -34,107 +28,112 @@ import org.springframework.security.oauth2.provider.RequestTokenFactory;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author Dave Syer
- *
  */
 public class TokenServicesWithTokenEnhancerTests {
 
-	private DefaultTokenServices tokenServices = new DefaultTokenServices();
+    private DefaultTokenServices tokenServices = new DefaultTokenServices();
 
-	private JwtAccessTokenConverter jwtTokenEnhancer = new JwtAccessTokenConverter();
+    private JwtAccessTokenConverter jwtTokenEnhancer = new JwtAccessTokenConverter();
 
-	private TokenEnhancerChain enhancer = new TokenEnhancerChain();
+    private TokenEnhancerChain enhancer = new TokenEnhancerChain();
 
-	private UsernamePasswordAuthenticationToken user = new UsernamePasswordAuthenticationToken("bob", "N/A",
-			AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER"));
+    private UsernamePasswordAuthenticationToken user = new UsernamePasswordAuthenticationToken("bob", "N/A",
+            AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER"));
 
-	private OAuth2Request request = RequestTokenFactory.createOAuth2Request("client", true, Arrays.asList("read"));
+    private OAuth2Request request = RequestTokenFactory.createOAuth2Request("client", true, Arrays.asList("read"));
 
-	private OAuth2Authentication authentication = new OAuth2Authentication(request, user);
+    private OAuth2Authentication authentication = new OAuth2Authentication(request, user);
 
-	@Before
-	public void init() throws Exception {
-		tokenServices.setClientDetailsService(new InMemoryClientDetailsServiceBuilder().withClient("client")
-				.authorizedGrantTypes("authorization_code").scopes("read").secret("secret").and().build());
-		enhancer.setTokenEnhancers(Arrays.<TokenEnhancer> asList(jwtTokenEnhancer));
-		jwtTokenEnhancer.afterPropertiesSet();
-		tokenServices.setTokenStore(new JwtTokenStore(jwtTokenEnhancer));
-		tokenServices.setTokenEnhancer(enhancer);
-	}
+    @Before
+    public void init() throws Exception {
+        tokenServices.setClientDetailsService(new InMemoryClientDetailsServiceBuilder().withClient("client")
+                .authorizedGrantTypes("authorization_code").scopes("read").secret("secret").and().build());
+        enhancer.setTokenEnhancers(Arrays.<TokenEnhancer>asList(jwtTokenEnhancer));
+        jwtTokenEnhancer.afterPropertiesSet();
+        tokenServices.setTokenStore(new JwtTokenStore(jwtTokenEnhancer));
+        tokenServices.setTokenEnhancer(enhancer);
+    }
 
-	@Test
-	public void scopePreservedWhenTokenCreated() {
-		assertEquals("[read]", tokenServices.createAccessToken(authentication).getScope().toString());
-		tokenServices.getAccessToken(authentication);
-	}
+    @Test
+    public void scopePreservedWhenTokenCreated() {
+        assertEquals("[read]", tokenServices.createAccessToken(authentication).getScope().toString());
+        tokenServices.getAccessToken(authentication);
+    }
 
-	@Test
-	public void scopePreservedWhenTokenDecoded() {
-		OAuth2AccessToken token = tokenServices.createAccessToken(authentication);
-		assertEquals("[read]", tokenServices.loadAuthentication(token.getValue()).getOAuth2Request().getScope()
-				.toString());
-	}
+    @Test
+    public void scopePreservedWhenTokenDecoded() {
+        OAuth2AccessToken token = tokenServices.createAccessToken(authentication);
+        assertEquals("[read]", tokenServices.loadAuthentication(token.getValue()).getOAuth2Request().getScope()
+                .toString());
+    }
 
-	@Test
-	public void customUserPreservedWhenTokenDecoded() {
-		DefaultAccessTokenConverter tokenConverter = new DefaultAccessTokenConverter();
-		tokenConverter.setUserTokenConverter(new UserAuthenticationConverter() {
-			
-			@Override
-			public Authentication extractAuthentication(Map<String, ?> map) {
-				return new FooAuthentication((String) map.get("user"));
-			}
-			
-			@Override
-			public Map<String, ?> convertUserAuthentication(Authentication userAuthentication) {
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("user", userAuthentication.getName());
-				map.put("foo", "bar");
-				return map ;
-			}
-		});
-		jwtTokenEnhancer.setAccessTokenConverter(tokenConverter);
-		OAuth2AccessToken token = tokenServices.createAccessToken(authentication);
-		assertEquals("bob", tokenServices.loadAuthentication(token.getValue()).getUserAuthentication().getName());
-	}
+    @Test
+    public void customUserPreservedWhenTokenDecoded() {
+        DefaultAccessTokenConverter tokenConverter = new DefaultAccessTokenConverter();
+        tokenConverter.setUserTokenConverter(new UserAuthenticationConverter() {
 
-	@Test
-	public void additionalInfoPreservedWhenTokenDecoded() {
-		TokenEnhancer info = new TokenEnhancer() {
-			@Override
-			public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
-				DefaultOAuth2AccessToken result = new DefaultOAuth2AccessToken(accessToken);
-				result.getAdditionalInformation().put("foo", "bar");
-				return result;
-			}
-		};
-		enhancer.setTokenEnhancers(Arrays.<TokenEnhancer> asList(info , jwtTokenEnhancer));
-		OAuth2AccessToken token = tokenServices.createAccessToken(authentication);
-		assertEquals("bar", token.getAdditionalInformation().get("foo"));
-		assertEquals("bar", tokenServices.readAccessToken(token.getValue()).getAdditionalInformation().get("foo"));
-	}
-	
-	@SuppressWarnings("serial")
-	protected static class FooAuthentication extends AbstractAuthenticationToken {
+            @Override
+            public Authentication extractAuthentication(Map<String, ?> map) {
+                return new FooAuthentication((String) map.get("user"));
+            }
 
-		private String name;
+            @Override
+            public Map<String, ?> convertUserAuthentication(Authentication userAuthentication) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("user", userAuthentication.getName());
+                map.put("foo", "bar");
+                return map;
+            }
+        });
+        jwtTokenEnhancer.setAccessTokenConverter(tokenConverter);
+        OAuth2AccessToken token = tokenServices.createAccessToken(authentication);
+        assertEquals("bob", tokenServices.loadAuthentication(token.getValue()).getUserAuthentication().getName());
+    }
 
-		public FooAuthentication(String name) {
-			super(AuthorityUtils.commaSeparatedStringToAuthorityList("USER"));
-			this.name = name;
-		}
+    @Test
+    public void additionalInfoPreservedWhenTokenDecoded() {
+        TokenEnhancer info = new TokenEnhancer() {
+            @Override
+            public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+                DefaultOAuth2AccessToken result = new DefaultOAuth2AccessToken(accessToken);
+                result.getAdditionalInformation().put("foo", "bar");
+                return result;
+            }
+        };
+        enhancer.setTokenEnhancers(Arrays.<TokenEnhancer>asList(info, jwtTokenEnhancer));
+        OAuth2AccessToken token = tokenServices.createAccessToken(authentication);
+        assertEquals("bar", token.getAdditionalInformation().get("foo"));
+        assertEquals("bar", tokenServices.readAccessToken(token.getValue()).getAdditionalInformation().get("foo"));
+    }
 
-		@Override
-		public Object getCredentials() {
-			return "N/A";
-		}
+    @SuppressWarnings("serial")
+    protected static class FooAuthentication extends AbstractAuthenticationToken {
 
-		@Override
-		public Object getPrincipal() {
-			return name;
-		}
-		
-	}
+        private String name;
+
+        public FooAuthentication(String name) {
+            super(AuthorityUtils.commaSeparatedStringToAuthorityList("USER"));
+            this.name = name;
+        }
+
+        @Override
+        public Object getCredentials() {
+            return "N/A";
+        }
+
+        @Override
+        public Object getPrincipal() {
+            return name;
+        }
+
+    }
 
 }

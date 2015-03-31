@@ -22,7 +22,7 @@ package org.springframework.security.oauth.common.signature;
 @SuppressWarnings("serial")
 public class UnsupportedSignatureMethodException extends RuntimeException {
 
-  public UnsupportedSignatureMethodException(String msg) {
-    super(msg);
-  }
+    public UnsupportedSignatureMethodException(String msg) {
+        super(msg);
+    }
 }

@@ -27,63 +27,62 @@ import org.springframework.core.io.ByteArrayResource;
 
 /**
  * @author Dave Syer
- * 
  */
 public class InvalidResourceBeanDefinitionParserTests {
-	
-	private ConfigurableApplicationContext context;
-	
-	@Rule
-	public ExpectedException expected = ExpectedException.none();
-	
-	@After
-	public void close() {
-		if (context!=null) {
-			context.close();
-		}
-	}
 
-	@Test
-	public void testMissingTokenUriForClientCredentials() {
-		expected.expect(BeanDefinitionParsingException.class);
-		expected.expectMessage("accessTokenUri must be supplied");
-		loadContext("type='client_credentials'");
-	}
+    private ConfigurableApplicationContext context;
 
-	@Test
-	public void testMissingAuthorizationUriForImplicit() {
-		expected.expect(BeanDefinitionParsingException.class);
-		expected.expectMessage("authorization URI must be supplied");
-		loadContext("type='implicit'");
-	}
+    @Rule
+    public ExpectedException expected = ExpectedException.none();
 
-	@Test
-	public void testMissingAuthorizationUriForAuthorizationCode() {
-		expected.expect(BeanDefinitionParsingException.class);
-		expected.expectMessage("authorization URI must be supplied");
-		loadContext("type='authorization_code' access-token-uri='http://somewhere.com'");
-	}
+    @After
+    public void close() {
+        if (context != null) {
+            context.close();
+        }
+    }
 
-	@Test
-	public void testMissingUsernameForPassword() {
-		expected.expect(BeanDefinitionParsingException.class);
-		expected.expectMessage("A username must be supplied on a resource element of type password");
-		loadContext("type='password' access-token-uri='http://somewhere.com'");
-	}
+    @Test
+    public void testMissingTokenUriForClientCredentials() {
+        expected.expect(BeanDefinitionParsingException.class);
+        expected.expectMessage("accessTokenUri must be supplied");
+        loadContext("type='client_credentials'");
+    }
 
-	@Test
-	public void testMissingPasswordForPassword() {
-		expected.expect(BeanDefinitionParsingException.class);
-		expected.expectMessage("A password must be supplied on a resource element of type password");
-		loadContext("type='password' username='admin' access-token-uri='http://somewhere.com'");
-	}
+    @Test
+    public void testMissingAuthorizationUriForImplicit() {
+        expected.expect(BeanDefinitionParsingException.class);
+        expected.expectMessage("authorization URI must be supplied");
+        loadContext("type='implicit'");
+    }
 
-	private void loadContext(String attributes) {
-		String config = HEADER + String.format(TEMPLATE, attributes) + FOOTER;
-		context = new GenericXmlApplicationContext(new ByteArrayResource(config .getBytes()));
-	}
+    @Test
+    public void testMissingAuthorizationUriForAuthorizationCode() {
+        expected.expect(BeanDefinitionParsingException.class);
+        expected.expectMessage("authorization URI must be supplied");
+        loadContext("type='authorization_code' access-token-uri='http://somewhere.com'");
+    }
 
-	private static String HEADER = "<?xml version='1.0' encoding='UTF-8'?><beans xmlns='http://www.springframework.org/schema/beans' xmlns:oauth='http://www.springframework.org/schema/security/oauth2' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'	xsi:schemaLocation='http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd'>";
-	private static String FOOTER = "</beans>";
-	private static String TEMPLATE = "<oauth:resource id='resource' client-id='client' %s/>";
+    @Test
+    public void testMissingUsernameForPassword() {
+        expected.expect(BeanDefinitionParsingException.class);
+        expected.expectMessage("A username must be supplied on a resource element of type password");
+        loadContext("type='password' access-token-uri='http://somewhere.com'");
+    }
+
+    @Test
+    public void testMissingPasswordForPassword() {
+        expected.expect(BeanDefinitionParsingException.class);
+        expected.expectMessage("A password must be supplied on a resource element of type password");
+        loadContext("type='password' username='admin' access-token-uri='http://somewhere.com'");
+    }
+
+    private void loadContext(String attributes) {
+        String config = HEADER + String.format(TEMPLATE, attributes) + FOOTER;
+        context = new GenericXmlApplicationContext(new ByteArrayResource(config.getBytes()));
+    }
+
+    private static String HEADER = "<?xml version='1.0' encoding='UTF-8'?><beans xmlns='http://www.springframework.org/schema/beans' xmlns:oauth='http://www.springframework.org/schema/security/oauth2' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'	xsi:schemaLocation='http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd'>";
+    private static String FOOTER = "</beans>";
+    private static String TEMPLATE = "<oauth:resource id='resource' client-id='client' %s/>";
 }

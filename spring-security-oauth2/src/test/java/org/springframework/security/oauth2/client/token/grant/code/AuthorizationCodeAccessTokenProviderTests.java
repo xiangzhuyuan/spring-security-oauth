@@ -12,9 +12,6 @@
  */
 package org.springframework.security.oauth2.client.token.grant.code;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -28,74 +25,75 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 /**
  * @author Dave Syer
- * 
  */
 public class AuthorizationCodeAccessTokenProviderTests {
 
-	@Rule
-	public ExpectedException expected = ExpectedException.none();
+    @Rule
+    public ExpectedException expected = ExpectedException.none();
 
-	private MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+    private MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
 
-	private AuthorizationCodeAccessTokenProvider provider = new AuthorizationCodeAccessTokenProvider() {
-		@Override
-		protected OAuth2AccessToken retrieveToken(AccessTokenRequest request, OAuth2ProtectedResourceDetails resource,
-				MultiValueMap<String, String> form, HttpHeaders headers) {
-			params.putAll(form);
-			return new DefaultOAuth2AccessToken("FOO");
-		}
-	};
+    private AuthorizationCodeAccessTokenProvider provider = new AuthorizationCodeAccessTokenProvider() {
+        @Override
+        protected OAuth2AccessToken retrieveToken(AccessTokenRequest request, OAuth2ProtectedResourceDetails resource,
+                                                  MultiValueMap<String, String> form, HttpHeaders headers) {
+            params.putAll(form);
+            return new DefaultOAuth2AccessToken("FOO");
+        }
+    };
 
-	private AuthorizationCodeResourceDetails resource = new AuthorizationCodeResourceDetails();
+    private AuthorizationCodeResourceDetails resource = new AuthorizationCodeResourceDetails();
 
-	@Test
-	public void testGetAccessToken() throws Exception {
-		AccessTokenRequest request = new DefaultAccessTokenRequest();
-		request.setAuthorizationCode("foo");
-		resource.setAccessTokenUri("http://localhost/oauth/token");
-		assertEquals("FOO", provider.obtainAccessToken(resource, request).getValue());
-	}
+    @Test
+    public void testGetAccessToken() throws Exception {
+        AccessTokenRequest request = new DefaultAccessTokenRequest();
+        request.setAuthorizationCode("foo");
+        resource.setAccessTokenUri("http://localhost/oauth/token");
+        assertEquals("FOO", provider.obtainAccessToken(resource, request).getValue());
+    }
 
-	@Test
-	public void testRedirectToAuthorizationEndpoint() throws Exception {
-		AccessTokenRequest request = new DefaultAccessTokenRequest();
-		request.setCurrentUri("/come/back/soon");
-		resource.setUserAuthorizationUri("http://localhost/oauth/authorize");
-		try {
-			provider.obtainAccessToken(resource, request);
-			fail("Expected UserRedirectRequiredException");
-		}
-		catch (UserRedirectRequiredException e) {
-			assertEquals("http://localhost/oauth/authorize", e.getRedirectUri());
-			assertEquals("/come/back/soon", e.getStateToPreserve());
-		}
-	}
+    @Test
+    public void testRedirectToAuthorizationEndpoint() throws Exception {
+        AccessTokenRequest request = new DefaultAccessTokenRequest();
+        request.setCurrentUri("/come/back/soon");
+        resource.setUserAuthorizationUri("http://localhost/oauth/authorize");
+        try {
+            provider.obtainAccessToken(resource, request);
+            fail("Expected UserRedirectRequiredException");
+        } catch (UserRedirectRequiredException e) {
+            assertEquals("http://localhost/oauth/authorize", e.getRedirectUri());
+            assertEquals("/come/back/soon", e.getStateToPreserve());
+        }
+    }
 
-	// A missing redirect just means the server has to deal with it
-	@Test(expected = UserRedirectRequiredException.class)
-	public void testRedirectNotSpecified() throws Exception {
-		AccessTokenRequest request = new DefaultAccessTokenRequest();
-		resource.setUserAuthorizationUri("http://localhost/oauth/authorize");
-		provider.obtainAccessToken(resource, request);
-	}
+    // A missing redirect just means the server has to deal with it
+    @Test(expected = UserRedirectRequiredException.class)
+    public void testRedirectNotSpecified() throws Exception {
+        AccessTokenRequest request = new DefaultAccessTokenRequest();
+        resource.setUserAuthorizationUri("http://localhost/oauth/authorize");
+        provider.obtainAccessToken(resource, request);
+    }
 
-	@Test
-	public void testGetAccessTokenRequest() throws Exception {
-		AccessTokenRequest request = new DefaultAccessTokenRequest();
-		request.setAuthorizationCode("foo");
-		request.setStateKey("bar");
-		request.setPreservedState(new Object());
-		resource.setAccessTokenUri("http://localhost/oauth/token");
-		resource.setPreEstablishedRedirectUri("http://anywhere.com");
-		assertEquals("FOO", provider.obtainAccessToken(resource, request).getValue());
-		// System.err.println(params);
-		assertEquals("authorization_code", params.getFirst("grant_type"));
-		assertEquals("foo", params.getFirst("code"));
-		assertEquals("http://anywhere.com", params.getFirst("redirect_uri"));
-		// State is not set in token request
-		assertEquals(null, params.getFirst("state"));
-	}
+    @Test
+    public void testGetAccessTokenRequest() throws Exception {
+        AccessTokenRequest request = new DefaultAccessTokenRequest();
+        request.setAuthorizationCode("foo");
+        request.setStateKey("bar");
+        request.setPreservedState(new Object());
+        resource.setAccessTokenUri("http://localhost/oauth/token");
+        resource.setPreEstablishedRedirectUri("http://anywhere.com");
+        assertEquals("FOO", provider.obtainAccessToken(resource, request).getValue());
+        // System.err.println(params);
+        assertEquals("authorization_code", params.getFirst("grant_type"));
+        assertEquals("foo", params.getFirst("code"));
+        assertEquals("http://anywhere.com", params.getFirst("redirect_uri"));
+        // State is not set in token request
+        assertEquals(null, params.getFirst("state"));
+    }
 
 }

@@ -18,5 +18,5 @@ import org.springframework.security.jwt.AlgorithmMetadata;
  * @author Luke Taylor
  */
 public interface Signer extends AlgorithmMetadata {
-	byte[] sign(byte[] bytes);
+    byte[] sign(byte[] bytes);
 }

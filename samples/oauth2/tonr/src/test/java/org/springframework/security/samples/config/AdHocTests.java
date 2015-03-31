@@ -23,17 +23,16 @@ import org.springframework.security.oauth.examples.tonr.ResourceOwnerPasswordGra
 
 /**
  * @author Dave Syer
- * 
  */
 @RunWith(Suite.class)
 // @formatter:off	
-@SuiteClasses({ 
-	SecurityConfigTests.class, 
-	ClientCredentialsGrantTests.class,
-	RefreshTokenGrantTests.class,
-	ResourceOwnerPasswordGrantTests.class,
-	AuthorizationCodeGrantTests.class, 
-	})
+@SuiteClasses({
+        SecurityConfigTests.class,
+        ClientCredentialsGrantTests.class,
+        RefreshTokenGrantTests.class,
+        ResourceOwnerPasswordGrantTests.class,
+        AuthorizationCodeGrantTests.class,
+})
 // @formatter:on
 // @Ignore("Test suite for tracking order dependencies")
 public class AdHocTests {

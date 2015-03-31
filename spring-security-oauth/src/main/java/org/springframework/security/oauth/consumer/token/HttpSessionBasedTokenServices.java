@@ -31,73 +31,71 @@ import javax.servlet.http.HttpSession;
  */
 public class HttpSessionBasedTokenServices implements OAuthConsumerTokenServices {
 
-  public static final String KEY_PREFIX = "OAUTH_TOKEN";
+    public static final String KEY_PREFIX = "OAUTH_TOKEN";
 
 
-  public OAuthConsumerToken getToken(String resourceId) throws AuthenticationException {
-    HttpSession session = getSession();
-    OAuthConsumerToken consumerToken = (OAuthConsumerToken) session.getAttribute(KEY_PREFIX + "#" + resourceId);
-    if (consumerToken != null) {
-      Long expiration = (Long) session.getAttribute(KEY_PREFIX + "#" + resourceId + "#EXPIRATION");
-      if (expiration != null && (System.currentTimeMillis() > expiration)) {
-        //token expired; remove it
-        removeToken(resourceId);
-        consumerToken = null;
-      }
+    public OAuthConsumerToken getToken(String resourceId) throws AuthenticationException {
+        HttpSession session = getSession();
+        OAuthConsumerToken consumerToken = (OAuthConsumerToken) session.getAttribute(KEY_PREFIX + "#" + resourceId);
+        if (consumerToken != null) {
+            Long expiration = (Long) session.getAttribute(KEY_PREFIX + "#" + resourceId + "#EXPIRATION");
+            if (expiration != null && (System.currentTimeMillis() > expiration)) {
+                //token expired; remove it
+                removeToken(resourceId);
+                consumerToken = null;
+            }
+        }
+
+        return consumerToken;
     }
 
-    return consumerToken;
-  }
+    public void storeToken(String resourceId, OAuthConsumerToken token) {
+        HttpSession session = getSession();
+        session.setAttribute(KEY_PREFIX + "#" + resourceId, token);
 
-  public void storeToken(String resourceId, OAuthConsumerToken token) {
-    HttpSession session = getSession();
-    session.setAttribute(KEY_PREFIX + "#" + resourceId, token);
+        //adding support for oauth session extension (http://oauth.googlecode.com/svn/spec/ext/session/1.0/drafts/1/spec.html)
+        Long expiration = null;
+        String expiresInValue = token.getAdditionalParameters() != null ? token.getAdditionalParameters().get("oauth_expires_in") : null;
+        if (expiresInValue != null) {
+            try {
+                expiration = System.currentTimeMillis() + (Integer.parseInt(expiresInValue) * 1000);
+            } catch (NumberFormatException e) {
+                //fall through.
+            }
+        }
 
-    //adding support for oauth session extension (http://oauth.googlecode.com/svn/spec/ext/session/1.0/drafts/1/spec.html)
-    Long expiration = null;
-    String expiresInValue = token.getAdditionalParameters() != null ? token.getAdditionalParameters().get("oauth_expires_in") : null;
-    if (expiresInValue != null) {
-      try {
-        expiration = System.currentTimeMillis() + (Integer.parseInt(expiresInValue) * 1000);
-      }
-      catch (NumberFormatException e) {
-        //fall through.
-      }
+        if (expiration != null) {
+            session.setAttribute(KEY_PREFIX + "#" + resourceId + "#EXPIRATION", expiration);
+        }
     }
 
-    if (expiration != null) {
-      session.setAttribute(KEY_PREFIX + "#" + resourceId + "#EXPIRATION", expiration);
-    }
-  }
-
-  public void removeToken(String resourceId) {
-    getSession().removeAttribute(KEY_PREFIX + "#" + resourceId);
-  }
-
-  protected HttpSession getSession() {
-    OAuthSecurityContext context = OAuthSecurityContextHolder.getContext();
-    if (context == null) {
-      throw new IllegalStateException("A security context must be established.");
+    public void removeToken(String resourceId) {
+        getSession().removeAttribute(KEY_PREFIX + "#" + resourceId);
     }
 
-    HttpServletRequest request;
-    try {
-      request = (HttpServletRequest) context.getDetails();
-    }
-    catch (ClassCastException e) {
-      throw new IllegalStateException("The security context must have the HTTP servlet request as its details.");
-    }
+    protected HttpSession getSession() {
+        OAuthSecurityContext context = OAuthSecurityContextHolder.getContext();
+        if (context == null) {
+            throw new IllegalStateException("A security context must be established.");
+        }
 
-    if (request == null) {
-      throw new IllegalStateException("The security context must have the HTTP servlet request as its details.");
-    }
+        HttpServletRequest request;
+        try {
+            request = (HttpServletRequest) context.getDetails();
+        } catch (ClassCastException e) {
+            throw new IllegalStateException("The security context must have the HTTP servlet request as its details.");
+        }
 
-    HttpSession session = request.getSession(true);
-    if (session == null) {
-      throw new IllegalStateException("Unable to create a session in which to store the tokens.");
-    }
+        if (request == null) {
+            throw new IllegalStateException("The security context must have the HTTP servlet request as its details.");
+        }
 
-    return session;
-  }
+        HttpSession session = request.getSession(true);
+        if (session == null) {
+            throw new IllegalStateException("Unable to create a session in which to store the tokens.");
+        }
+
+        return session;
+    }
 
 }

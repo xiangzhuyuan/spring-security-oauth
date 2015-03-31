@@ -10,17 +10,17 @@ import javax.servlet.ServletException;
  * <code>ServletException</code>s.
  */
 public final class DefaultThrowableAnalyzer extends ThrowableAnalyzer {
-  /**
-   * @see org.springframework.security.web.util.ThrowableAnalyzer#initExtractorMap()
-   */
-  protected void initExtractorMap() {
-    super.initExtractorMap();
+    /**
+     * @see org.springframework.security.web.util.ThrowableAnalyzer#initExtractorMap()
+     */
+    protected void initExtractorMap() {
+        super.initExtractorMap();
 
-    registerExtractor(ServletException.class, new ThrowableCauseExtractor() {
-      public Throwable extractCause(Throwable throwable) {
-        ThrowableAnalyzer.verifyThrowableHierarchy(throwable, ServletException.class);
-        return ((ServletException) throwable).getRootCause();
-      }
-    });
-  }
+        registerExtractor(ServletException.class, new ThrowableCauseExtractor() {
+            public Throwable extractCause(Throwable throwable) {
+                ThrowableAnalyzer.verifyThrowableHierarchy(throwable, ServletException.class);
+                return ((ServletException) throwable).getRootCause();
+            }
+        });
+    }
 }

@@ -17,18 +17,17 @@ import org.springframework.util.ClassUtils;
 
 /**
  * @author Dave Syer
- *
  */
 public class JsonParserFactory {
 
-	public static JsonParser create() {
-		if (ClassUtils.isPresent("com.fasterxml.jackson.databind.ObjectMapper", null)) {
-			return new Jackson2JsonParser();
-		}
-		if (ClassUtils.isPresent("org.codehaus.jackson.map.ObjectMapper", null)) {
-			return new JacksonJsonParser();
-		}
-		throw new IllegalStateException("No Jackson parser found. Please add Jackson to your classpath.");
-	}
+    public static JsonParser create() {
+        if (ClassUtils.isPresent("com.fasterxml.jackson.databind.ObjectMapper", null)) {
+            return new Jackson2JsonParser();
+        }
+        if (ClassUtils.isPresent("org.codehaus.jackson.map.ObjectMapper", null)) {
+            return new JacksonJsonParser();
+        }
+        throw new IllegalStateException("No Jackson parser found. Please add Jackson to your classpath.");
+    }
 
 }

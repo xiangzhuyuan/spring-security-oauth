@@ -23,15 +23,15 @@ import org.junit.Test;
  */
 public class PlainTextSignatureMethodTests {
 
-	/**
-	 * tests signing and verifying.
-	 */
-	@Test
-	public void testSignAndVerify() throws Exception {
-		String baseString = "thisismysignaturebasestringthatshouldbemuchlongerthanthisbutitdoesnthavetobeandherearesomestrangecharacters!@#$%^&*)(*";
-		PlainTextSignatureMethod signatureMethod = new PlainTextSignatureMethod("shhhhhhhh", null, null);
-		String signature = signatureMethod.sign(baseString);
-		signatureMethod.verify(baseString, signature);
-	}
+    /**
+     * tests signing and verifying.
+     */
+    @Test
+    public void testSignAndVerify() throws Exception {
+        String baseString = "thisismysignaturebasestringthatshouldbemuchlongerthanthisbutitdoesnthavetobeandherearesomestrangecharacters!@#$%^&*)(*";
+        PlainTextSignatureMethod signatureMethod = new PlainTextSignatureMethod("shhhhhhhh", null, null);
+        String signature = signatureMethod.sign(baseString);
+        signatureMethod.verify(baseString, signature);
+    }
 
 }

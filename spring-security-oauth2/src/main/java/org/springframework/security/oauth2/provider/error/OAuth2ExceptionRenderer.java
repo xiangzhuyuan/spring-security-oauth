@@ -19,10 +19,9 @@ import org.springframework.web.context.request.ServletWebRequest;
 /**
  * Strategy for rendering a {@link OAuth2Exception} in cases where they cannot be rendered by the Spring dispatcher
  * servlet (i.e. usually in a filter chain).
- * 
+ *
  * @author Dave Syer
- * 
  */
 public interface OAuth2ExceptionRenderer {
-	void handleHttpEntityResponse(HttpEntity<?> responseEntity, ServletWebRequest webRequest) throws Exception;
+    void handleHttpEntityResponse(HttpEntity<?> responseEntity, ServletWebRequest webRequest) throws Exception;
 }

@@ -25,18 +25,18 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class InMemoryProviderTokenServices extends RandomValueProviderTokenServices {
 
-  protected final ConcurrentHashMap<String, OAuthProviderTokenImpl> tokenStore = new ConcurrentHashMap<String, OAuthProviderTokenImpl>();
+    protected final ConcurrentHashMap<String, OAuthProviderTokenImpl> tokenStore = new ConcurrentHashMap<String, OAuthProviderTokenImpl>();
 
-  protected OAuthProviderTokenImpl readToken(String token) {
-    return tokenStore.get(token);
-  }
+    protected OAuthProviderTokenImpl readToken(String token) {
+        return tokenStore.get(token);
+    }
 
-  protected void storeToken(String tokenValue, OAuthProviderTokenImpl token) {
-    tokenStore.put(tokenValue, token);
-  }
+    protected void storeToken(String tokenValue, OAuthProviderTokenImpl token) {
+        tokenStore.put(tokenValue, token);
+    }
 
-  protected OAuthProviderTokenImpl removeToken(String tokenValue) {
-    return tokenStore.remove(tokenValue);
-  }
+    protected OAuthProviderTokenImpl removeToken(String tokenValue) {
+        return tokenStore.remove(tokenValue);
+    }
 
 }

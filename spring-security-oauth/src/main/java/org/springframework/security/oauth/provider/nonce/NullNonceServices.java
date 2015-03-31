@@ -27,7 +27,7 @@ import org.springframework.security.oauth.provider.ConsumerDetails;
  */
 public class NullNonceServices implements OAuthNonceServices {
 
-  public void validateNonce(ConsumerDetails consumerDetails, long timestamp, String nonce) throws AuthenticationException {
-    //no-op
-  }
+    public void validateNonce(ConsumerDetails consumerDetails, long timestamp, String nonce) throws AuthenticationException {
+        //no-op
+    }
 }

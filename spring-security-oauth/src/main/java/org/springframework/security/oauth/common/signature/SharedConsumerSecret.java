@@ -24,10 +24,10 @@ package org.springframework.security.oauth.common.signature;
  */
 public interface SharedConsumerSecret extends SignatureSecret {
 
-	/**
-	 * The consumer secret.
-	 *
-	 * @return The consumer secret.
-	 */
-	String getConsumerSecret();
+    /**
+     * The consumer secret.
+     *
+     * @return The consumer secret.
+     */
+    String getConsumerSecret();
 }

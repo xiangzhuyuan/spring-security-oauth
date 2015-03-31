@@ -12,11 +12,6 @@
  */
 package org.springframework.security.oauth2.http.converter;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -28,51 +23,55 @@ import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Converter that can handle inbound form data and convert it to an OAuth2 exception. Needed to support external servers,
  * like Facebook that might not send JSON data.
- * 
-@author Rob Winch
- * @author Dave Syer
  *
+ * @author Rob Winch
+ * @author Dave Syer
  */
 public final class FormOAuth2ExceptionHttpMessageConverter implements HttpMessageConverter<OAuth2Exception> {
 
-	private static final List<MediaType> SUPPORTED_MEDIA = Collections.singletonList(MediaType.APPLICATION_FORM_URLENCODED);
+    private static final List<MediaType> SUPPORTED_MEDIA = Collections.singletonList(MediaType.APPLICATION_FORM_URLENCODED);
 
-	private final FormHttpMessageConverter delegateMessageConverter = new FormHttpMessageConverter();
+    private final FormHttpMessageConverter delegateMessageConverter = new FormHttpMessageConverter();
 
-	public boolean canRead(Class<?> clazz, MediaType mediaType) {
-		return OAuth2Exception.class.equals(clazz) && MediaType.APPLICATION_FORM_URLENCODED.equals(mediaType);
-	}
+    public boolean canRead(Class<?> clazz, MediaType mediaType) {
+        return OAuth2Exception.class.equals(clazz) && MediaType.APPLICATION_FORM_URLENCODED.equals(mediaType);
+    }
 
-	public boolean canWrite(Class<?> clazz, MediaType mediaType) {
-		return OAuth2Exception.class.equals(clazz) && MediaType.APPLICATION_FORM_URLENCODED.equals(mediaType);
-	}
+    public boolean canWrite(Class<?> clazz, MediaType mediaType) {
+        return OAuth2Exception.class.equals(clazz) && MediaType.APPLICATION_FORM_URLENCODED.equals(mediaType);
+    }
 
-	public List<MediaType> getSupportedMediaTypes() {
-		return SUPPORTED_MEDIA;
-	}
+    public List<MediaType> getSupportedMediaTypes() {
+        return SUPPORTED_MEDIA;
+    }
 
-	public OAuth2Exception read(Class<? extends OAuth2Exception> clazz, HttpInputMessage inputMessage)
-			throws IOException, HttpMessageNotReadableException {
-		MultiValueMap<String, String> data = delegateMessageConverter.read(null, inputMessage);
-		Map<String,String> flattenedData = data.toSingleValueMap();
-		return OAuth2Exception.valueOf(flattenedData);
-	}
+    public OAuth2Exception read(Class<? extends OAuth2Exception> clazz, HttpInputMessage inputMessage)
+            throws IOException, HttpMessageNotReadableException {
+        MultiValueMap<String, String> data = delegateMessageConverter.read(null, inputMessage);
+        Map<String, String> flattenedData = data.toSingleValueMap();
+        return OAuth2Exception.valueOf(flattenedData);
+    }
 
-	public void write(OAuth2Exception t, MediaType contentType, HttpOutputMessage outputMessage) throws IOException,
-			HttpMessageNotWritableException {
-		MultiValueMap<String, String> data = new LinkedMultiValueMap<String, String>();
-		data.add(OAuth2Exception.ERROR, t.getOAuth2ErrorCode());
-		data.add(OAuth2Exception.DESCRIPTION, t.getMessage());
-		Map<String, String> additionalInformation = t.getAdditionalInformation();
-		if(additionalInformation != null) {
-			for(Map.Entry<String,String> entry : additionalInformation.entrySet()) {
-				data.add(entry.getKey(), entry.getValue());
-			}
-		}
-		delegateMessageConverter.write(data, contentType, outputMessage);
-	}
+    public void write(OAuth2Exception t, MediaType contentType, HttpOutputMessage outputMessage) throws IOException,
+            HttpMessageNotWritableException {
+        MultiValueMap<String, String> data = new LinkedMultiValueMap<String, String>();
+        data.add(OAuth2Exception.ERROR, t.getOAuth2ErrorCode());
+        data.add(OAuth2Exception.DESCRIPTION, t.getMessage());
+        Map<String, String> additionalInformation = t.getAdditionalInformation();
+        if (additionalInformation != null) {
+            for (Map.Entry<String, String> entry : additionalInformation.entrySet()) {
+                data.add(entry.getKey(), entry.getValue());
+            }
+        }
+        delegateMessageConverter.write(data, contentType, outputMessage);
+    }
 
 }

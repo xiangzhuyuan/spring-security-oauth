@@ -23,7 +23,7 @@ import org.springframework.security.oauth.common.OAuthException;
  */
 @SuppressWarnings("serial")
 public class NonceAlreadyUsedException extends OAuthException {
-  public NonceAlreadyUsedException(String msg) {
-    super(msg);
-  }
+    public NonceAlreadyUsedException(String msg) {
+        super(msg);
+    }
 }

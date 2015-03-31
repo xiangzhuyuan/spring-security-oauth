@@ -13,55 +13,55 @@ import org.springframework.web.client.RestTemplate;
  */
 public class OAuthRestTemplate extends RestTemplate {
 
-  private final ProtectedResourceDetails resource;
-  private OAuthConsumerSupport support = new CoreOAuthConsumerSupport();
+    private final ProtectedResourceDetails resource;
+    private OAuthConsumerSupport support = new CoreOAuthConsumerSupport();
 
-  public OAuthRestTemplate(ProtectedResourceDetails resource) {
-    this(new SimpleClientHttpRequestFactory(), resource);
-  }
-
-  public OAuthRestTemplate(ClientHttpRequestFactory requestFactory, ProtectedResourceDetails resource) {
-    super();
-    if (resource == null) {
-      throw new IllegalArgumentException("An OAuth resource must be supplied.");
-    }
-    if (support == null) {
-      throw new IllegalArgumentException("OAuth support must be supplied.");
+    public OAuthRestTemplate(ProtectedResourceDetails resource) {
+        this(new SimpleClientHttpRequestFactory(), resource);
     }
 
-    this.resource = resource;
-    setRequestFactory(requestFactory);
-  }
+    public OAuthRestTemplate(ClientHttpRequestFactory requestFactory, ProtectedResourceDetails resource) {
+        super();
+        if (resource == null) {
+            throw new IllegalArgumentException("An OAuth resource must be supplied.");
+        }
+        if (support == null) {
+            throw new IllegalArgumentException("OAuth support must be supplied.");
+        }
 
-  @Override
-  public void setRequestFactory(ClientHttpRequestFactory requestFactory) {
-    if (!(requestFactory instanceof OAuthClientHttpRequestFactory)) {
-      requestFactory = new OAuthClientHttpRequestFactory(requestFactory, getResource(), getSupport());
+        this.resource = resource;
+        setRequestFactory(requestFactory);
     }
-    super.setRequestFactory(requestFactory);
-  }
+
+    @Override
+    public void setRequestFactory(ClientHttpRequestFactory requestFactory) {
+        if (!(requestFactory instanceof OAuthClientHttpRequestFactory)) {
+            requestFactory = new OAuthClientHttpRequestFactory(requestFactory, getResource(), getSupport());
+        }
+        super.setRequestFactory(requestFactory);
+    }
 
 
-  public ProtectedResourceDetails getResource() {
-    return resource;
-  }
+    public ProtectedResourceDetails getResource() {
+        return resource;
+    }
 
-  /**
-   * The support logic to use.
-   *
-   * @return The support logic to use.
-   */
-  public OAuthConsumerSupport getSupport() {
-    return support;
-  }
+    /**
+     * The support logic to use.
+     *
+     * @return The support logic to use.
+     */
+    public OAuthConsumerSupport getSupport() {
+        return support;
+    }
 
-  /**
-   * The support logic to use.
-   *
-   * @param support The support logic to use.
-   */
-  public void setSupport(OAuthConsumerSupport support) {
-    this.support = support;
-  }
+    /**
+     * The support logic to use.
+     *
+     * @param support The support logic to use.
+     */
+    public void setSupport(OAuthConsumerSupport support) {
+        this.support = support;
+    }
 
 }

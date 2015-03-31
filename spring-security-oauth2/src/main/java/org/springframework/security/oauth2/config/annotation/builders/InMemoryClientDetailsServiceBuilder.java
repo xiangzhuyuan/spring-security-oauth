@@ -15,32 +15,31 @@
  */
 package org.springframework.security.oauth2.config.annotation.builders;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.client.InMemoryClientDetailsService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Dave Syer
- * 
  */
 public class InMemoryClientDetailsServiceBuilder extends
-		ClientDetailsServiceBuilder<InMemoryClientDetailsServiceBuilder> {
+        ClientDetailsServiceBuilder<InMemoryClientDetailsServiceBuilder> {
 
-	private Map<String, ClientDetails> clientDetails = new HashMap<String, ClientDetails>();
+    private Map<String, ClientDetails> clientDetails = new HashMap<String, ClientDetails>();
 
-	@Override
-	protected void addClient(String clientId, ClientDetails value) {
-		clientDetails.put(clientId, value);
-	}
+    @Override
+    protected void addClient(String clientId, ClientDetails value) {
+        clientDetails.put(clientId, value);
+    }
 
-	@Override
-	protected ClientDetailsService performBuild() {
-		InMemoryClientDetailsService clientDetailsService = new InMemoryClientDetailsService();
-		clientDetailsService.setClientDetailsStore(clientDetails);
-		return clientDetailsService;
-	}
+    @Override
+    protected ClientDetailsService performBuild() {
+        InMemoryClientDetailsService clientDetailsService = new InMemoryClientDetailsService();
+        clientDetailsService.setClientDetailsStore(clientDetails);
+        return clientDetailsService;
+    }
 
 }

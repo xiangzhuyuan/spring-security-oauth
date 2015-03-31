@@ -7,10 +7,10 @@ package org.springframework.security.oauth.common.signature;
  */
 public interface SaltedConsumerSecret {
 
-  /**
-   * Returns the salt to use for this consumer secret.
-   *
-   * @return the salt to use for this consumer secret.
-   */
-  Object getSalt();
+    /**
+     * Returns the salt to use for this consumer secret.
+     *
+     * @return the salt to use for this consumer secret.
+     */
+    Object getSalt();
 }

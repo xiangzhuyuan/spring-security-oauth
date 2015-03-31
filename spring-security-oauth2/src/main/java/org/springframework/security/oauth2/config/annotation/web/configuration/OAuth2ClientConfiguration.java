@@ -13,10 +13,6 @@
 
 package org.springframework.security.oauth2.config.annotation.web.configuration;
 
-import java.util.Map;
-
-import javax.annotation.Resource;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -29,42 +25,44 @@ import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilt
 import org.springframework.security.oauth2.client.token.AccessTokenRequest;
 import org.springframework.security.oauth2.client.token.DefaultAccessTokenRequest;
 
+import javax.annotation.Resource;
+import java.util.Map;
+
 /**
  * @author Dave Syer
- * 
  */
 @Configuration
 public class OAuth2ClientConfiguration {
 
-	@Bean
-	public OAuth2ClientContextFilter oauth2ClientContextFilter() {
-		OAuth2ClientContextFilter filter = new OAuth2ClientContextFilter();
-		return filter;
-	}
+    @Bean
+    public OAuth2ClientContextFilter oauth2ClientContextFilter() {
+        OAuth2ClientContextFilter filter = new OAuth2ClientContextFilter();
+        return filter;
+    }
 
-	@Bean
-	@Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
-	protected AccessTokenRequest accessTokenRequest(@Value("#{request.parameterMap}")
-	Map<String, String[]> parameters, @Value("#{request.getAttribute('currentUri')}")
-	String currentUri) {
-		DefaultAccessTokenRequest request = new DefaultAccessTokenRequest(parameters);
-		request.setCurrentUri(currentUri);
-		return request;
-	}
-	
-	@Configuration
-	protected static class OAuth2ClientContextConfiguration {
-		
-		@Resource
-		@Qualifier("accessTokenRequest")
-		private AccessTokenRequest accessTokenRequest;
-		
-		@Bean
-		@Scope(value = "session", proxyMode = ScopedProxyMode.INTERFACES)
-		public OAuth2ClientContext oauth2ClientContext() {
-			return new DefaultOAuth2ClientContext(accessTokenRequest);
-		}
-		
-	}
+    @Bean
+    @Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
+    protected AccessTokenRequest accessTokenRequest(@Value("#{request.parameterMap}")
+                                                    Map<String, String[]> parameters, @Value("#{request.getAttribute('currentUri')}")
+                                                    String currentUri) {
+        DefaultAccessTokenRequest request = new DefaultAccessTokenRequest(parameters);
+        request.setCurrentUri(currentUri);
+        return request;
+    }
+
+    @Configuration
+    protected static class OAuth2ClientContextConfiguration {
+
+        @Resource
+        @Qualifier("accessTokenRequest")
+        private AccessTokenRequest accessTokenRequest;
+
+        @Bean
+        @Scope(value = "session", proxyMode = ScopedProxyMode.INTERFACES)
+        public OAuth2ClientContext oauth2ClientContext() {
+            return new DefaultOAuth2ClientContext(accessTokenRequest);
+        }
+
+    }
 
 }

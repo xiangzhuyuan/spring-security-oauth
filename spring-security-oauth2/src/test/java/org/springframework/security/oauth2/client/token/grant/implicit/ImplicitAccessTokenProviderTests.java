@@ -12,8 +12,6 @@
  */
 package org.springframework.security.oauth2.client.token.grant.implicit;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -26,44 +24,45 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author Dave Syer
- * 
  */
 public class ImplicitAccessTokenProviderTests {
 
-	@Rule
-	public ExpectedException expected = ExpectedException.none();
+    @Rule
+    public ExpectedException expected = ExpectedException.none();
 
-	private MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+    private MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
 
-	private ImplicitAccessTokenProvider provider = new ImplicitAccessTokenProvider() {
-		@Override
-		protected OAuth2AccessToken retrieveToken(AccessTokenRequest request, OAuth2ProtectedResourceDetails resource,
-				MultiValueMap<String, String> form, HttpHeaders headers) {
-			params.putAll(form);
-			return new DefaultOAuth2AccessToken("FOO");
-		}
-	};
+    private ImplicitAccessTokenProvider provider = new ImplicitAccessTokenProvider() {
+        @Override
+        protected OAuth2AccessToken retrieveToken(AccessTokenRequest request, OAuth2ProtectedResourceDetails resource,
+                                                  MultiValueMap<String, String> form, HttpHeaders headers) {
+            params.putAll(form);
+            return new DefaultOAuth2AccessToken("FOO");
+        }
+    };
 
-	private ImplicitResourceDetails resource = new ImplicitResourceDetails();
+    private ImplicitResourceDetails resource = new ImplicitResourceDetails();
 
-	@Test(expected = IllegalStateException.class)
-	public void testRedirectNotSpecified() throws Exception {
-		AccessTokenRequest request = new DefaultAccessTokenRequest();
-		provider.obtainAccessToken(resource, request);
-	}
+    @Test(expected = IllegalStateException.class)
+    public void testRedirectNotSpecified() throws Exception {
+        AccessTokenRequest request = new DefaultAccessTokenRequest();
+        provider.obtainAccessToken(resource, request);
+    }
 
-	@Test
-	public void testGetAccessTokenRequest() throws Exception {
-		AccessTokenRequest request = new DefaultAccessTokenRequest();
-		resource.setClientId("foo");
-		resource.setAccessTokenUri("http://localhost/oauth/authorize");
-		resource.setPreEstablishedRedirectUri("http://anywhere.com");
-		assertEquals("FOO", provider.obtainAccessToken(resource, request).getValue());
-		assertEquals("foo", params.getFirst("client_id"));
-		assertEquals("token", params.getFirst("response_type"));
-		assertEquals("http://anywhere.com", params.getFirst("redirect_uri"));
-	}
+    @Test
+    public void testGetAccessTokenRequest() throws Exception {
+        AccessTokenRequest request = new DefaultAccessTokenRequest();
+        resource.setClientId("foo");
+        resource.setAccessTokenUri("http://localhost/oauth/authorize");
+        resource.setPreEstablishedRedirectUri("http://anywhere.com");
+        assertEquals("FOO", provider.obtainAccessToken(resource, request).getValue());
+        assertEquals("foo", params.getFirst("client_id"));
+        assertEquals("token", params.getFirst("response_type"));
+        assertEquals("http://anywhere.com", params.getFirst("redirect_uri"));
+    }
 
 }

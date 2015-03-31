@@ -29,32 +29,32 @@ import java.util.Map;
  */
 public class ClientDetailsUserDetailsServiceTests {
 
-	@SuppressWarnings("unchecked")
-	@Test(expected = UsernameNotFoundException.class)
-	public void shouldThrowUsernameNotFoundExceptionWhenNoSuchClient() throws Exception {
+    @SuppressWarnings("unchecked")
+    @Test(expected = UsernameNotFoundException.class)
+    public void shouldThrowUsernameNotFoundExceptionWhenNoSuchClient() throws Exception {
 
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put(UserAuthenticationConverter.USERNAME, "test_user");
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(UserAuthenticationConverter.USERNAME, "test_user");
 
-		ClientDetailsService clientDetailsService = Mockito.mock(ClientDetailsService.class);
-		Mockito.when(clientDetailsService.loadClientByClientId("test_user")).thenThrow(NoSuchClientException.class);
-		ClientDetailsUserDetailsService testee = new ClientDetailsUserDetailsService(clientDetailsService);
+        ClientDetailsService clientDetailsService = Mockito.mock(ClientDetailsService.class);
+        Mockito.when(clientDetailsService.loadClientByClientId("test_user")).thenThrow(NoSuchClientException.class);
+        ClientDetailsUserDetailsService testee = new ClientDetailsUserDetailsService(clientDetailsService);
 
-		testee.loadUserByUsername("test_user");
-		}
+        testee.loadUserByUsername("test_user");
+    }
 
-	@SuppressWarnings("unchecked")
-	@Test(expected = ClientRegistrationException.class)
-	public void shouldConductOriginalException() throws Exception {
+    @SuppressWarnings("unchecked")
+    @Test(expected = ClientRegistrationException.class)
+    public void shouldConductOriginalException() throws Exception {
 
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put(UserAuthenticationConverter.USERNAME, "test_user");
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(UserAuthenticationConverter.USERNAME, "test_user");
 
-		ClientDetailsService clientDetailsService = Mockito.mock(ClientDetailsService.class);
-		Mockito.when(clientDetailsService.loadClientByClientId("test_user")).thenThrow(ClientRegistrationException.class);
-		ClientDetailsUserDetailsService testee = new ClientDetailsUserDetailsService(clientDetailsService);
+        ClientDetailsService clientDetailsService = Mockito.mock(ClientDetailsService.class);
+        Mockito.when(clientDetailsService.loadClientByClientId("test_user")).thenThrow(ClientRegistrationException.class);
+        ClientDetailsUserDetailsService testee = new ClientDetailsUserDetailsService(clientDetailsService);
 
-		testee.loadUserByUsername("test_user");
-	}
+        testee.loadUserByUsername("test_user");
+    }
 
 }

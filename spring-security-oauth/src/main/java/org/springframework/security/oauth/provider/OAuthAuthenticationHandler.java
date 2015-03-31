@@ -12,14 +12,14 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface OAuthAuthenticationHandler {
 
-  /**
-   * Create the authentication object for an authenticated OAuth request.
-   *
-   * @param request The request that was successfully authenticated.
-   * @param authentication The consumer authentication (details about how the request was authenticated).
-   * @param authToken The OAuth token associated with the authentication. This token MAY be null if no authenticated token was needed to successfully
-   * authenticate the request (for example, in the case of 2-legged OAuth).
-   * @return The new authentication object. For example, the user authentication if the request is made on behalf of a user.
-   */
-  Authentication createAuthentication(HttpServletRequest request, ConsumerAuthentication authentication, OAuthAccessProviderToken authToken);
+    /**
+     * Create the authentication object for an authenticated OAuth request.
+     *
+     * @param request        The request that was successfully authenticated.
+     * @param authentication The consumer authentication (details about how the request was authenticated).
+     * @param authToken      The OAuth token associated with the authentication. This token MAY be null if no authenticated token was needed to successfully
+     *                       authenticate the request (for example, in the case of 2-legged OAuth).
+     * @return The new authentication object. For example, the user authentication if the request is made on behalf of a user.
+     */
+    Authentication createAuthentication(HttpServletRequest request, ConsumerAuthentication authentication, OAuthAccessProviderToken authToken);
 }

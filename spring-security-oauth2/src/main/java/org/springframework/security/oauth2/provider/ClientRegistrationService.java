@@ -20,20 +20,19 @@ import java.util.List;
 /**
  * Interface for client registration, handling add, update and remove of {@link ClientDetails} from an Authorization
  * Server.
- * 
+ *
  * @author Dave Syer
- * 
  */
 public interface ClientRegistrationService {
 
-	void addClientDetails(ClientDetails clientDetails) throws ClientAlreadyExistsException;
+    void addClientDetails(ClientDetails clientDetails) throws ClientAlreadyExistsException;
 
-	void updateClientDetails(ClientDetails clientDetails) throws NoSuchClientException;
+    void updateClientDetails(ClientDetails clientDetails) throws NoSuchClientException;
 
-	void updateClientSecret(String clientId, String secret) throws NoSuchClientException;
+    void updateClientSecret(String clientId, String secret) throws NoSuchClientException;
 
-	void removeClientDetails(String clientId) throws NoSuchClientException;
-	
-	List<ClientDetails> listClientDetails();
+    void removeClientDetails(String clientId) throws NoSuchClientException;
+
+    List<ClientDetails> listClientDetails();
 
 }

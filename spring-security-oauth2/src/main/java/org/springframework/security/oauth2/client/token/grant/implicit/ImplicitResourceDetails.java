@@ -7,8 +7,8 @@ import org.springframework.security.oauth2.client.token.grant.redirect.AbstractR
  */
 public class ImplicitResourceDetails extends AbstractRedirectResourceDetails {
 
-	public ImplicitResourceDetails() {
-		setGrantType("implicit");
-	}
+    public ImplicitResourceDetails() {
+        setGrantType("implicit");
+    }
 
 }

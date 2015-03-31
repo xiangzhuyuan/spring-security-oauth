@@ -22,20 +22,20 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * Authentication details and includes the details of the OAuth consumer.
- * 
+ *
  * @author Ryan Heaton
  */
 @SuppressWarnings("serial")
 public class OAuthAuthenticationDetails extends WebAuthenticationDetails {
 
-  private final ConsumerDetails consumerDetails;
+    private final ConsumerDetails consumerDetails;
 
-  public OAuthAuthenticationDetails(HttpServletRequest request, ConsumerDetails consumerDetails) {
-    super(request);
-    this.consumerDetails = consumerDetails;
-  }
+    public OAuthAuthenticationDetails(HttpServletRequest request, ConsumerDetails consumerDetails) {
+        super(request);
+        this.consumerDetails = consumerDetails;
+    }
 
-  public ConsumerDetails getConsumerDetails() {
-    return consumerDetails;
-  }
+    public ConsumerDetails getConsumerDetails() {
+        return consumerDetails;
+    }
 }

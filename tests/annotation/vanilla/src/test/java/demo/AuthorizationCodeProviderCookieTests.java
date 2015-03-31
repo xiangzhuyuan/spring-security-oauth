@@ -12,17 +12,16 @@
  */
 package demo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Test;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.test.OAuth2ContextConfiguration;
 import org.springframework.util.LinkedMultiValueMap;
-
 import sparklr.common.AbstractEmptyAuthorizationCodeProviderTests;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Dave Syer
@@ -30,24 +29,24 @@ import sparklr.common.AbstractEmptyAuthorizationCodeProviderTests;
 @SpringApplicationConfiguration(classes = Application.class)
 public class AuthorizationCodeProviderCookieTests extends AbstractEmptyAuthorizationCodeProviderTests {
 
-	@Test
-	@OAuth2ContextConfiguration(resource = MyTrustedClient.class, initialize = false)
-	public void testPostToProtectedResource() throws Exception {
-		approveAccessTokenGrant("http://anywhere", true);
-		assertNotNull(context.getAccessToken());
-		LinkedMultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-		form.set("foo", "bar");
-		assertEquals(HttpStatus.CREATED, http.postForStatus("/", getAuthenticatedHeaders(), form).getStatusCode());
-	}
+    @Test
+    @OAuth2ContextConfiguration(resource = MyTrustedClient.class, initialize = false)
+    public void testPostToProtectedResource() throws Exception {
+        approveAccessTokenGrant("http://anywhere", true);
+        assertNotNull(context.getAccessToken());
+        LinkedMultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+        form.set("foo", "bar");
+        assertEquals(HttpStatus.CREATED, http.postForStatus("/", getAuthenticatedHeaders(), form).getStatusCode());
+    }
 
-	@Override
-	protected HttpHeaders getAuthenticatedHeaders() {
-		HttpHeaders headers = super.getAuthenticatedHeaders();
-		if (context.getAccessTokenRequest().getCookie() != null) {
-			headers.remove("Authorization");
-			headers.set("Cookie", context.getAccessTokenRequest().getCookie());
-		}
-		return headers;
-	}
+    @Override
+    protected HttpHeaders getAuthenticatedHeaders() {
+        HttpHeaders headers = super.getAuthenticatedHeaders();
+        if (context.getAccessTokenRequest().getCookie() != null) {
+            headers.remove("Authorization");
+            headers.set("Cookie", context.getAccessTokenRequest().getCookie());
+        }
+        return headers;
+    }
 
 }

@@ -18,10 +18,9 @@ import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResour
 
 /**
  * @author Dave Syer
- *
  */
 public interface OAuth2RequestAuthenticator {
 
-	void authenticate(OAuth2ProtectedResourceDetails resource, OAuth2ClientContext clientContext, ClientHttpRequest request);
+    void authenticate(OAuth2ProtectedResourceDetails resource, OAuth2ClientContext clientContext, ClientHttpRequest request);
 
 }

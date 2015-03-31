@@ -1,7 +1,5 @@
 package demo;
 
-import javax.servlet.Filter;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
@@ -36,6 +34,8 @@ import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.Filter;
+
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
@@ -43,129 +43,129 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class Application {
 
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 
-	@RequestMapping("/")
-	public String home() {
-		return "Hello World";
-	}
-	
-	@Configuration
-	protected static class ResourceServer extends WebSecurityConfigurerAdapter {
-		
-		@Autowired
-		@Qualifier("resourceFilter")
-		private Filter resourceFilter;
+    @RequestMapping("/")
+    public String home() {
+        return "Hello World";
+    }
 
-		@Bean
-		public FilterRegistrationBean resourceFilterRegistration() {
-			FilterRegistrationBean bean = new FilterRegistrationBean();
-			bean.setFilter(resourceFilter);
-			bean.setEnabled(false);
-			return bean;
-		}
+    @Configuration
+    protected static class ResourceServer extends WebSecurityConfigurerAdapter {
 
-		@Override
-		public void configure(HttpSecurity http) throws Exception {
-			// @formatter:off	
-			http.addFilterBefore(resourceFilter, AbstractPreAuthenticatedProcessingFilter.class)
-				.requestMatcher(new NegatedRequestMatcher(new AntPathRequestMatcher("/oauth/**")))
-				.authorizeRequests().anyRequest().authenticated().expressionHandler(new OAuth2WebSecurityExpressionHandler())
-			.and()
-				.anonymous().disable()
-				.csrf().disable()
-				.exceptionHandling()
-					.authenticationEntryPoint(new OAuth2AuthenticationEntryPoint())
-					.accessDeniedHandler(new OAuth2AccessDeniedHandler());
-			// @formatter:on
-		}
+        @Autowired
+        @Qualifier("resourceFilter")
+        private Filter resourceFilter;
 
-	}
+        @Bean
+        public FilterRegistrationBean resourceFilterRegistration() {
+            FilterRegistrationBean bean = new FilterRegistrationBean();
+            bean.setFilter(resourceFilter);
+            bean.setEnabled(false);
+            return bean;
+        }
 
-	@Configuration
-	protected static class OAuth2Config {
+        @Override
+        public void configure(HttpSecurity http) throws Exception {
+            // @formatter:off
+            http.addFilterBefore(resourceFilter, AbstractPreAuthenticatedProcessingFilter.class)
+                    .requestMatcher(new NegatedRequestMatcher(new AntPathRequestMatcher("/oauth/**")))
+                    .authorizeRequests().anyRequest().authenticated().expressionHandler(new OAuth2WebSecurityExpressionHandler())
+                    .and()
+                    .anonymous().disable()
+                    .csrf().disable()
+                    .exceptionHandling()
+                    .authenticationEntryPoint(new OAuth2AuthenticationEntryPoint())
+                    .accessDeniedHandler(new OAuth2AccessDeniedHandler());
+            // @formatter:on
+        }
 
-		@Bean
-		public JwtTokenStore tokenStore() {
-			JwtTokenStore store = new JwtTokenStore(tokenEnhancer());
-			return store;
-		}
+    }
 
-		@Bean
-		public DefaultTokenServices tokenServices(ClientDetailsService clientDetailsService) {
-			DefaultTokenServices services = new DefaultTokenServices();
-			services.setTokenStore(tokenStore());
-			services.setTokenEnhancer(tokenEnhancer());
-			services.setSupportRefreshToken(true);
-			services.setClientDetailsService(clientDetailsService);
-			return services;
-		}
+    @Configuration
+    protected static class OAuth2Config {
 
-		@Bean
-		public JwtAccessTokenConverter tokenEnhancer() {
-			return new JwtAccessTokenConverter();
-		}
+        @Bean
+        public JwtTokenStore tokenStore() {
+            JwtTokenStore store = new JwtTokenStore(tokenEnhancer());
+            return store;
+        }
 
-		@Bean
-		public WhitelabelErrorEndpoint oauth2ErrorEndpoint() {
-			return new WhitelabelErrorEndpoint();
-		}
+        @Bean
+        public DefaultTokenServices tokenServices(ClientDetailsService clientDetailsService) {
+            DefaultTokenServices services = new DefaultTokenServices();
+            services.setTokenStore(tokenStore());
+            services.setTokenEnhancer(tokenEnhancer());
+            services.setSupportRefreshToken(true);
+            services.setClientDetailsService(clientDetailsService);
+            return services;
+        }
 
-		@Bean
-		public WhitelabelApprovalEndpoint oauth2ApprovalEndpoint() {
-			return new WhitelabelApprovalEndpoint();
-		}
+        @Bean
+        public JwtAccessTokenConverter tokenEnhancer() {
+            return new JwtAccessTokenConverter();
+        }
 
-	}
+        @Bean
+        public WhitelabelErrorEndpoint oauth2ErrorEndpoint() {
+            return new WhitelabelErrorEndpoint();
+        }
 
-	@Configuration
-	@Order(Ordered.HIGHEST_PRECEDENCE)
-	protected static class TokenEndpointSecurity extends WebSecurityConfigurerAdapter {
+        @Bean
+        public WhitelabelApprovalEndpoint oauth2ApprovalEndpoint() {
+            return new WhitelabelApprovalEndpoint();
+        }
 
-		@Autowired
-		private ClientDetailsService clientDetailsService;
+    }
 
-		@Override
-		protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-			auth.userDetailsService(clientDetailsUserService());
-		}
+    @Configuration
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    protected static class TokenEndpointSecurity extends WebSecurityConfigurerAdapter {
 
-		@Bean
-		protected UserDetailsService clientDetailsUserService() {
-			return new ClientDetailsUserDetailsService(clientDetailsService);
-		}
+        @Autowired
+        private ClientDetailsService clientDetailsService;
 
-		@Override
-		protected void configure(HttpSecurity http) throws Exception {
-			// @formatter:off
-			http.anonymous().disable()
-				.antMatcher("/oauth/token")
-				.authorizeRequests().anyRequest().authenticated()
-			.and()
-				.httpBasic().authenticationEntryPoint(authenticationEntryPoint())
-			.and()
-				.csrf().requireCsrfProtectionMatcher(new AntPathRequestMatcher("/oauth/token")).disable()
-				.exceptionHandling().accessDeniedHandler(accessDeniedHandler())
-			.and()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-			// @formatter:on
-		}
+        @Override
+        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth.userDetailsService(clientDetailsUserService());
+        }
 
-		@Bean
-		protected AccessDeniedHandler accessDeniedHandler() {
-			return new OAuth2AccessDeniedHandler();
-		}
+        @Bean
+        protected UserDetailsService clientDetailsUserService() {
+            return new ClientDetailsUserDetailsService(clientDetailsService);
+        }
 
-		@Bean
-		protected AuthenticationEntryPoint authenticationEntryPoint() {
-			OAuth2AuthenticationEntryPoint entryPoint = new OAuth2AuthenticationEntryPoint();
-			entryPoint.setTypeName("Basic");
-			entryPoint.setRealmName("oauth2/client");
-			return entryPoint;
-		}
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            // @formatter:off
+            http.anonymous().disable()
+                    .antMatcher("/oauth/token")
+                    .authorizeRequests().anyRequest().authenticated()
+                    .and()
+                    .httpBasic().authenticationEntryPoint(authenticationEntryPoint())
+                    .and()
+                    .csrf().requireCsrfProtectionMatcher(new AntPathRequestMatcher("/oauth/token")).disable()
+                    .exceptionHandling().accessDeniedHandler(accessDeniedHandler())
+                    .and()
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            // @formatter:on
+        }
 
-	}
+        @Bean
+        protected AccessDeniedHandler accessDeniedHandler() {
+            return new OAuth2AccessDeniedHandler();
+        }
+
+        @Bean
+        protected AuthenticationEntryPoint authenticationEntryPoint() {
+            OAuth2AuthenticationEntryPoint entryPoint = new OAuth2AuthenticationEntryPoint();
+            entryPoint.setTypeName("Basic");
+            entryPoint.setRealmName("oauth2/client");
+            return entryPoint;
+        }
+
+    }
 
 }

@@ -21,8 +21,8 @@ import org.springframework.security.oauth.common.signature.UnsupportedSignatureM
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -32,31 +32,29 @@ import java.io.IOException;
  */
 public class OAuthProcessingFilterEntryPoint implements AuthenticationEntryPoint {
 
-  private String realmName;
+    private String realmName;
 
-  public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-	  if (authException instanceof InvalidOAuthParametersException) {
-		  response.sendError(400, authException.getMessage());
-	  }
-	  else if (authException.getCause() instanceof UnsupportedSignatureMethodException) {
-		  response.sendError(400, authException.getMessage());
-	  }
-	  else {
-		  StringBuilder headerValue = new StringBuilder("OAuth");
-		  if (realmName != null) {
-			  headerValue.append(" realm=\"").append(realmName).append('"');
-		  }
-		  response.addHeader("WWW-Authenticate", headerValue.toString());
-		  response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
-	  }
-  }
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+        if (authException instanceof InvalidOAuthParametersException) {
+            response.sendError(400, authException.getMessage());
+        } else if (authException.getCause() instanceof UnsupportedSignatureMethodException) {
+            response.sendError(400, authException.getMessage());
+        } else {
+            StringBuilder headerValue = new StringBuilder("OAuth");
+            if (realmName != null) {
+                headerValue.append(" realm=\"").append(realmName).append('"');
+            }
+            response.addHeader("WWW-Authenticate", headerValue.toString());
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
+        }
+    }
 
-  public String getRealmName() {
-    return realmName;
-  }
+    public String getRealmName() {
+        return realmName;
+    }
 
-  public void setRealmName(String realmName) {
-    this.realmName = realmName;
-  }
+    public void setRealmName(String realmName) {
+        this.realmName = realmName;
+    }
 
 }

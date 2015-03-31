@@ -24,7 +24,7 @@ import org.springframework.security.oauth.common.OAuthException;
 @SuppressWarnings("serial")
 public class ExpiredOAuthTokenException extends OAuthException {
 
-  public ExpiredOAuthTokenException(String msg) {
-    super(msg);
-  }
+    public ExpiredOAuthTokenException(String msg) {
+        super(msg);
+    }
 }

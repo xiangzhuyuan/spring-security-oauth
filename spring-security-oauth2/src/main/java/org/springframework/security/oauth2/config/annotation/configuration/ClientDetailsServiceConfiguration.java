@@ -15,35 +15,30 @@
  */
 package org.springframework.security.oauth2.config.annotation.configuration;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.context.annotation.*;
 import org.springframework.security.oauth2.config.annotation.builders.ClientDetailsServiceBuilder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 /**
  * @author Rob Winch
- * 
  */
 @Configuration
 public class ClientDetailsServiceConfiguration {
 
-	@SuppressWarnings("rawtypes")
-	private ClientDetailsServiceConfigurer configurer = new ClientDetailsServiceConfigurer(new ClientDetailsServiceBuilder());
-	
-	@Bean
-	public ClientDetailsServiceConfigurer clientDetailsServiceConfigurer() {
-		return configurer;
-	}
+    @SuppressWarnings("rawtypes")
+    private ClientDetailsServiceConfigurer configurer = new ClientDetailsServiceConfigurer(new ClientDetailsServiceBuilder());
 
-	@Bean
-	@Lazy
-	@Scope(proxyMode=ScopedProxyMode.INTERFACES)
-	public ClientDetailsService clientDetailsService() throws Exception {
-		return configurer.and().build();
-	}
+    @Bean
+    public ClientDetailsServiceConfigurer clientDetailsServiceConfigurer() {
+        return configurer;
+    }
+
+    @Bean
+    @Lazy
+    @Scope(proxyMode = ScopedProxyMode.INTERFACES)
+    public ClientDetailsService clientDetailsService() throws Exception {
+        return configurer.and().build();
+    }
 
 }

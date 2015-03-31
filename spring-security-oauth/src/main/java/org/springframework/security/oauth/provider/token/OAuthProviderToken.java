@@ -22,45 +22,45 @@ import java.io.Serializable;
  * @author Ryan Heaton
  */
 public interface OAuthProviderToken extends Serializable {
-  /**
-   * The value of the token.
-   *
-   * @return The value of the token.
-   */
-  String getValue();
+    /**
+     * The value of the token.
+     *
+     * @return The value of the token.
+     */
+    String getValue();
 
-  /**
-   * The callback URL associated with this token.
-   *
-   * @return The callback URL associated with this token.
-   */
-  String getCallbackUrl();
+    /**
+     * The callback URL associated with this token.
+     *
+     * @return The callback URL associated with this token.
+     */
+    String getCallbackUrl();
 
-  /**
-   * The verifier string for this token.
-   *
-   * @return The verifier string for this token.
-   */
-  String getVerifier();
+    /**
+     * The verifier string for this token.
+     *
+     * @return The verifier string for this token.
+     */
+    String getVerifier();
 
-  /**
-   * The token secret.
-   *
-   * @return The token secret.
-   */
-  String getSecret();
+    /**
+     * The token secret.
+     *
+     * @return The token secret.
+     */
+    String getSecret();
 
-  /**
-   * The consumer key associated with this oauth token.
-   *
-   * @return The consumer key associated with this oauth token.
-   */
-  String getConsumerKey();
+    /**
+     * The consumer key associated with this oauth token.
+     *
+     * @return The consumer key associated with this oauth token.
+     */
+    String getConsumerKey();
 
-  /**
-   * Whether this is an OAuth access token.
-   *
-   * @return Whether this is an OAuth access token.
-   */
-  boolean isAccessToken();
+    /**
+     * Whether this is an OAuth access token.
+     *
+     * @return Whether this is an OAuth access token.
+     */
+    boolean isAccessToken();
 }

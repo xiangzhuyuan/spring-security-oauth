@@ -8,8 +8,8 @@ import org.springframework.security.oauth2.client.token.grant.redirect.AbstractR
  */
 public class AuthorizationCodeResourceDetails extends AbstractRedirectResourceDetails {
 
-	public AuthorizationCodeResourceDetails() {
-		setGrantType("authorization_code");
-	}
+    public AuthorizationCodeResourceDetails() {
+        setGrantType("authorization_code");
+    }
 
 }

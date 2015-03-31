@@ -18,5 +18,5 @@ import org.springframework.security.jwt.AlgorithmMetadata;
  * @author Luke Taylor
  */
 public interface SignatureVerifier extends AlgorithmMetadata {
-	void verify(byte[] content, byte[] signature);
+    void verify(byte[] content, byte[] signature);
 }
